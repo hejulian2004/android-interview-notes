@@ -1,0 +1,12 @@
+{
+  "bundle_sha256": "e4899d3867c01ba04492bd90ad0dbbf51ca6cec6d30dc896c4702ad416932e51",
+  "bundle_size": 256502,
+  "parts": [
+    ".github/import-notes/part-01.b64",
+    ".github/import-notes/part-02.b64",
+    ".github/import-notes/part-03.b64",
+    ".github/import-notes/part-04.b64",
+    ".github/import-notes/part-05.b64",
+    ".github/import-notes/part-06.b64"
+  ]
+}
