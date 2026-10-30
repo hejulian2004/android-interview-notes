@@ -1,0 +1,135 @@
+name: One-time verified notes import
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/import-notes/manifest.json']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: one-time-notes-import
+  cancel-in-progress: false
+
+jobs:
+  import:
+    if: github.repository == 'hejulian2004/android-interview-notes'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Verify, generate, test, and commit the documentation
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: python
+        run: |
+          import base64
+          import hashlib
+          import json
+          import lzma
+          import os
+          from pathlib import Path, PurePosixPath
+          import re
+          import subprocess
+          import sys
+          import tempfile
+          import urllib.request
+
+          repository = os.environ['GITHUB_REPOSITORY']
+          assert repository == 'hejulian2004/android-interview-notes'
+          assert os.environ['GITHUB_REF'] == 'refs/heads/main'
+          parent_sha = os.environ['GITHUB_SHA']
+          api_root = 'https://api.github.com/repos/' + repository
+          expected_bundle_sha = 'e4899d3867c01ba04492bd90ad0dbbf51ca6cec6d30dc896c4702ad416932e51'
+          expected_files_sha = 'a445114822e911238327744699e67af52c4246addf445fa59e77c1600dee697a'
+
+          def api(method, path, payload=None):
+              data = None if payload is None else json.dumps(payload, ensure_ascii=False).encode('utf-8')
+              request = urllib.request.Request(api_root + path, data=data, method=method, headers={
+                  'Authorization': 'Bearer ' + os.environ['GH_TOKEN'],
+                  'Accept': 'application/vnd.github+json',
+                  'Content-Type': 'application/json',
+                  'X-GitHub-Api-Version': '2022-11-28',
+                  'User-Agent': 'android-interview-notes-initial-import',
+              })
+              with urllib.request.urlopen(request, timeout=90) as response:
+                  return json.load(response)
+
+          def read_file(path):
+              response = api('GET', '/contents/' + path + '?ref=' + parent_sha)
+              assert response['type'] == 'file' and response['encoding'] == 'base64'
+              return base64.b64decode(response['content'])
+
+          manifest_path = '.github/import-notes/manifest.json'
+          manifest = json.loads(read_file(manifest_path))
+          assert manifest['bundle_sha256'] == expected_bundle_sha
+          assert manifest['bundle_size'] == 256502
+          parts = manifest['parts']
+          assert len(parts) == 6 and len(set(parts)) == 6
+          assert all(re.fullmatch(r'\.github/import-notes/part-0[1-6]\.b64', p) for p in parts)
+          encoded = ''.join(read_file(p).decode('ascii').strip() for p in parts)
+          assert len(encoded) == 66320
+          raw = lzma.decompress(base64.b64decode(encoded, validate=True))
+          assert len(raw) == manifest['bundle_size']
+          assert hashlib.sha256(raw).hexdigest() == expected_bundle_sha
+          bundle = json.loads(raw)
+          assert bundle['expected_files_count'] == 228
+          assert bundle['expected_files_sha256'] == expected_files_sha
+          assert len(bundle['files']) == 17
+
+          with tempfile.TemporaryDirectory(prefix='notes-import-') as temporary:
+              root = Path(temporary)
+              for name, text in bundle['files'].items():
+                  relative = PurePosixPath(name)
+                  assert not relative.is_absolute() and '..' not in relative.parts
+                  assert '.git' not in relative.parts and '.github' not in relative.parts
+                  assert isinstance(text, str)
+                  target = root.joinpath(*relative.parts)
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  target.write_text(text, encoding='utf-8', newline='\n')
+              clean_env = {
+                  'PATH': os.environ['PATH'],
+                  'PYTHONUTF8': '1',
+                  'PYTHONDONTWRITEBYTECODE': '1',
+              }
+              for arguments in (
+                  ['scripts/build.py'],
+                  ['scripts/validate.py'],
+                  ['-m', 'unittest', 'discover', '-s', 'tests', '-v'],
+              ):
+                  subprocess.run([sys.executable, *arguments], cwd=root, env=clean_env, check=True)
+              files = {}
+              for path in sorted(root.rglob('*')):
+                  assert not path.is_symlink()
+                  if path.is_file() and '__pycache__' not in path.parts:
+                      files[path.relative_to(root).as_posix()] = path.read_text(encoding='utf-8')
+              assert len(files) == 228, len(files)
+              canonical = json.dumps(files, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode('utf-8')
+              assert hashlib.sha256(canonical).hexdigest() == expected_files_sha
+
+          current = api('GET', '/git/ref/heads/main')
+          assert current['object']['sha'] == parent_sha, 'Branch changed; refusing to overwrite.'
+          parent = api('GET', '/git/commits/' + parent_sha)
+          base_tree = parent['tree']['sha']
+          existing = api('GET', '/git/trees/' + base_tree + '?recursive=1')
+          assert not existing.get('truncated', False)
+          allowed = set(parts) | {manifest_path, '.github/workflows/import-notes.yml'}
+          assert {e['path'] for e in existing['tree'] if e['type'] == 'blob'} == allowed
+          entries = [
+              {'path': path, 'mode': '100644', 'type': 'blob', 'content': text}
+              for path, text in sorted(files.items())
+          ]
+          entries += [
+              {'path': path, 'mode': '100644', 'type': 'blob', 'sha': None}
+              for path in [manifest_path, *parts]
+          ]
+          tree = api('POST', '/git/trees', {'base_tree': base_tree, 'tree': entries})
+          commit = api('POST', '/git/commits', {
+              'message': 'docs: import 116 sourced Android interview questions and 16 supplements',
+              'tree': tree['sha'],
+              'parents': [parent_sha],
+          })
+          api('PATCH', '/git/refs/heads/main', {'sha': commit['sha'], 'force': False})
+          print('Imported 228 verified files. Commit: ' + commit['sha'])
+          print('Content SHA-256: ' + expected_files_sha)
+          print('Temporary payload removed. The one-time workflow can now be removed.')
