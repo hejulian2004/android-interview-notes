@@ -1,0 +1,3259 @@
+[
+  {
+    "id": "Q001",
+    "title": "四大组件各自解决什么问题",
+    "category": "01-Android基础与生命周期",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S004",
+        "observed_variant": "一面：四大组件"
+      },
+      {
+        "source_id": "S016",
+        "observed_variant": "Android 基础：四大组件"
+      }
+    ],
+    "answer": "Activity 承载用户交互入口；Service 表达无界面的组件工作；BroadcastReceiver 接收广播；ContentProvider 以结构化接口暴露数据。回答时补充各自启动方式、生命周期和进程边界，再给出登录页、媒体播放、系统广播、文件共享等例子。",
+    "pitfall": "Service 默认也运行在所在进程主线程；“后台组件”等于“后台线程”是错误理解。",
+    "followup": "下载任务为什么不一定用长期存活的 Service？",
+    "references": [
+      "process",
+      "activity"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q002",
+    "title": "Activity 切换与返回时的生命周期如何变化",
+    "category": "01-Android基础与生命周期",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S005",
+        "observed_variant": "Activity A 到 B 再返回"
+      },
+      {
+        "source_id": "S008",
+        "observed_variant": "一面：A、B 页面生命周期"
+      },
+      {
+        "source_id": "S006",
+        "observed_variant": "透明 Activity 对生命周期的影响"
+      }
+    ],
+    "answer": "先声明 B 是否全屏不透明以及 A 是否 finish。常见全屏跳转是 A 暂停，B 创建、启动、恢复，随后 A 停止；返回时 B 暂停、A 重启并恢复，B 停止并销毁。透明页面可能使 A 保持可见而不进入停止状态。实际以生命周期日志验证。",
+    "pitfall": "不要把所有弹窗、透明页面、分屏场景套用同一固定序列。",
+    "followup": "系统回收后台进程后，再返回 A 与正常返回有什么差别？",
+    "references": [
+      "activity"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q003",
+    "title": "Activity 启动模式与 onNewIntent 如何配合",
+    "category": "01-Android基础与生命周期",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S005",
+        "observed_variant": "启动模式与 onNewIntent"
+      },
+      {
+        "source_id": "S006",
+        "observed_variant": "启动模式"
+      },
+      {
+        "source_id": "S010",
+        "observed_variant": "一面：onNewIntent"
+      }
+    ],
+    "answer": "从任务栈、目标实例是否存在、是否位于栈顶三个维度解释 standard、singleTop、singleTask、singleInstance。实例被复用时可能收到 onNewIntent，而不是再次 onCreate；需要审视 Intent flags、taskAffinity 和入口类型。较新平台还有 singleInstancePerTask，回答应注明版本。",
+    "pitfall": "onNewIntent 收到新 Intent 后，getIntent 不会自动替换成新对象；按业务需要调用 setIntent。",
+    "followup": "通知连续点击两次怎样避免重复打开详情页？",
+    "references": [
+      "tasks"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q004",
+    "title": "Fragment 为什么有两套生命周期",
+    "category": "01-Android基础与生命周期",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S008",
+        "observed_variant": "一面：Fragment 生命周期"
+      }
+    ],
+    "answer": "Fragment 实例和它创建的 View 生命周期不同，View 可以先被销毁而 Fragment 仍存在。与视图相关的绑定和观察使用 viewLifecycleOwner，在 onDestroyView 释放 ViewBinding；与 Fragment 自身相关的状态按其 owner 管理。",
+    "pitfall": "在 Fragment 生命周期内一直持有已销毁的 View，是常见泄漏来源；并非只有 onDestroy 才应清理。",
+    "followup": "返回栈恢复 Fragment 时，哪些状态应保留，哪些视图应重新创建？",
+    "references": [
+      "fragment"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q005",
+    "title": "Fragment 与 Activity 之间怎样传递结果",
+    "category": "01-Android基础与生命周期",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S008",
+        "observed_variant": "一面：Fragment 与 Activity 通信"
+      }
+    ],
+    "answer": "依据通信范围选择共享 ViewModel、Fragment Result API 或明确的回调接口。共享 ViewModel 必须选对 Activity 或导航图作用域；一次性结果与长期状态应分开建模，避免通过静态字段持有页面。",
+    "pitfall": "共享 ViewModel 不等于整个 App 的全局单例，也不保证进程死亡后数据仍在。",
+    "followup": "两个 Fragment 不在同一个导航图时如何定义状态所有者？",
+    "references": [
+      "fragmentcomm",
+      "vm"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q006",
+    "title": "如何判断应用处于前台还是后台",
+    "category": "01-Android基础与生命周期",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S006",
+        "observed_variant": "社招：应用前后台判断"
+      }
+    ],
+    "answer": "先定义业务所说的前台：存在 started 页面、存在 resumed 页面，还是当前有焦点。可以基于 ActivityLifecycleCallbacks 计数，或采用进程级生命周期观察。配置变化、透明页面和多窗口必须作为测试用例；需要容忍短暂的切换间隙。",
+    "pitfall": "单个 Activity.onPause 不能证明整个应用已经进入后台。",
+    "followup": "前后台埋点怎样避免旋转屏幕导致重复上报？",
+    "references": [
+      "activity",
+      "process"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q007",
+    "title": "Activity 和 Service 有什么区别",
+    "category": "01-Android基础与生命周期",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S019",
+        "observed_variant": "二面：Activity 与 Service"
+      }
+    ],
+    "answer": "Activity 的核心是用户交互和窗口生命周期；Service 不提供界面，可被启动或绑定。组件生命周期与执行线程是两个维度：耗时任务仍需专门调度，并遵循后台执行及前台服务限制。",
+    "pitfall": "不要通过“Service 永不被杀”来设计可靠任务；长期工作还需持久化、恢复和取消机制。",
+    "followup": "音乐播放为什么要分离播放状态、通知和页面生命周期？",
+    "references": [
+      "process",
+      "player"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q008",
+    "title": "如何设计每天固定时间提醒",
+    "category": "01-Android基础与生命周期",
+    "kind": "observed",
+    "priority": "P2",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S010",
+        "observed_variant": "一面：早上九点提醒"
+      }
+    ],
+    "answer": "先问清是用户可感知的精确闹钟，还是允许延迟的后台任务。确定时区、夏令时、重启、改时钟和重复提醒规则，再选择合适调度 API；精确闹钟涉及平台权限与版本条件，非精确任务优先考虑可延迟调度。",
+    "pitfall": "postDelayed 不能保证进程死亡后提醒，也不是跨天、跨重启的可靠闹钟。",
+    "followup": "用户换时区后，九点是本地九点还是原时区九点？",
+    "references": [
+      "alarm"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q009",
+    "title": "Handler、Looper 和 MessageQueue 如何协作",
+    "category": "02-Handler线程与IPC",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S002",
+        "observed_variant": "一面：Handler"
+      },
+      {
+        "source_id": "S006",
+        "observed_variant": "Handler 与消息队列"
+      },
+      {
+        "source_id": "S020",
+        "observed_variant": "Handler 将任务交给哪个线程"
+      }
+    ],
+    "answer": "Handler 将消息或 Runnable 加入关联 Looper 的消息队列；Looper 在所属线程依次取出并分发。处理线程由绑定的 Looper 决定，不由发送消息的线程决定。创建后台 Looper 时还要考虑退出、任务取消和资源释放。",
+    "pitfall": "不能因为在子线程调用某个主线程 Handler，就认为回调也在子线程执行。",
+    "followup": "多个 Handler 绑定同一个 Looper，是否创建了多条工作线程？",
+    "references": [
+      "handler",
+      "looper"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q010",
+    "title": "postDelayed 为什么不保证准时执行",
+    "category": "02-Handler线程与IPC",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S006",
+        "observed_variant": "post、postDelayed 和队列时序"
+      }
+    ],
+    "answer": "延迟表示消息在指定 uptime 时间之后才有资格被处理，而不是届时必然执行。主线程正忙、队列中其他任务、同步屏障或设备休眠都会影响实际触发时间。对精确时序需求要先明确时钟来源与调度保证。",
+    "pitfall": "不要把它当作实时定时器；UI 时间显示更应基于时钟差计算，而非累计回调次数。",
+    "followup": "倒计时页面暂停数秒后怎样保证显示仍正确？",
+    "references": [
+      "handler"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q011",
+    "title": "同步屏障怎样影响主线程消息执行",
+    "category": "02-Handler线程与IPC",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S007",
+        "observed_variant": "社招：Handler 同步屏障"
+      }
+    ],
+    "answer": "同步屏障暂时阻止屏障后的普通同步消息被选中，允许符合条件的异步消息继续执行，服务于特定调度需求。说明普通消息与异步消息的区别，再结合所读 Android 版本源码解释屏障插入和移除。",
+    "pitfall": "“异步消息”不是在新线程执行；业务代码不应依赖隐藏 API 随意插入屏障。",
+    "followup": "遗留屏障可能造成什么现象，怎样从 trace 和源码验证？",
+    "references": [
+      "messagequeue-source",
+      "handler"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q012",
+    "title": "Looper 队列空闲时为什么不会一直占用 CPU",
+    "category": "02-Handler线程与IPC",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S011",
+        "observed_variant": "二面：Handler 阻塞与唤醒"
+      }
+    ],
+    "answer": "没有立即可执行消息时，消息循环可以进入 native 等待，由事件或超时唤醒，而不是持续空转。区分线程阻塞等待、主线程被业务工作阻塞，以及进程结束三种情况。",
+    "pitfall": "“主线程死循环所以一定 ANR”混淆了事件循环和不能及时响应事件的长任务。",
+    "followup": "加入更早到期的消息时，已有等待怎样被打断？",
+    "references": [
+      "looper",
+      "messagequeue-source"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q013",
+    "title": "IdleHandler 适合放哪些工作",
+    "category": "02-Handler线程与IPC",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S007",
+        "observed_variant": "社招：IdleHandler"
+      }
+    ],
+    "answer": "它用于队列进入可处理空闲回调的时机，不保证固定时间执行。适合短小、可延后的工作；耗时任务应拆分或交给后台。返回值决定是否保留该回调，需要自行处理业务取消条件。",
+    "pitfall": "队列忙时可能迟迟没有机会运行；空闲回调依然在所属 Looper 线程执行。",
+    "followup": "为什么不能把所有初始化都无条件塞进 IdleHandler？",
+    "references": [
+      "idle"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q014",
+    "title": "HandlerThread 与普通 Thread 有何差别",
+    "category": "02-Handler线程与IPC",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S029",
+        "observed_variant": "Android 基础：HandlerThread 与 new Thread"
+      }
+    ],
+    "answer": "HandlerThread 为后台线程建立 Looper，适合顺序处理多次投递的消息；普通 Thread 本身不自带消息循环。需要并发处理大量独立任务时，应评估线程池或协程；结束时选择适当退出方式并取消未完成任务。",
+    "pitfall": "带消息队列不意味着自动并行；一个 Looper 的长任务会阻塞后续任务。",
+    "followup": "quit 与 quitSafely 对待执行任务的处理有什么不同？",
+    "references": [
+      "handlerthread"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q015",
+    "title": "Binder 如何完成一次跨进程调用",
+    "category": "02-Handler线程与IPC",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S002",
+        "observed_variant": "一面：IPC 与 Binder"
+      },
+      {
+        "source_id": "S016",
+        "observed_variant": "IPC 和 Binder"
+      }
+    ],
+    "answer": "以客户端代理、Parcel 序列化、Binder 驱动、服务端 Stub 和线程池说明调用链。同步调用会等待结果，服务端方法通常不在应用主线程执行。再补充调用者身份校验、进程死亡、并发和大数据传输的设计。",
+    "pitfall": "不要把“只复制一次”当作所有调用无条件更快的结论；序列化、调度和阻塞也有成本。",
+    "followup": "服务端进程退出后，客户端怎样恢复连接而不重复执行业务？",
+    "references": [
+      "binder"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q016",
+    "title": "为什么大数据不应直接塞进 Binder 事务",
+    "category": "02-Handler线程与IPC",
+    "kind": "observed",
+    "priority": "P2",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S029",
+        "observed_variant": "播放优化：Binder 上限和共享 fd"
+      }
+    ],
+    "answer": "Binder 适合传递控制消息与小型结构化数据。大型载荷要考虑事务缓冲区、并发事务和序列化开销；可传递文件描述符或共享内存句柄，并明确所有权、访问权限和关闭时机。",
+    "pitfall": "不要假定“单次小于某个数字就绝对安全”；共享内存也不等于任意 Java 对象天然跨进程共享。",
+    "followup": "共享数据正在被写入时，读端怎样获得一致快照？",
+    "references": [
+      "binder",
+      "sharedmemory"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q017",
+    "title": "View 的 measure、layout、draw 分别做什么",
+    "category": "03-View绘制与触摸",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S002",
+        "observed_variant": "一面：View 绘制"
+      },
+      {
+        "source_id": "S007",
+        "observed_variant": "View 渲染流程"
+      },
+      {
+        "source_id": "S020",
+        "observed_variant": "View 绘制与自定义"
+      }
+    ],
+    "answer": "measure 解决期望尺寸和父约束的协商；layout 确定最终位置；draw 产生视觉内容。父容器负责测量和放置子节点，自定义控件应正确处理 padding、最小尺寸与文本基线。硬件加速下还需区分 UI 线程记录绘制与后续渲染。",
+    "pitfall": "一次界面更新不必完整经历三阶段；onDraw 也不是所有子 View 的绘制入口。",
+    "followup": "同一帧中为什么可能出现多次测量？",
+    "references": [
+      "drawing",
+      "graphics"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q018",
+    "title": "requestLayout 与 invalidate 有何区别",
+    "category": "03-View绘制与触摸",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S007",
+        "observed_variant": "社招：requestLayout 和 invalidate"
+      }
+    ],
+    "answer": "尺寸或布局规则改变时请求重新布局；仅颜色、进度等视觉内容变化时请求重绘。requestLayout 会让布局相关流程在后续遍历中重新处理，invalidate 主要标记绘制失效。两者都不是立即同步绘制。",
+    "pitfall": "不要把每次动画进度变化都升级为整棵树的重新测量。",
+    "followup": "改变自定义 View 的描边宽度，什么时候还需要 requestLayout？",
+    "references": [
+      "view",
+      "drawing"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q019",
+    "title": "触摸事件分发与拦截的职责如何划分",
+    "category": "03-View绘制与触摸",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S016",
+        "observed_variant": "dispatchTouchEvent 和 onInterceptTouchEvent"
+      }
+    ],
+    "answer": "dispatchTouchEvent 组织事件路由，ViewGroup.onInterceptTouchEvent 决定是否截获，onTouchEvent 承担实际消费。跟踪同一手势的 DOWN、MOVE、UP/CANCEL，解释子节点消费与父节点接管的条件。",
+    "pitfall": "不能把所有返回 false 都解释为“父 View 收到事件”；需结合调用阶段和触摸目标分析。",
+    "followup": "子 View 没消费 DOWN，后续 MOVE 会怎样路由？",
+    "references": [
+      "touch"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q020",
+    "title": "父容器中途拦截手势时子 View 会发生什么",
+    "category": "03-View绘制与触摸",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S016",
+        "observed_variant": "嵌套 RecyclerView 与事件拦截"
+      }
+    ],
+    "answer": "父容器在 MOVE 阶段接管时，原触摸目标会收到取消事件，子控件应清理按压、拖拽等状态。是否拦截应依据方向、触摸阈值和剩余可滚动距离，而不是一开始无条件抢占。",
+    "pitfall": "忽略 ACTION_CANCEL 容易导致按压态不恢复或拖拽状态残留。",
+    "followup": "requestDisallowInterceptTouchEvent 与 NestedScrolling 分别解决什么层次的问题？",
+    "references": [
+      "touch"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q021",
+    "title": "怎样实现一个可拖动的自定义 View",
+    "category": "03-View绘制与触摸",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S010",
+        "observed_variant": "一面：可拖拽 View"
+      }
+    ],
+    "answer": "记录活动 pointer、按下位置与控件初始偏移，超过 touch slop 后进入拖动；在 MOVE 更新位置，在 UP/CANCEL 结束。约束可移动边界，处理多指切换、父滚动冲突和点击可访问性。",
+    "pitfall": "raw 坐标、局部坐标与父容器坐标不能混用；只处理单指路径不等于手势实现完整。",
+    "followup": "拖动过程中父布局尺寸改变，位置应该怎样修正？",
+    "references": [
+      "touch",
+      "drawing"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q022",
+    "title": "自定义 View 怎样兼顾正确测量与绘制性能",
+    "category": "03-View绘制与触摸",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S020",
+        "observed_variant": "一面：自定义 View"
+      }
+    ],
+    "answer": "先给出控件的期望尺寸，再结合 EXACTLY、AT_MOST、UNSPECIFIED 计算测量结果。把可复用 Paint、Path 等移出高频绘制路径，按尺寸变化重建必要缓存；测试 wrap_content、字体放大、RTL 与无障碍。",
+    "pitfall": "不要只画得正确却忽略测量约束，也不要每帧无条件创建大量临时对象。",
+    "followup": "为什么缓存路径时必须处理尺寸和密度变化？",
+    "references": [
+      "drawing"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q023",
+    "title": "RecyclerView 所谓四级缓存究竟是什么",
+    "category": "04-RecyclerView",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S007",
+        "observed_variant": "社招：缓存层级"
+      },
+      {
+        "source_id": "S011",
+        "observed_variant": "二面：RecyclerView 四级缓存"
+      }
+    ],
+    "answer": "常见教学划分为布局临时 Scrap、离屏 mCachedViews、可选 ViewCacheExtension 和按 viewType 保存的 RecycledViewPool。实际查找受预布局、位置、标识和有效性约束，并非四个固定顺序队列；回答应结合具体 AndroidX 版本。",
+    "pitfall": "不要将“滑出屏幕”直接等同于“进入池中”，也不要把所有缓存命中都说成无需绑定。",
+    "followup": "快速向下滑再滑回来时，怎样用日志判断命中的是哪条路径？",
+    "references": [
+      "rv",
+      "rv-source"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q024",
+    "title": "从缓存或回收池取出的 ViewHolder 是否都要重新绑定",
+    "category": "04-RecyclerView",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S007",
+        "observed_variant": "Scrap、Cache 复用与重新绑定"
+      }
+    ],
+    "answer": "有效且仍对应目标数据的已绑定 holder，某些缓存命中可避免再次绑定；从按类型组织的池中取出的 holder 通常需要绑定到目标项目。是否重绑取决于更新标记、位置和布局阶段等条件。",
+    "pitfall": "onBindViewHolder 不是每次屏幕绘制都会调用；onViewRecycled 也不是每次移出可视区域都会调用。",
+    "followup": "只更新某一行的选中状态，怎样保证旧 holder 不残留状态？",
+    "references": [
+      "rv",
+      "rv-source"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q025",
+    "title": "RecyclerView 预取为什么能改善滚动",
+    "category": "04-RecyclerView",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S007",
+        "observed_variant": "社招：预取策略"
+      }
+    ],
+    "answer": "预取尝试利用滚动过程中可用的时间预算，提前准备将要出现的项目，减少临界帧内的创建和绑定工作。能否收益取决于绑定成本、滚动方向和内存压力，应通过 trace 对照验证。",
+    "pitfall": "预取不是提前创建所有数据，也不能掩盖主线程同步解码或 I/O。",
+    "followup": "嵌套横向列表的预取数量应如何用实验确定？",
+    "references": [
+      "rv",
+      "rv-source"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q026",
+    "title": "嵌套 RecyclerView 的滑动冲突怎么处理",
+    "category": "04-RecyclerView",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S016",
+        "observed_variant": "两个 RecyclerView 嵌套滑动"
+      }
+    ],
+    "answer": "先区分同方向或交叉方向、父子谁消费剩余距离，再检查测量约束、触摸拦截与嵌套滚动协议。能用单列表的多类型布局表达时可简化结构；保留嵌套时要分别测试拖动、fling 和边界交接。",
+    "pitfall": "统一禁用某个 nestedScrolling 开关并不是所有嵌套冲突的通用解法。",
+    "followup": "同方向父子列表都能滚动时，怎样设计符合预期的优先级？",
+    "references": [
+      "rv",
+      "touch"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q027",
+    "title": "Compose 与 XML-View 的区别及选型依据",
+    "category": "05-JetpackCompose",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S020",
+        "observed_variant": "Kotlin 与 Compose"
+      },
+      {
+        "source_id": "S021",
+        "observed_variant": "客户端一面：Compose、XML、View 的选择"
+      }
+    ],
+    "answer": "Compose 通过状态描述 UI；传统 View 常通过对象方法更新属性。比较状态管理、布局绘制、工具链、已有组件复用和团队维护成本，而非只比较代码量。现有 View 可通过互操作嵌入 Compose，迁移可以按页面或控件逐步进行。",
+    "pitfall": "XML 只是布局描述方式；RecyclerView 可以不用 XML。Compose 也不能无条件保证比 View 快。",
+    "followup": "既有复杂 Custom View，为什么不必为引入 Compose 立即重写？",
+    "references": [
+      "cpinterop",
+      "cpphases"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q028",
+    "title": "Kotlin 扩展函数是怎样实现的",
+    "category": "06-Kotlin与协程",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S006",
+        "observed_variant": "社招：扩展函数实现"
+      }
+    ],
+    "answer": "扩展不会真的向目标类添加成员。在 Kotlin/JVM 中，可从反编译结果观察其以接收者作为参数的调用形式；扩展选择通常依据静态类型，成员函数存在匹配时优先。用父子类接收者例子说明静态分派。",
+    "pitfall": "不要将扩展函数误认为可以覆盖类的虚方法，或天然访问 private 成员。",
+    "followup": "同名扩展分别定义在两个包中，导入冲突如何处理？",
+    "references": [
+      "kext"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q029",
+    "title": "泛型的协变与逆变解决什么问题",
+    "category": "06-Kotlin与协程",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S001",
+        "observed_variant": "二面：协变、逆变与 in、out"
+      }
+    ],
+    "answer": "从类型安全的生产者和消费者解释：只产生 T 的接口适合 out，只消费 T 的接口适合 in；同时读写通常需要不变。用 List 和比较器举例，再说明声明处型变与使用处投影。",
+    "pitfall": "不能因为 String 是 Object 子类，就认为任意可变泛型容器也能保持同样子类型关系。",
+    "followup": "为什么 MutableList 的类型参数不能直接声明为 out？",
+    "references": [
+      "kgeneric"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q030",
+    "title": "什么是高阶函数，闭包会带来哪些成本",
+    "category": "06-Kotlin与协程",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S001",
+        "observed_variant": "二面：高阶函数"
+      }
+    ],
+    "answer": "参数或返回值包含函数的函数就是高阶函数。闭包可以捕获外围状态；在 JVM 上可能产生函数对象、捕获字段和调用开销，具体由编译器与优化决定。解释 inline 能消除某些开销，也可能增大生成代码。",
+    "pitfall": "不要说 lambda 一定不分配，也不要说所有高阶函数都应该 inline。",
+    "followup": "保存 lambda 到长期对象中，为什么可能间接持有 Activity？",
+    "references": [
+      "kinline",
+      "kext"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q031",
+    "title": "Kotlin 的作用域函数应该怎样选择",
+    "category": "06-Kotlin与协程",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S020",
+        "observed_variant": "一面：Kotlin 作用域函数"
+      }
+    ],
+    "answer": "从两个维度回答：接收者以 this 还是 it 访问，返回接收者还是 lambda 结果。apply、also 常用于配置或旁路动作；let、run、with 常用于计算结果。选择应以可读性为主，避免层层嵌套导致接收者含糊。",
+    "pitfall": "作用域函数不会自动切换线程、保证原子性或处理生命周期。",
+    "followup": "对 nullable 对象使用 let 与 run 时，安全调用分别放在哪里？",
+    "references": [
+      "kscope"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q032",
+    "title": "协程和线程是什么关系",
+    "category": "06-Kotlin与协程",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S007",
+        "observed_variant": "协程与线程"
+      },
+      {
+        "source_id": "S012",
+        "observed_variant": "一面：协程与线程"
+      },
+      {
+        "source_id": "S020",
+        "observed_variant": "协程原理"
+      }
+    ],
+    "answer": "线程是执行资源，协程是可挂起并恢复的任务抽象；调度器决定恢复在哪些线程执行。协程可以减少阻塞等待占用，但 CPU 密集工作仍需要线程时间。将作用域和 Job 生命周期与业务对象绑定。",
+    "pitfall": "suspend 不等于后台线程；在 Main 中直接做阻塞 I/O 仍会卡住 UI。",
+    "followup": "网络等待与大图片压缩分别应该怎样调度？",
+    "references": [
+      "kdispatch",
+      "kcoroutine"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q033",
+    "title": "挂起函数怎样保存和恢复执行状态",
+    "category": "06-Kotlin与协程",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S007",
+        "observed_variant": "挂起函数的实现"
+      },
+      {
+        "source_id": "S013",
+        "observed_variant": "Continuation 与协程"
+      }
+    ],
+    "answer": "可以从编译后的状态机说明：挂起点附近的局部状态由 continuation 保存，恢复时依据标签继续执行。真正挂起需要被调用的操作支持该协议；返回结果与抛出异常也通过恢复路径传播。",
+    "pitfall": "不是遇到 suspend 关键字就必然挂起，也不是把整条线程的调用栈原样搬到另一个线程。",
+    "followup": "一个没有挂起点的 suspend 函数为什么可能从头执行到尾？",
+    "references": [
+      "kcoroutine",
+      "kdispatch"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q034",
+    "title": "Java 的 equals、hashCode 与双等号如何区分",
+    "category": "07-Java集合与JVM",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S005",
+        "observed_variant": "集合与对象比较"
+      },
+      {
+        "source_id": "S009",
+        "observed_variant": "一面：== 与 equals"
+      },
+      {
+        "source_id": "S020",
+        "observed_variant": "equals 和 hashCode"
+      }
+    ],
+    "answer": "Java 引用类型的 == 比较引用身份；equals 的意义由实现定义。相等对象必须有相等 hashCode，但哈希相等不推出对象相等。作为哈希键使用的字段应在入表后保持稳定，否则定位可能失效。",
+    "pitfall": "Object 默认 equals 并不是自动比较所有字段；Kotlin 的 == 又有不同语言语义。",
+    "followup": "一个可变对象作为 HashMap 的 key，修改字段后为何可能取不到值？",
+    "references": [
+      "object",
+      "hashmap"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q035",
+    "title": "HashMap 如何定位元素并处理冲突和扩容",
+    "category": "07-Java集合与JVM",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S001",
+        "observed_variant": "二面：HashMap 冲突和扩容"
+      },
+      {
+        "source_id": "S008",
+        "observed_variant": "HashMap 扩容"
+      },
+      {
+        "source_id": "S017",
+        "observed_variant": "集合原理"
+      }
+    ],
+    "answer": "先通过哈希确定桶，再在桶内查找；冲突处理、树化阈值和迁移策略属于具体实现细节。以明确的 Java 版本讲数组、链表、树结构及容量与负载因子的权衡。它不提供并发更新安全保证。",
+    "pitfall": "不要把 JDK 7 的链表成环故事推广为每个 Android 运行时的现行实现。",
+    "followup": "为什么容量、数据分布与键的 hashCode 质量都会影响性能？",
+    "references": [
+      "hashmap"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q036",
+    "title": "ConcurrentHashMap 如何支持并发访问",
+    "category": "07-Java集合与JVM",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S002",
+        "observed_variant": "一面：ConcurrentHashMap"
+      },
+      {
+        "source_id": "S005",
+        "observed_variant": "HashMap、Hashtable 和并发容器"
+      }
+    ],
+    "answer": "说明并发读写的 API 保证，再按具体 JDK/Android 版本谈细粒度同步和 CAS 等实现。get 后再 put 的复合业务并不会自动变为原子操作，可使用 putIfAbsent、compute 等适配语义。",
+    "pitfall": "不要混用不同版本的分段锁和桶级实现；容器线程安全不等于值对象内部也安全。",
+    "followup": "怎样安全地为不存在的 key 初始化一个昂贵对象？",
+    "references": [
+      "chm"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q037",
+    "title": "ArrayList 为什么查询快而中间插入可能昂贵",
+    "category": "07-Java集合与JVM",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S002",
+        "observed_variant": "一面：ArrayList"
+      },
+      {
+        "source_id": "S003",
+        "observed_variant": "Java 集合"
+      },
+      {
+        "source_id": "S017",
+        "observed_variant": "ArrayList 与 HashSet"
+      }
+    ],
+    "answer": "数组提供按下标访问；中间插入或删除可能移动后续元素。动态扩容需要分配更大的存储并搬移，尾部追加通常具有摊还优势。容量、大小、迭代器失效与并发访问要分开讨论。",
+    "pitfall": "不要把所有插入操作都概括成 O(1)，也不要认为 LinkedList 在真实设备上必然更快。",
+    "followup": "已知最终元素数量时，预设容量有什么收益和代价？",
+    "references": [
+      "arraylist"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q038",
+    "title": "Java 泛型擦除后还能获得哪些类型信息",
+    "category": "07-Java集合与JVM",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S001",
+        "observed_variant": "二面：泛型擦除与类型获取"
+      }
+    ],
+    "answer": "区分运行时对象的实际类和声明在类、父类或方法签名中的泛型元数据。普通类型变量通常被擦除，但反射可能读取 Signature；匿名子类保留泛型声明的技巧依赖具体声明上下文。",
+    "pitfall": "不能保证从任意 List 实例恢复其所有元素的泛型实参；空列表尤其不能靠取元素猜类型。",
+    "followup": "为什么某些序列化库要求传 TypeToken 而不是单个 Class？",
+    "references": [
+      "kgeneric",
+      "jgeneric"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q039",
+    "title": "JVM 的运行时数据区怎样划分",
+    "category": "07-Java集合与JVM",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S001",
+        "observed_variant": "二面：JVM 内存区域"
+      },
+      {
+        "source_id": "S003",
+        "observed_variant": "JVM"
+      },
+      {
+        "source_id": "S028",
+        "observed_variant": "公开一面：虚拟机、堆与栈"
+      }
+    ],
+    "answer": "按线程私有和共享区解释程序计数器、虚拟机栈、本地方法栈、堆与方法区，并以方法调用、对象分配、类元数据举例。规范概念与 HotSpot、ART 的具体实现需要明确区分。",
+    "pitfall": "不能把某个 HotSpot 版本的元空间或 GC 参数直接套用到所有 Android 设备。",
+    "followup": "栈溢出和堆耗尽的触发条件、排查入口分别是什么？",
+    "references": [
+      "jvm"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q040",
+    "title": "垃圾回收怎样判断对象是否仍然存活",
+    "category": "07-Java集合与JVM",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S003",
+        "observed_variant": "一面：GC"
+      },
+      {
+        "source_id": "S005",
+        "observed_variant": "GC"
+      },
+      {
+        "source_id": "S020",
+        "observed_variant": "可达性与泄漏"
+      }
+    ],
+    "answer": "从 GC Roots 出发分析引用可达性，再说明收集器如何回收不可达对象。标记、复制、整理等是不同策略，代际与并发行为依赖实现；要区分停止世界阶段和并发阶段。",
+    "pitfall": "回收不可达对象不能解决“仍被错误引用”的泄漏，也不保证调用 System.gc 就立即回收。",
+    "followup": "循环引用为什么不必然导致基于可达性分析的 GC 无法回收？",
+    "references": [
+      "gc",
+      "refs"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q041",
+    "title": "强引用、软引用、弱引用和虚引用如何使用",
+    "category": "07-Java集合与JVM",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S007",
+        "observed_variant": "社招：引用类型"
+      },
+      {
+        "source_id": "S011",
+        "observed_variant": "二面：四种引用"
+      }
+    ],
+    "answer": "强引用维持普通可达性；软、弱引用在回收策略中有不同处理；虚引用通常配合引用队列观察清理相关事件。把引用语义和缓存策略分开，缓存应有明确容量与淘汰策略。",
+    "pitfall": "WeakReference 不是万能泄漏修复；其他强引用仍在时对象不会因此被回收。",
+    "followup": "为什么图片缓存不应只依靠软引用和 GC 自发决定容量？",
+    "references": [
+      "refs"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q042",
+    "title": "final 引用指向的集合还能修改吗",
+    "category": "07-Java集合与JVM",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S005",
+        "observed_variant": "final ArrayList 可否修改"
+      }
+    ],
+    "answer": "final 限制变量再次赋值，不会使指向的对象自动不可变。集合仍可能增删元素，除非其 API 或实现禁止修改。要解释不可变对象、只读接口和不可修改包装之间的区别。",
+    "pitfall": "只禁止 set 引用并不能保证集合内容线程安全。",
+    "followup": "Kotlin val 与 List 是否就能保证整个对象图不可变？",
+    "references": [
+      "jls4"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q043",
+    "title": "String 常量池与对象创建有什么区别",
+    "category": "07-Java集合与JVM",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S005",
+        "observed_variant": "String 常量池"
+      },
+      {
+        "source_id": "S017",
+        "observed_variant": "String 相关问题"
+      }
+    ],
+    "answer": "区分字面量、编译期常量拼接、运行期拼接和显式 new 的语义。intern 返回规范化代表；比较文本内容通常使用 equals。具体存储布局和优化方式应注明运行时版本。",
+    "pitfall": "不要仅凭一段字符串代码就断言所有版本都分配固定数量对象；常量折叠和优化会改变实现。",
+    "followup": "变量参与拼接与纯字面量拼接，为什么引用比较结果可能不同？",
+    "references": [
+      "string"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q044",
+    "title": "深拷贝与浅拷贝有什么区别",
+    "category": "07-Java集合与JVM",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S012",
+        "observed_variant": "一面：深浅拷贝"
+      },
+      {
+        "source_id": "S020",
+        "observed_variant": "深浅拷贝"
+      }
+    ],
+    "answer": "浅拷贝复制对象字段值，引用字段仍可能指向同一子对象；深拷贝需要定义要复制的对象图与共享边界。对循环引用、文件句柄、线程等资源不能简单递归复制，通常应设计明确的复制协议。",
+    "pitfall": "data class.copy 或 Object.clone 不能被笼统当作递归深拷贝。",
+    "followup": "复制包含循环引用的图结构，怎样既终止递归又保留共享关系？",
+    "references": [
+      "object",
+      "kdata"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q045",
+    "title": "重载、重写与多态分别发生在什么阶段",
+    "category": "07-Java集合与JVM",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S020",
+        "observed_variant": "重载重写与返回值"
+      }
+    ],
+    "answer": "重载依据可见候选与参数等编译期信息选定签名；重写由运行时接收者的实现参与动态分派。还要区分 static 方法隐藏、private 方法和协变返回类型，避免只用“方法名相同”描述。",
+    "pitfall": "仅改变返回类型不能构成普通 Java 方法重载。",
+    "followup": "父类引用指向子类对象时，同名重载与重写分别会调用哪一个？",
+    "references": [
+      "jls8"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q046",
+    "title": "Java 参数传递为什么仍然是值传递",
+    "category": "07-Java集合与JVM",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S020",
+        "observed_variant": "参数传递"
+      }
+    ],
+    "answer": "基本类型复制其值；引用类型复制引用值。因此被调函数可以修改引用指向对象的状态，但给局部参数重新赋对象不会替换调用者变量。用交换两个对象引用的反例检验理解。",
+    "pitfall": "“引用类型参数”与“按引用传参”不是一回事。",
+    "followup": "函数里清空集合与把参数赋成一个新集合，调用者分别看到什么？",
+    "references": [
+      "jls4"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q047",
+    "title": "volatile 保证什么，为什么不能保证自增原子性",
+    "category": "08-并发与线程安全",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S004",
+        "observed_variant": "volatile 与非原子自增"
+      },
+      {
+        "source_id": "S020",
+        "observed_variant": "volatile 和 i++"
+      }
+    ],
+    "answer": "volatile 约束可见性与相关内存顺序，但 i++ 包含读、计算、写多个步骤，多个线程可丢失更新。用锁或原子读改写操作实现计数，再解释 happens-before 而不是用“强制刷新所有缓存”替代理由。",
+    "pitfall": "可见性、原子性和有序性是不同问题，不能互相替代。",
+    "followup": "volatile boolean 停止标记与 volatile int 计数器为何有不同安全结论？",
+    "references": [
+      "jmm",
+      "atomic"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q048",
+    "title": "synchronized 锁住的是哪个对象",
+    "category": "08-并发与线程安全",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S020",
+        "observed_variant": "对象锁和类锁"
+      },
+      {
+        "source_id": "S029",
+        "observed_variant": "方法与同步块"
+      }
+    ],
+    "answer": "实例同步方法锁定 this；静态同步方法锁定对应 Class；同步块使用显式监视器对象。共享数据必须由一致的锁协议保护，进入与退出监视器也建立可见性关系。",
+    "pitfall": "两个实例上的同步方法不一定互斥；锁引用若可变还会破坏同步协议。",
+    "followup": "static synchronized 与某个实例 synchronized 能否同时执行？",
+    "references": [
+      "jmm"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q049",
+    "title": "sleep 与 wait 的区别是什么",
+    "category": "08-并发与线程安全",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S002",
+        "observed_variant": "一面：sleep 和 wait"
+      }
+    ],
+    "answer": "sleep 暂停当前线程但不释放已持有的监视器；wait 必须在持有相应监视器时调用，并释放该监视器等待通知或超时。条件检查放在 while 中以处理竞争与虚假唤醒。",
+    "pitfall": "notify 不代表被唤醒线程马上得到锁，也不意味着条件一定成立。",
+    "followup": "生产者消费者为什么不能用 if 检查条件后直接 wait？",
+    "references": [
+      "object",
+      "jmm"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q050",
+    "title": "线程安全单例怎样正确实现",
+    "category": "08-并发与线程安全",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S002",
+        "observed_variant": "手写线程安全单例"
+      },
+      {
+        "source_id": "S014",
+        "observed_variant": "单例与内存模型"
+      },
+      {
+        "source_id": "S020",
+        "observed_variant": "单例 DCL"
+      }
+    ],
+    "answer": "可选择类初始化持有者或正确的双重检查锁定。DCL 要同时保证发布安全和互斥创建，实例字段通常需要 volatile。补充懒加载需求、测试替换和类加载器边界，避免把单例当作任意全局状态容器。",
+    "pitfall": "只加两次判空而不处理安全发布，不是完整 DCL。",
+    "followup": "单例持有 Activity 为什么有风险？",
+    "references": [
+      "jmm",
+      "jls12"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q051",
+    "title": "线程池参数怎样共同决定任务执行",
+    "category": "08-并发与线程安全",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S020",
+        "observed_variant": "线程池参数与核心线程超时"
+      },
+      {
+        "source_id": "S029",
+        "observed_variant": "有界队列和最大线程数"
+      }
+    ],
+    "answer": "解释核心线程、等待队列、最大线程、空闲回收、线程工厂和拒绝策略的协作。常见路径是先补核心线程，再入队，队列拒绝后尝试扩到最大，最后执行拒绝策略。负载、队列长度和延迟预算共同决定配置。",
+    "pitfall": "无界队列可能使最大线程数很少发挥扩容作用；线程越多并不必然吞吐越高。",
+    "followup": "如何设计大量文件扫描任务的背压与取消？",
+    "references": [
+      "pool"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q052",
+    "title": "CAS 和 ABA 问题是什么",
+    "category": "08-并发与线程安全",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S020",
+        "observed_variant": "CAS 与 ABA"
+      }
+    ],
+    "answer": "CAS 在当前位置仍等于期望值时原子更新。它能构造无锁式重试，但值经历 A→B→A 时，单凭最终值可能遗漏状态变化。可用版本戳、约束生命周期或其他同步方式处理。",
+    "pitfall": "CAS 不保证无竞争或无重试，也不自动使多字段不变量原子化。",
+    "followup": "AtomicInteger 计数和复用链表节点，为什么对 ABA 的敏感性不同？",
+    "references": [
+      "atomic"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q053",
+    "title": "ReentrantLock 相比 synchronized 多了哪些控制能力",
+    "category": "08-并发与线程安全",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S020",
+        "observed_variant": "可中断锁与公平锁"
+      }
+    ],
+    "answer": "可讨论尝试获取、限时等待、可中断等待、公平性选择与多个 Condition。使用显式锁时必须在 finally 释放；比较应基于所需语义，而不是笼统宣称某种锁更快。",
+    "pitfall": "公平锁不保证整个应用业务任务严格 FIFO，也通常有吞吐权衡。",
+    "followup": "需要超时取消的资源申请，怎样组织锁获取与清理？",
+    "references": [
+      "reentrant"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q054",
+    "title": "死锁的必要条件与排查方式是什么",
+    "category": "08-并发与线程安全",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S011",
+        "observed_variant": "二面：死锁与锁机制"
+      }
+    ],
+    "answer": "可从互斥、持有并等待、不可抢占、循环等待分析。实践中读取线程堆栈和锁等待关系，用统一锁顺序、减少持锁范围或超时协议破坏形成条件。解决时还应检查业务一致性。",
+    "pitfall": "随机 sleep 只能改变时序，不是可靠的死锁修复。",
+    "followup": "两个转账操作要同时锁两个账户，如何设计锁顺序？",
+    "references": [
+      "threadmx"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q055",
+    "title": "乐观锁与悲观锁应怎样选择",
+    "category": "08-并发与线程安全",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S013",
+        "observed_variant": "一面：乐观锁与悲观锁"
+      },
+      {
+        "source_id": "S020",
+        "observed_variant": "锁策略"
+      }
+    ],
+    "answer": "悲观策略先取得排他访问，乐观策略在提交时验证版本或条件。根据冲突概率、重试成本、临界区长度和公平性需求选择；数据库版本字段与 JVM CAS 是相关思想但不等同实现。",
+    "pitfall": "乐观策略不是没有同步成本；高冲突下重试可能比阻塞更差。",
+    "followup": "库存更新失败后重试，如何避免重复扣款等业务副作用？",
+    "references": [
+      "atomic",
+      "reentrant"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q056",
+    "title": "TCP 如何提供可靠传输",
+    "category": "09-网络与网络库",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S001",
+        "observed_variant": "二面：TCP 可靠性的原因"
+      },
+      {
+        "source_id": "S008",
+        "observed_variant": "TCP 可靠传输"
+      }
+    ],
+    "answer": "围绕序号、确认、重传、接收窗口和拥塞控制解释有序字节流。可靠性不是保证网络永不失败，而是让端点按协议处理丢失、乱序与重复，并在不能继续时体现失败。业务仍需要超时、重试和幂等设计。",
+    "pitfall": "TCP 不保留业务消息边界，也不保证一次业务操作只执行一次。",
+    "followup": "支付请求超时后重试，为什么仍需要请求幂等标识？",
+    "references": [
+      "tcp"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q057",
+    "title": "TCP 建连与关闭连接为什么需要握手",
+    "category": "09-网络与网络库",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S008",
+        "observed_variant": "三次握手与四次挥手"
+      },
+      {
+        "source_id": "S011",
+        "observed_variant": "二面：TCP 连接管理"
+      }
+    ],
+    "answer": "建连用于确认双向通信和初始序号；关闭需要独立处理两条方向的数据发送结束。解释 SYN、ACK、FIN 的含义和 TIME_WAIT 的目的；分段合并、同时关闭等会使实际报文数不同。",
+    "pitfall": "不要把“四次”当作所有关闭场景永远恰好四个包。",
+    "followup": "为什么收到对方 FIN 后仍可能继续发送数据？",
+    "references": [
+      "tcp"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q058",
+    "title": "HTTPS 如何建立可信且加密的连接",
+    "category": "09-网络与网络库",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S004",
+        "observed_variant": "TLS 中对称与非对称密码"
+      },
+      {
+        "source_id": "S011",
+        "observed_variant": "HTTPS"
+      },
+      {
+        "source_id": "S024",
+        "observed_variant": "网络与 TLS"
+      }
+    ],
+    "answer": "区分身份认证、密钥协商和对应用数据的对称加密。客户端验证证书链与域名，再依协议协商密钥材料；TLS 版本、会话恢复和算法套件影响具体握手。",
+    "pitfall": "仅启用加密不等于认证安全；忽略证书或域名错误会破坏信任保证。",
+    "followup": "抓包代理为什么需要设备信任相应证书？",
+    "references": [
+      "tls"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q059",
+    "title": "GET 和 POST 的差别是否只是参数位置",
+    "category": "09-网络与网络库",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S011",
+        "observed_variant": "二面：GET、POST 与参数限制"
+      },
+      {
+        "source_id": "S012",
+        "observed_variant": "一面：HTTP 方法"
+      }
+    ],
+    "answer": "先回答方法语义、安全性与幂等性约定，再讨论缓存、重试和载荷。URL 长度限制常来自客户端、代理或服务端实现；不能给整个 HTTP 协议编造统一的固定字节上限。",
+    "pitfall": "POST 并不天然比 GET 安全，传输保密仍依赖 HTTPS 等机制。",
+    "followup": "网关为什么通常不应自动重试任意 POST 请求？",
+    "references": [
+      "http"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q060",
+    "title": "从输入 URL 到收到响应会经历哪些步骤",
+    "category": "09-网络与网络库",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S004",
+        "observed_variant": "输入网址后的过程"
+      },
+      {
+        "source_id": "S017",
+        "observed_variant": "网络请求流程"
+      },
+      {
+        "source_id": "S024",
+        "observed_variant": "URL 与 HTTPS"
+      }
+    ],
+    "answer": "先考虑缓存和 URL 解析，再说明 DNS、连接复用或建连、TLS、HTTP 请求响应以及客户端解析展示。HTTP/3 使用 QUIC，不能把所有 HTTP 版本都画成同一 TCP 流程。",
+    "pitfall": "已有连接和缓存命中会跳过部分环节，顺序图应明确前提。",
+    "followup": "为什么网络总耗时应拆成 DNS、连接、握手、首字节和下载阶段？",
+    "references": [
+      "http",
+      "tls",
+      "quic"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q061",
+    "title": "QUIC 基于 UDP 为什么仍能提供可靠流",
+    "category": "09-网络与网络库",
+    "kind": "observed",
+    "priority": "P2",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S004",
+        "observed_variant": "UDP 上实现 QUIC 的可靠性"
+      }
+    ],
+    "answer": "UDP 提供数据报基础，QUIC 在其上定义确认、丢失恢复、拥塞控制和流管理。区分多个流的顺序关系、连接迁移及安全握手，避免把 UDP 的能力直接等同于上层协议能力。",
+    "pitfall": "“用了 UDP 所以一定不可靠”与“QUIC 不会阻塞”都是过度概括。",
+    "followup": "单个流丢包与多个流共享连接时的影响为何不同？",
+    "references": [
+      "quic"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q062",
+    "title": "OkHttp 的应用拦截器与网络拦截器有何区别",
+    "category": "09-网络与网络库",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S008",
+        "observed_variant": "OkHttp 拦截器"
+      },
+      {
+        "source_id": "S009",
+        "observed_variant": "二面：两类拦截器"
+      },
+      {
+        "source_id": "S012",
+        "observed_variant": "日志拦截器"
+      }
+    ],
+    "answer": "应用拦截器围绕逻辑调用工作，网络拦截器观察具体网络交换，缓存命中、重定向和重试会影响执行次数。说明 proceed 的契约和响应体关闭，日志中必须遮蔽凭证与敏感字段。",
+    "pitfall": "不能假定每次业务调用一定只经过一次网络交换，也不能在拦截器任意吞掉响应体。",
+    "followup": "给请求加鉴权与统计每次网络耗时，应该放在哪个层次？",
+    "references": [
+      "okint"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q063",
+    "title": "OkHttp 缓存如何判断使用缓存还是访问网络",
+    "category": "09-网络与网络库",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S008",
+        "observed_variant": "网络缓存"
+      },
+      {
+        "source_id": "S028",
+        "observed_variant": "公开一面：网络库缓存"
+      }
+    ],
+    "answer": "结合 Cache-Control、新鲜度、ETag 或 Last-Modified 解释直接复用和条件验证。缓存键、Vary 和请求语义影响命中；离线行为要由产品要求与协议策略共同定义。",
+    "pitfall": "Retrofit 不是独立的 HTTP 磁盘缓存实现；通常要看底层客户端的缓存配置。",
+    "followup": "304 响应为什么能减少传输，却不意味着完全没有网络请求？",
+    "references": [
+      "okcache",
+      "http"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q064",
+    "title": "Retrofit 与 OkHttp 是怎样分工的",
+    "category": "09-网络与网络库",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S009",
+        "observed_variant": "二面：Retrofit 与 OkHttp"
+      },
+      {
+        "source_id": "S012",
+        "observed_variant": "Retrofit 注解"
+      },
+      {
+        "source_id": "S028",
+        "observed_variant": "公开一面：Retrofit 设计"
+      }
+    ],
+    "answer": "Retrofit 将声明式接口、注解和转换适配映射为 HTTP 调用；OkHttp 负责更底层的请求执行与连接、拦截器等。说明请求参数解析、序列化、调用适配、错误传播和取消的边界。",
+    "pitfall": "不要把 JSON 转换失败、HTTP 非成功状态与网络异常统统当成同一种失败。",
+    "followup": "请求协程被取消时，如何保证底层调用也停止占用资源？",
+    "references": [
+      "retrofit",
+      "okint"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q065",
+    "title": "大文件如何实现分片下载与断点续传",
+    "category": "09-网络与网络库",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S029",
+        "observed_variant": "HTTP 分片下载"
+      },
+      {
+        "source_id": "S022",
+        "observed_variant": "分段资源并发下载"
+      }
+    ],
+    "answer": "普通大文件可结合 Range、206 和 Content-Range，持久化分段进度并验证资源版本；服务端不支持范围或返回完整内容时要回退。并发数需受限，写入位置必须互不冲突，完成后做一致性校验。TS 分片列表则是另一种资源组织方式。",
+    "pitfall": "Range 下载不是任意服务器都支持；不能把不同版本文件的分段混合拼接。",
+    "followup": "ETag 改变或断点文件损坏时应继续还是重新下载？",
+    "references": [
+      "http"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q066",
+    "title": "MVC、MVP、MVVM 如何划分职责",
+    "category": "10-Jetpack架构与存储",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S004",
+        "observed_variant": "架构模式"
+      },
+      {
+        "source_id": "S010",
+        "observed_variant": "MVVM 与 MVC"
+      },
+      {
+        "source_id": "S012",
+        "observed_variant": "MVVM 与 Jetpack"
+      }
+    ],
+    "answer": "用同一个登录业务说明 UI、状态、业务规则和数据访问分别放在哪里。重点是依赖方向、生命周期与可测试性，而不是给类名加后缀。Android 推荐的分层和单向数据流可以辅助落地，但模式不是唯一正确结构。",
+    "pitfall": "有 ViewModel 类并不自动等于良好 MVVM；把网络、数据库和导航全部塞进其中仍可能过度耦合。",
+    "followup": "不启动 Activity，如何测试登录失败和重试逻辑？",
+    "references": [
+      "arch",
+      "vm"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q067",
+    "title": "MVI 的单向数据流有什么收益和代价",
+    "category": "10-Jetpack架构与存储",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S009",
+        "observed_variant": "二面：MVVM、MVI 及实现问题"
+      }
+    ],
+    "answer": "把用户意图映射为状态变化，UI 观察状态并回送事件。收益在于状态来源明确、重放与测试便利；代价可能是模型和样板增加。持续状态与一次性副作用必须区分，并设计并发请求的归并与取消规则。",
+    "pitfall": "统一 State 不意味着每次输入都复制庞大对象图，也不意味着任何事件都应永久重放。",
+    "followup": "连续搜索时，如何防止旧请求结果覆盖新结果？",
+    "references": [
+      "arch"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q068",
+    "title": "ViewModel 为什么能跨配置变化保留状态",
+    "category": "10-Jetpack架构与存储",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S012",
+        "observed_variant": "ViewModel 与 Activity 生命周期"
+      },
+      {
+        "source_id": "S014",
+        "observed_variant": "ViewModel 生命周期"
+      }
+    ],
+    "answer": "它由 ViewModelStoreOwner 管理，生命周期取决于 owner 而非某次 View 创建；配置重建时可以沿用对应存储。业务状态、可恢复 UI 状态和持久数据要分层，进程死亡后需要 SavedStateHandle 或持久化补充。",
+    "pitfall": "ViewModel 不自动抗进程死亡，也不应长期持有 Activity 或 View。",
+    "followup": "导航图级和 Activity 级 ViewModel 的共享边界有何不同？",
+    "references": [
+      "vm"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q069",
+    "title": "LiveData 如何做到生命周期感知",
+    "category": "10-Jetpack架构与存储",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S010",
+        "observed_variant": "一面：LiveData"
+      }
+    ],
+    "answer": "观察者与 LifecycleOwner 关联，只在合适的活跃状态接收更新，销毁后解除关联。区分 setValue 与 postValue 的线程要求以及多次待投递值可能合并的行为，避免把状态容器当成无损事件队列。",
+    "pitfall": "observeForever 不自动受页面生命周期保护；postValue 不能被假设保留每一次中间值。",
+    "followup": "为什么支付结果等一次性行为需要额外设计消费语义？",
+    "references": [
+      "livedata"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q070",
+    "title": "SharedPreferences、数据库各适合什么数据",
+    "category": "10-Jetpack架构与存储",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S009",
+        "observed_variant": "二面：偏好存储与数据库"
+      }
+    ],
+    "answer": "少量配置适合键值存储；需要查询、关系、一致更新与迁移的数据更适合数据库。还要根据一致性、数据量、多进程和损坏恢复要求评估 DataStore 等方案，而非仅比较 API 行数。",
+    "pitfall": "把一整份不断增长的业务列表编码为一个字符串，并不会因此获得数据库能力。",
+    "followup": "用户切换账号时，怎样避免配置与业务缓存互相串用？",
+    "references": [
+      "sp",
+      "room"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q071",
+    "title": "SharedPreferences 的多线程与多进程限制是什么",
+    "category": "10-Jetpack架构与存储",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S009",
+        "observed_variant": "二面：SP 多线程与多进程"
+      }
+    ],
+    "answer": "区分单进程中的方法调用安全与读取后修改的复合原子性；并发读改写仍可能丢失业务更新。普通 SharedPreferences 不支持可靠的跨进程协调，apply 的内存更新与磁盘持久化也不是同一时点。",
+    "pitfall": "不能因为 apply 异步，就断言它永远不会影响主线程生命周期切换。",
+    "followup": "计数器由两个线程同时读取并加一，如何避免覆盖？",
+    "references": [
+      "sp"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q072",
+    "title": "Room 怎样表达一对多关系与联合查询",
+    "category": "10-Jetpack架构与存储",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S009",
+        "observed_variant": "一面和二面：Room 与表关系"
+      }
+    ],
+    "answer": "先设计实体、主键、外键和索引，再根据需求选择显式 JOIN 或关系查询。@Embedded 用于列结构映射，不自动建立独立表关系；多步读取关联数据时要考虑事务快照的一致性。",
+    "pitfall": "不要把 Room 当成任意对象图自动持久化的黑箱。",
+    "followup": "分页查询订单与明细时，如何避免 N+1 查询或重复行？",
+    "references": [
+      "room"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q073",
+    "title": "为什么数据库索引常采用 B加树",
+    "category": "10-Jetpack架构与存储",
+    "kind": "observed",
+    "priority": "P2",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S013",
+        "observed_variant": "数据库索引与 B+ 树"
+      }
+    ],
+    "answer": "从磁盘或页式存储角度解释高扇出降低树高，叶子层有序布局适合范围查询。实际索引类型与实现依数据库而异；写放大、额外空间与选择性也要一起考虑。",
+    "pitfall": "不能认为“建索引就一定更快”；低选择性列和频繁更新可能得不偿失。",
+    "followup": "联合索引如何与过滤、排序和覆盖查询相配合？",
+    "references": [
+      "sqlite-query"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q074",
+    "title": "内存泄漏与 OOM 是什么关系",
+    "category": "11-性能与稳定性",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S008",
+        "observed_variant": "内存泄漏与检测"
+      },
+      {
+        "source_id": "S011",
+        "observed_variant": "泄漏和 OOM"
+      },
+      {
+        "source_id": "S016",
+        "observed_variant": "内存问题"
+      }
+    ],
+    "answer": "泄漏是对象已无业务用途却仍被引用；OOM 是分配不能满足的结果。泄漏可能最终导致 OOM，但单次过大分配、峰值和 native 资源也可能触发内存失败。先确认内存类别，再看保留路径与增长趋势。",
+    "pitfall": "没有 OOM 不代表没有泄漏，出现 OOM 也不能直接认定是 Activity 泄漏。",
+    "followup": "重复打开关闭页面时，如何证明对象数量或保留内存持续增长？",
+    "references": [
+      "leak",
+      "gc"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q075",
+    "title": "怎样定位 Handler 导致的页面泄漏",
+    "category": "11-性能与稳定性",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S008",
+        "observed_variant": "一面：Handler 内存泄漏"
+      }
+    ],
+    "answer": "检查消息队列中的任务是否通过闭包或内部类引用已销毁页面。对照 GC Roots 路径，按 owner 生命周期取消任务、解除回调或使用更合适的作用域；确认取消后资源和业务状态仍正确。",
+    "pitfall": "只把 Handler 改成静态类不一定解决 Runnable 闭包或其他强引用。",
+    "followup": "延迟任务还必须完成时，如何把数据处理与页面回调分离？",
+    "references": [
+      "handler",
+      "leak"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q076",
+    "title": "列表滚动掉帧应怎样定位",
+    "category": "11-性能与稳定性",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S007",
+        "observed_variant": "渲染与性能优化"
+      },
+      {
+        "source_id": "S016",
+        "observed_variant": "图片加载与性能"
+      }
+    ],
+    "answer": "在相同设备、数据和优化构建下复现，再拆解 UI 线程、RenderThread、图片解码、I/O、布局和 GC。用帧时间分布和 trace 找到关键路径，做单变量改动并复测；缓存只是候选手段。",
+    "pitfall": "调大缓存池不能替代瓶颈定位；debug 构建结果不宜直接代表生产性能。",
+    "followup": "怎样证明改善来自列表实现，而不是图片缓存预热？",
+    "references": [
+      "render",
+      "cpperf"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q077",
+    "title": "ANR 常见成因与排查流程是什么",
+    "category": "11-性能与稳定性",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S011",
+        "observed_variant": "二面：ANR"
+      }
+    ],
+    "answer": "先辨认 ANR 类型与触发场景，再读取主线程及相关线程栈、锁等待、Binder 调用和 I/O。区分 CPU 忙、锁阻塞、跨进程等待与调度问题。修复后按原场景复测，并关注长尾而非仅平均值。",
+    "pitfall": "不是所有 ANR 都用统一五秒阈值；不同组件与平台条件不同。",
+    "followup": "主线程栈看上去空闲时，为什么仍不能立即排除历史阻塞？",
+    "references": [
+      "anr"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q078",
+    "title": "应用启动优化怎样区分首帧与可交互时间",
+    "category": "11-性能与稳定性",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S007",
+        "observed_variant": "启动性能"
+      },
+      {
+        "source_id": "S011",
+        "observed_variant": "启动与首帧"
+      }
+    ],
+    "answer": "区分冷、温、热启动，记录初始显示与完整显示等指标。梳理进程启动、Application、组件初始化、布局和关键数据加载；延后非关键工作时不能把卡顿简单转移到首屏交互。",
+    "pitfall": "首帧更快不等于用户更早完成操作；必须清楚指标起止点。",
+    "followup": "如何评估延迟初始化是否增加了用户第一次点击的延迟？",
+    "references": [
+      "startup"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q079",
+    "title": "Bitmap 的内存占用怎样估算",
+    "category": "11-性能与稳定性",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S010",
+        "observed_variant": "一面：Bitmap 占用计算"
+      }
+    ],
+    "answer": "先用像素宽高和每像素字节数估算，再考虑行对齐、配置、分配复用与 GPU 副本。例如无额外对齐的 1080×1920 ARGB_8888 像素数据约 8294400 字节；最终用 API 和分析工具验证实际分配。",
+    "pitfall": "JPEG 文件大小不是解码后内存大小；硬件位图与不同系统版本的内存归属也有差异。",
+    "followup": "只显示缩略图时，应在哪个阶段缩小尺寸？",
+    "references": [
+      "bitmap"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q080",
+    "title": "怎样减少 APK 体积且避免破坏运行时行为",
+    "category": "11-性能与稳定性",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S022",
+        "observed_variant": "一面：包体积优化"
+      }
+    ],
+    "answer": "先用包分析确认代码、资源、native 库和重复资产的占比，再评估 R8、资源收缩、ABI 与语言拆分、图片格式和依赖裁剪。验证反射、JNI、序列化与动态资源访问的保留规则。",
+    "pitfall": "“开启混淆”不是完整体积方案；不能只比较压缩包大小而忽略安装与下载形态。",
+    "followup": "为什么删掉看似未引用的类可能只在 Release 运行时崩溃？",
+    "references": [
+      "appsize"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q081",
+    "title": "进程和线程的资源边界有什么不同",
+    "category": "12-Framework与系统",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S004",
+        "observed_variant": "进程与线程"
+      },
+      {
+        "source_id": "S011",
+        "observed_variant": "操作系统基础"
+      },
+      {
+        "source_id": "S020",
+        "observed_variant": "进程、线程与 IPC"
+      }
+    ],
+    "answer": "进程提供地址空间和资源隔离边界，同进程线程共享部分资源但保留各自执行栈与调度状态。比较通信、切换成本和故障隔离时要说明操作系统实现，不能仅用“轻量进程”一词带过。",
+    "pitfall": "同进程共享内存不等于无须同步，跨进程也不是所有资源都完全不能共享。",
+    "followup": "多进程播放器能隔离什么故障，又引入哪些一致性问题？",
+    "references": [
+      "process"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q082",
+    "title": "触摸输入怎样从硬件到达应用 View",
+    "category": "12-Framework与系统",
+    "kind": "observed",
+    "priority": "P2",
+    "scope": "Framework/系统岗位",
+    "evidence": [
+      {
+        "source_id": "S024",
+        "observed_variant": "系统一面：触摸从硬件到应用"
+      }
+    ],
+    "answer": "可以按设备驱动、输入读取与分发、窗口目标、应用输入通道、ViewRootImpl 和 View 树组织说明。重点解释坐标、焦点、窗口命中和事件消费；具体类与线程名称要对照目标 AOSP 版本。",
+    "pitfall": "不能把 ViewGroup 三个方法当成完整系统输入链路，窗口分发发生在更上游。",
+    "followup": "窗口有焦点但触摸不响应时，如何定位卡在系统还是应用？",
+    "references": [
+      "input",
+      "touch"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q083",
+    "title": "Android 开机到应用可用的主要阶段是什么",
+    "category": "12-Framework与系统",
+    "kind": "observed",
+    "priority": "P2",
+    "scope": "Framework/系统岗位",
+    "evidence": [
+      {
+        "source_id": "S024",
+        "observed_variant": "系统一面：Android 开机流程"
+      }
+    ],
+    "answer": "按引导加载、内核启动、init、运行时与系统服务启动，再到系统就绪和桌面界面建立流程图。区分设备开机与单个应用冷启动；讲每个阶段时说明进程职责和依赖，而不是只背类名。",
+    "pitfall": "不能用 Application.onCreate 概括整个 Android 开机；不同厂商和版本有定制。",
+    "followup": "开机耗时增加，应如何区分内核阶段和系统服务阶段？",
+    "references": [
+      "boot",
+      "startup"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q084",
+    "title": "ImageView 设置图片后怎样最终显示到屏幕",
+    "category": "12-Framework与系统",
+    "kind": "observed",
+    "priority": "P2",
+    "scope": "Framework/系统岗位",
+    "evidence": [
+      {
+        "source_id": "S024",
+        "observed_variant": "系统一面：Bitmap 到屏幕"
+      }
+    ],
+    "answer": "从 Drawable 和视图失效开始，连接 UI 遍历、绘制命令、RenderThread/GPU、缓冲队列、SurfaceFlinger 与显示合成。不同渲染路径会有差异，重点区分应用画内容和系统合成多个窗口。",
+    "pitfall": "setImageBitmap 不等于立即把整张图同步复制到显示屏。",
+    "followup": "CPU 帧耗时正常但画面掉帧，还应该查看哪些阶段？",
+    "references": [
+      "graphics",
+      "bitmap"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q085",
+    "title": "MediaPlayer 为什么必须遵守状态机",
+    "category": "13-音视频与Native",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S019",
+        "observed_variant": "二面：MediaPlayer 状态"
+      }
+    ],
+    "answer": "用创建、设置数据源、准备、播放、暂停、停止、释放说明合法调用关系，并区分同步和异步准备。错误与完成回调也是状态转换的一部分；页面销毁和后台播放要明确资源所有者。",
+    "pitfall": "不能在任意状态调用 start、seek 或 prepare；释放后继续调用旧实例也有风险。",
+    "followup": "网络断开和重新播放应复用还是重建实例，依据是什么？",
+    "references": [
+      "player"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q086",
+    "title": "歌词怎样与播放进度同步并处理拖动",
+    "category": "13-音视频与Native",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S010",
+        "observed_variant": "一面：歌词同步"
+      },
+      {
+        "source_id": "S019",
+        "observed_variant": "二面：歌词时间戳、拖动和异常文件"
+      }
+    ],
+    "answer": "先解析并归一化时间戳，建立有序索引，根据播放器实际位置定位当前句。seek 后重新定位而非依靠累计计时；对多时间戳、偏移、缺失和乱码设置规则。UI 刷新频率与音频时钟应解耦。",
+    "pitfall": "定时器回调次数不是可靠音频时钟；错误 LRC 不能使播放链路崩溃。",
+    "followup": "歌词存在相同时间戳或乱序记录时，如何确定显示结果？",
+    "references": [
+      "player"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q087",
+    "title": "YUV420、I420 与 NV12 的布局有何不同",
+    "category": "13-音视频与Native",
+    "kind": "observed",
+    "priority": "P2",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S022",
+        "observed_variant": "YUV420 与平面格式"
+      },
+      {
+        "source_id": "S023",
+        "observed_variant": "YUV420、I420 和 RGB"
+      }
+    ],
+    "answer": "YUV420 描述色度采样关系，I420 使用分别存储的 Y、U、V 平面，NV12 则交错存储 UV。布局、位深、行跨度和色彩空间都是独立参数；转换时不能只看宽高。",
+    "pitfall": "YUV420 不是唯一内存布局；NV12 与 NV21 的色度顺序也不同。",
+    "followup": "同一帧转换后偏紫或偏绿，应该先检查哪些参数？",
+    "references": [
+      "yuv"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q088",
+    "title": "一帧 1920乘1080 的 I420 数据占多少空间",
+    "category": "13-音视频与Native",
+    "kind": "observed",
+    "priority": "P2",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S023",
+        "observed_variant": "二面：1920×1080 I420 内存"
+      }
+    ],
+    "answer": "在 8 位、紧密排列、宽高均为偶数且无额外 stride 的前提下，Y 为 W×H，U、V 各为 W×H/4，总计 W×H×3/2；1920×1080 得 3110400 字节。真实缓冲区要按各平面行跨度与高度计算。",
+    "pitfall": "这个数不包括行对齐、对象头、额外缓冲与高位深格式；不能当作所有视频帧的固定公式。",
+    "followup": "相机返回 YUV_420_888 时为什么还要读取 rowStride 与 pixelStride？",
+    "references": [
+      "yuv"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q089",
+    "title": "H264 中 I、P、B 与 GOP 的关系是什么",
+    "category": "13-音视频与Native",
+    "kind": "observed",
+    "priority": "P2",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S023",
+        "observed_variant": "二面：H264、B/P 帧和 GOP"
+      }
+    ],
+    "answer": "从帧内与帧间预测理解 I、P、B 类型，再说明随机访问、参考关系、码率和延迟的权衡。GOP 设置会影响压缩效率与恢复能力；I 图像与 IDR 的语义不应混为一谈。",
+    "pitfall": "有 I 帧不一定表示后续解码完全不依赖更早参考；低延迟不只由 GOP 一个参数决定。",
+    "followup": "直播更重视低延迟还是压缩率，如何影响编码参数？",
+    "references": [
+      "h264",
+      "codec"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q090",
+    "title": "SPS 与 PPS 有什么作用，如何获得视频尺寸",
+    "category": "13-音视频与Native",
+    "kind": "observed",
+    "priority": "P2",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S023",
+        "observed_variant": "二面：SPS/PPS 与编码尺寸"
+      }
+    ],
+    "answer": "参数集提供解码所需的序列、图像级配置；解析时要识别 NAL 封装格式并处理转义。尺寸可能由宏块信息、帧结构与裁剪共同决定，优先使用可靠解析库或解码器输出格式。",
+    "pitfall": "不能在字节流中硬取固定偏移当作宽高；Annex B 与长度前缀格式也不能混读。",
+    "followup": "分辨率切换后，接收端如何更新解码器与显示布局？",
+    "references": [
+      "h264",
+      "codec"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q091",
+    "title": "PCM 转成压缩音频要经过哪些步骤",
+    "category": "13-音视频与Native",
+    "kind": "observed",
+    "priority": "P2",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S022",
+        "observed_variant": "一面：PCM 转 MP3 与 FFmpeg"
+      }
+    ],
+    "answer": "确认采样率、声道、采样格式和数据排列，按编码器要求做重采样或格式转换；送入音频帧，取出编码包并写入目标封装。处理时间戳、尾部刷新、失败清理和编码器可用性。",
+    "pitfall": "PCM 原始字节没有自带足够格式元数据；改后缀不会完成编码。",
+    "followup": "输入采样格式不被编码器支持时，应在哪一层适配？",
+    "references": [
+      "ffaudio"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q092",
+    "title": "Flutter 的 Widget、Element 和 RenderObject 各负责什么",
+    "category": "14-Flutter与跨端",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "跨端相关 Android 岗位",
+    "evidence": [
+      {
+        "source_id": "S011",
+        "observed_variant": "二面：Flutter 三棵树"
+      },
+      {
+        "source_id": "S013",
+        "observed_variant": "Flutter 架构"
+      }
+    ],
+    "answer": "Widget 是不可变配置，Element 维持挂载位置和生命周期关联，RenderObject 负责布局绘制等渲染职责。更新 Widget 时不意味着整套底层对象必须重建，复用与 key 共同影响状态保持。",
+    "pitfall": "不能把每次 build 等同于每次重新生成所有像素。",
+    "followup": "调换两个带状态子组件的位置时，key 为什么重要？",
+    "references": [
+      "flutter"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q093",
+    "title": "Dart 的事件循环、异步与 isolate 是什么关系",
+    "category": "14-Flutter与跨端",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "跨端相关 Android 岗位",
+    "evidence": [
+      {
+        "source_id": "S011",
+        "observed_variant": "Dart 线程模型"
+      },
+      {
+        "source_id": "S013",
+        "observed_variant": "isolate、异步和事件循环"
+      }
+    ],
+    "answer": "一个 isolate 有自己的执行与内存状态，通过事件循环调度异步工作；多个 isolate 可以承载独立执行并通过消息通信。async/await 组织异步控制流，不会自动将 CPU 密集任务转移出去。",
+    "pitfall": "不要将“单个 isolate 的单线程事件循环”误说成整个 Flutter 引擎只有一条线程。",
+    "followup": "大 JSON 解析卡 UI 时，仅添加 async 为什么可能无效？",
+    "references": [
+      "dart"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q094",
+    "title": "Flutter 与 Android 原生能力怎样通信",
+    "category": "14-Flutter与跨端",
+    "kind": "observed",
+    "priority": "P2",
+    "scope": "跨端相关 Android 岗位",
+    "evidence": [
+      {
+        "source_id": "S011",
+        "observed_variant": "Flutter 与原生交互"
+      }
+    ],
+    "answer": "平台通道可以把 Dart 调用与平台侧处理连接起来，双方约定方法、参数、错误和线程要求。高频大载荷需评估序列化与复制成本，必要时选择更适合的数据通道或 native 接口。",
+    "pitfall": "通道调用不是免费的函数调用，也不能忽略页面销毁后的回调和取消。",
+    "followup": "连续传视频帧是否适合逐帧用普通方法通道传大字节数组？",
+    "references": [
+      "flutter",
+      "channels"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q095",
+    "title": "ReactNative 与原生或其他跨端方案怎样比较",
+    "category": "14-Flutter与跨端",
+    "kind": "observed",
+    "priority": "P2",
+    "scope": "跨端相关 Android 岗位",
+    "evidence": [
+      {
+        "source_id": "S026",
+        "observed_variant": "RN 与 native 选择"
+      },
+      {
+        "source_id": "S027",
+        "observed_variant": "跨端方案与 RN 原理"
+      },
+      {
+        "source_id": "S029",
+        "observed_variant": "RN 页面速度和兼容性"
+      }
+    ],
+    "answer": "先列团队技能、平台数量、交互性能、宿主能力、升级节奏和测试成本，再比较架构选择。RN 具体实现有代际差异，讨论 JS 与 native 协作时应注明架构版本；性能结论必须落到测量。",
+    "pitfall": "“跨端等于一次开发无需两端测试”和“全部性能成本都来自旧 Bridge”都不成立。",
+    "followup": "为何一个新架构可能提升性能，却增加已有原生模块迁移成本？",
+    "references": [
+      "rn",
+      "flutter"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q096",
+    "title": "如何原地反转单链表",
+    "category": "15-数据结构与算法",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S001",
+        "observed_variant": "二面：反转链表"
+      },
+      {
+        "source_id": "S014",
+        "observed_variant": "反转链表"
+      }
+    ],
+    "answer": "维护 prev、cur、next 三个指针：先保存后继，再反转当前边，依次前进。结束时 prev 是新头。时间 O(n)、额外空间 O(1)。用空链表、单节点和两节点手动模拟验证。",
+    "pitfall": "修改 cur.next 前不保存后继，会丢失剩余链表；循环退出后应返回 prev 而不是已为空的 cur。",
+    "followup": "递归写法的额外空间为何不再是 O(1)？",
+    "references": [],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "算法思路与复杂度为整理者独立推导；未包含已执行验证的实现代码。"
+  },
+  {
+    "id": "Q097",
+    "title": "如何只反转链表的指定区间",
+    "category": "15-数据结构与算法",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S008",
+        "observed_variant": "算法：局部反转链表"
+      }
+    ],
+    "answer": "用 dummy 统一处理从头开始的区间，先定位区间前驱，再反转指定长度并重新连接前后段。时间 O(n)、空间 O(1)。说明下标从 0 还是 1 开始，并处理区间合法性。",
+    "pitfall": "容易只反转内部指针却忘记连接区间后继。",
+    "followup": "当 left 等于 right 或区间覆盖整条链表时结果是什么？",
+    "references": [],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "算法思路与复杂度为整理者独立推导；未包含已执行验证的实现代码。"
+  },
+  {
+    "id": "Q098",
+    "title": "怎样一次遍历删除倒数第 N 个节点",
+    "category": "15-数据结构与算法",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S009",
+        "observed_variant": "一面：删除链表倒数第 N 个节点"
+      }
+    ],
+    "answer": "使用 dummy 和快慢指针，让两个指针保持合适间距；快指针到尾时，慢指针定位目标前驱，执行删除。时间 O(n)、空间 O(1)。先约定 N 的合法范围。",
+    "pitfall": "删除头节点与只有一个节点是必要测试，不能直接假设前驱非空。",
+    "followup": "N 大于链表长度时，接口应返回什么或抛什么异常？",
+    "references": [],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "算法思路与复杂度为整理者独立推导；未包含已执行验证的实现代码。"
+  },
+  {
+    "id": "Q099",
+    "title": "怎样合并两个有序链表",
+    "category": "15-数据结构与算法",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S006",
+        "observed_variant": "算法：合并两条有序链表"
+      }
+    ],
+    "answer": "建立 dummy 尾指针，每次连接较小的当前节点，最后接上尚未耗尽的一段。时间 O(m+n)，复用节点时额外空间 O(1)。明确升降序和输入是否允许被修改。",
+    "pitfall": "若输入共享尾部节点或存在环，普通实现的前提已被破坏。",
+    "followup": "要求不修改输入链表时，空间复杂度如何变化？",
+    "references": [],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "算法思路与复杂度为整理者独立推导；未包含已执行验证的实现代码。"
+  },
+  {
+    "id": "Q100",
+    "title": "怎样高效合并 K 个有序链表",
+    "category": "15-数据结构与算法",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S004",
+        "observed_variant": "算法：合并 K 条有序链表"
+      },
+      {
+        "source_id": "S007",
+        "observed_variant": "算法：多路链表合并"
+      }
+    ],
+    "answer": "总节点数为 N、链表条数为 K 时，可用小根堆保存每条链表的当前头，复杂度 O(N log K)、额外空间 O(K)；也可分治两两合并。需要处理空链表与相等值。",
+    "pitfall": "不能用每次遍历所有 K 个头却仍声称是 O(N log K)。",
+    "followup": "K 很大但绝大多数为空时，初始化如何避免无意义工作？",
+    "references": [],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "算法思路与复杂度为整理者独立推导；未包含已执行验证的实现代码。"
+  },
+  {
+    "id": "Q101",
+    "title": "二分查找怎样找到重复元素的第一次出现",
+    "category": "15-数据结构与算法",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S007",
+        "observed_variant": "算法：有序数组第一次出现位置"
+      }
+    ],
+    "answer": "按 lower_bound 思路维护半开区间，找到第一个不小于目标的位置，再判断是否相等。时间 O(log n)，空间 O(1)。讲清循环不变量比背模板更重要。",
+    "pitfall": "边界更新若仍保留已判断的同一位置，可能无限循环。",
+    "followup": "目标小于最小值、大于最大值或数组为空时返回什么？",
+    "references": [],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "算法思路与复杂度为整理者独立推导；未包含已执行验证的实现代码。"
+  },
+  {
+    "id": "Q102",
+    "title": "怎样用两个栈实现队列",
+    "category": "15-数据结构与算法",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S005",
+        "observed_variant": "算法：双栈队列"
+      }
+    ],
+    "answer": "入队进入输入栈；出队或取队首时，若输出栈为空，将输入栈全部倒入输出栈。每个元素最多搬运一次，因此单次操作摊还 O(1)，空间 O(n)。",
+    "pitfall": "每次出队都把两个栈往返倒腾会失去摊还优势。",
+    "followup": "队列为空时，API 应抛异常还是返回可空值？",
+    "references": [],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "算法思路与复杂度为整理者独立推导；未包含已执行验证的实现代码。"
+  },
+  {
+    "id": "Q103",
+    "title": "怎样不用递归完成二叉树中序遍历",
+    "category": "15-数据结构与算法",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S009",
+        "observed_variant": "二面：中序遍历"
+      },
+      {
+        "source_id": "S015",
+        "observed_variant": "算法：非递归中序遍历"
+      }
+    ],
+    "answer": "沿左分支不断入栈；无法再向左时出栈访问，并转到右子树重复。每个节点入出栈一次，时间 O(n)、空间 O(h)，退化树时 h 可为 n。",
+    "pitfall": "不要把“平衡树空间 O(log n)”当作所有二叉树的空间上界。",
+    "followup": "Morris 遍历为什么能减少额外空间，却要临时修改指针？",
+    "references": [],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "算法思路与复杂度为整理者独立推导；未包含已执行验证的实现代码。"
+  },
+  {
+    "id": "Q104",
+    "title": "最大子数组和怎样在线计算",
+    "category": "15-数据结构与算法",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S003",
+        "observed_variant": "二面算法：最大子数组"
+      }
+    ],
+    "answer": "令 ending 表示必须以当前位置结尾的最大和，递推为 max(x, ending+x)，并维护全局最优。时间 O(n)、空间 O(1)。非空子数组的题意下，应从第一个元素初始化。",
+    "pitfall": "把初始答案设为 0 会在全负数组中错误地选出空子数组。",
+    "followup": "要同时返回区间左右端点，需要额外保存哪些变量？",
+    "references": [],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "算法思路与复杂度为整理者独立推导；未包含已执行验证的实现代码。"
+  },
+  {
+    "id": "Q105",
+    "title": "如何求数组的下一个字典序排列",
+    "category": "15-数据结构与算法",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S015",
+        "observed_variant": "算法：下一个排列"
+      }
+    ],
+    "answer": "从右找第一个上升断点，交换它与右侧最小的更大元素，再把后缀反转成最小次序。没有断点表示已最大，整体反转。时间 O(n)、额外空间 O(1)。",
+    "pitfall": "有重复值时比较符号容易写错；不是任意挑一个更大元素交换。",
+    "followup": "输入为降序、全相等或单元素时应怎样处理？",
+    "references": [],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "算法思路与复杂度为整理者独立推导；未包含已执行验证的实现代码。"
+  },
+  {
+    "id": "Q106",
+    "title": "怎样校验括号序列是否合法",
+    "category": "15-数据结构与算法",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S013",
+        "observed_variant": "二面算法：有效括号"
+      }
+    ],
+    "answer": "遇左括号入栈，遇右括号检查栈顶匹配并弹出，最终栈空才合法。时间 O(n)、空间 O(n)。明确非括号字符是忽略还是非法输入。",
+    "pitfall": "仅统计左右括号数量不能判断嵌套顺序。",
+    "followup": "输入以右括号开头时怎样避免访问空栈？",
+    "references": [],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "算法思路与复杂度为整理者独立推导；未包含已执行验证的实现代码。"
+  },
+  {
+    "id": "Q107",
+    "title": "环形房屋的打家劫舍如何动态规划",
+    "category": "15-数据结构与算法",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S013",
+        "observed_variant": "二面算法：打家劫舍 II"
+      }
+    ],
+    "answer": "首尾相邻使两者不能同时取，拆成不选首和不选尾的两个线性区间，各用滚动状态求非相邻最大和，取较大值。时间 O(n)、空间 O(1)。单个房屋单独处理。",
+    "pitfall": "直接把线性答案套到环上可能同时选择首尾。",
+    "followup": "只允许非负金额与允许负金额时，空选择的定义有何影响？",
+    "references": [],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "算法思路与复杂度为整理者独立推导；未包含已执行验证的实现代码。"
+  },
+  {
+    "id": "Q108",
+    "title": "怎样设计 LRU 缓存",
+    "category": "15-数据结构与算法",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S011",
+        "observed_variant": "二面：LRU"
+      },
+      {
+        "source_id": "S028",
+        "observed_variant": "公开一面：指定单链表实现 LRU"
+      }
+    ],
+    "answer": "常规 O(1) 方案用哈希表定位节点，双向链表维护最近访问顺序；get 和更新会移动节点，超容量删除尾部。若题目限定单链表，必须明确删除前驱如何定位，不能假装限制不存在。",
+    "pitfall": "单链表直接删除任意节点通常无法保持 O(1)；若维护前驱映射，更新复杂度与正确性要证明。",
+    "followup": "capacity 为 0、更新已有 key、重复读取分别如何测试？",
+    "references": [],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "算法思路与复杂度为整理者独立推导；未包含已执行验证的实现代码。"
+  },
+  {
+    "id": "Q109",
+    "title": "数据文件超过内存时如何排序",
+    "category": "15-数据结构与算法",
+    "kind": "observed",
+    "priority": "P2",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S010",
+        "observed_variant": "一面：大文件排序"
+      },
+      {
+        "source_id": "S011",
+        "observed_variant": "二面：外部排序"
+      }
+    ],
+    "answer": "将数据按内存预算分块排序落盘，再进行多路归并。设计临时文件、缓冲大小、文件句柄上限和异常恢复；讨论 I/O 量比只报 CPU 复杂度更重要。",
+    "pitfall": "不能先把整个文件读到集合里再称为外部排序。",
+    "followup": "临时磁盘空间不够或进程中断后，怎样继续而不损坏原始数据？",
+    "references": [],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "算法思路与复杂度为整理者独立推导；未包含已执行验证的实现代码。"
+  },
+  {
+    "id": "Q110",
+    "title": "怎样把有序链表转成高度平衡二叉搜索树",
+    "category": "15-数据结构与算法",
+    "kind": "observed",
+    "priority": "P2",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S011",
+        "observed_variant": "二面算法：有序链表转平衡 BST"
+      }
+    ],
+    "answer": "可先求长度，再按中序顺序递归构造：建立左子树、消费当前链表节点作根、建立右子树。时间 O(n)，递归空间 O(log n)，输出树空间另计。",
+    "pitfall": "反复寻找每段中点虽直观，但总耗时可能变为 O(n log n)。",
+    "followup": "重复值的 BST 约定改变时，需要怎样说明比较规则？",
+    "references": [],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "算法思路与复杂度为整理者独立推导；未包含已执行验证的实现代码。"
+  },
+  {
+    "id": "Q111",
+    "title": "如何实现字符串游程编码",
+    "category": "15-数据结构与算法",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S015",
+        "observed_variant": "算法：连续字符压缩"
+      }
+    ],
+    "answer": "扫描相邻相同字符并累计长度，在变化或结束时写出字符和计数。时间 O(n)，空间取决于是否允许原地及输出编码。先约定数字字符、Unicode 和单次计数是否省略。",
+    "pitfall": "压缩结果可能比原字符串更长；编码格式不明确会导致无法唯一解码。",
+    "followup": "原字符串包含数字时怎样保证可逆？",
+    "references": [],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "算法思路与复杂度为整理者独立推导；未包含已执行验证的实现代码。"
+  },
+  {
+    "id": "Q112",
+    "title": "Git 的提交、树和文件对象怎样关联",
+    "category": "16-工程设计与项目追问",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S001",
+        "observed_variant": "二面：Git 内部原理"
+      }
+    ],
+    "answer": "blob 保存内容，tree 描述目录与对象关系，commit 指向树并记录父提交等元数据；分支是指向提交的可移动引用。用一次修改、提交和切分支解释快照，而非认为每个提交只存纯文本差分。",
+    "pitfall": "工作区、暂存区与提交对象不是同一份状态。",
+    "followup": "两个文件内容完全相同时，为什么可能共享同一个 blob？",
+    "references": [
+      "git"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q113",
+    "title": "Builder 模式适合解决哪些构造问题",
+    "category": "16-工程设计与项目追问",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S015",
+        "observed_variant": "设计模式：Builder"
+      }
+    ],
+    "answer": "对于可选参数多、构造约束复杂或需要分阶段组装的对象，Builder 可集中校验并提升调用可读性。比较命名参数、工厂方法和不可变对象构造，说明引入额外类型是否值得。",
+    "pitfall": "不要为了展示模式而给只有两个简单参数的对象强行增加多层 Builder。",
+    "followup": "如何避免 build 后继续修改 builder 影响已构建对象？",
+    "references": [
+      "builder"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q114",
+    "title": "组件化的边界和通信协议怎样设计",
+    "category": "16-工程设计与项目追问",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S026",
+        "observed_variant": "跨组件通信与路由"
+      },
+      {
+        "source_id": "S027",
+        "observed_variant": "业务组件化"
+      }
+    ],
+    "answer": "按业务能力和依赖方向定义模块，对外暴露窄接口或稳定数据契约。导航、同步查询和事件广播有不同语义，分别处理权限、取消、错误与版本兼容；以构建效率和改动范围验证收益。",
+    "pitfall": "拆成很多文件夹不等于解耦；全局事件总线可能把编译期依赖变成难追踪的运行时耦合。",
+    "followup": "两个模块互相调用时，是提取公共契约还是调整职责？",
+    "references": [
+      "modular"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q115",
+    "title": "怎样证明项目优化确实带来收益",
+    "category": "16-工程设计与项目追问",
+    "kind": "observed",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S019",
+        "observed_variant": "性能改善如何证明"
+      },
+      {
+        "source_id": "S026",
+        "observed_variant": "播放指标与业务价值"
+      },
+      {
+        "source_id": "S029",
+        "observed_variant": "最有效的优化措施"
+      }
+    ],
+    "answer": "先固定指标定义、数据集、设备、构建和基线，再记录分布、样本量与异常场景。说明自己的贡献、实验设计和回归成本。技术改善与业务收益存在中间环节，不能仅凭相关性宣称因果。",
+    "pitfall": "不要编造百分比或把最好的一次运行当平均收益；没有数据就明确说明验证不足。",
+    "followup": "冷缓存和热缓存如何分开报告，回归阈值如何设置？",
+    "references": [
+      "startup",
+      "render"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "Q116",
+    "title": "多机型兼容问题应怎样建立验证矩阵",
+    "category": "16-工程设计与项目追问",
+    "kind": "observed",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [
+      {
+        "source_id": "S021",
+        "observed_variant": "客户端一面：多设备兼容排查"
+      }
+    ],
+    "answer": "将 OS/API、厂商、屏幕窗口、密度、语言、权限、硬件能力和网络条件分成维度。先用日志与最小复现缩小原因，再挑代表设备和极端组合，形成自动化与手工验证的分工。",
+    "pitfall": "“在自己手机上正常”不是兼容性结论，也不需要无目标地穷举所有型号。",
+    "followup": "同一机型仅字体放大后布局异常，应优先排查哪些约束？",
+    "references": [
+      "adaptive"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "E001",
+    "title": "Adapter、LayoutManager、ItemAnimator 和 ItemDecoration 如何协作",
+    "category": "04-RecyclerView",
+    "kind": "supplement",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [],
+    "answer": "Adapter 提供项目与绑定，LayoutManager 决定布局和滚动，ItemAnimator 负责项目变化动画，ItemDecoration 增加装饰或偏移。将职责拆开才能判断问题应该在哪层修复。",
+    "pitfall": "不要把布局策略放进数据层，也不要用装饰绘制取代必要的可访问性内容。",
+    "followup": "为异构卡片列表增加分隔线时，如何避免影响首尾间距？",
+    "references": [
+      "rv"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "E002",
+    "title": "DiffUtil 与 ListAdapter 如何减少无效刷新",
+    "category": "04-RecyclerView",
+    "kind": "supplement",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [],
+    "answer": "DiffUtil 比较身份与内容生成更新操作；ListAdapter 借助差分器管理提交和更新。旧新列表及参与比较的数据在差分期间应保持不变，身份相同与内容相同是两个不同判断。",
+    "pitfall": "原地修改已提交列表后再提交同一实例，可能无法得到预期更新。",
+    "followup": "列表快速连续提交时，怎样处理旧计算结果？",
+    "references": [
+      "diff"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "E003",
+    "title": "Payload 局部刷新应怎样保证最终 UI 正确",
+    "category": "04-RecyclerView",
+    "kind": "supplement",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [],
+    "answer": "Payload 表达局部变化，局部绑定只更新相应属性，但完整绑定必须能恢复该项目全部显示状态。离屏更新等情况下不能假定一定收到全部 payload。",
+    "pitfall": "以 payload 更新作为唯一状态来源，会在回收复用后出现显示错误。",
+    "followup": "只有收藏图标改变时，怎样避免重新触发整张图片请求？",
+    "references": [
+      "rv",
+      "diff"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "E004",
+    "title": "共享 RecycledViewPool 与增大缓存有哪些条件",
+    "category": "04-RecyclerView",
+    "kind": "supplement",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [],
+    "answer": "共享池只适用于 viewType 与 holder 结构、绑定契约兼容的列表。更大缓存会保留更多对象，收益要与内存、预取和滚动方式一起衡量。",
+    "pitfall": "不同 adapter 恰好用了同一个整数类型，不代表 holder 可以安全互换。",
+    "followup": "跨页面共享池时如何避免意外保留旧 Context？",
+    "references": [
+      "rv"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "E005",
+    "title": "setHasFixedSize 表示每一行高度固定吗",
+    "category": "04-RecyclerView",
+    "kind": "supplement",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [],
+    "answer": "不是。它表示 adapter 内容变化不会改变 RecyclerView 自身的尺寸，从而允许特定布局优化；项目高度可以不同。使用前检查父布局约束和 wrap_content 行为。",
+    "pitfall": "把可变行高一律判为不能使用，或不看自身尺寸无条件开启，都不准确。",
+    "followup": "父容器高度由列表内容撑开时为什么要特别谨慎？",
+    "references": [
+      "rv"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "E006",
+    "title": "点击事件为什么不应保存旧的绑定 position",
+    "category": "04-RecyclerView",
+    "kind": "supplement",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [],
+    "answer": "列表更新后，绑定时的位置可能已经变化。点击时使用合适的当前 adapter 位置并处理 NO_POSITION，或让回调传递稳定业务 ID。ConcatAdapter 场景还需分清局部与绝对位置。",
+    "pitfall": "旧 position 可能指向另一条数据；Stable ID 也不会自动修复所有点击逻辑。",
+    "followup": "动画或删除过程中点击项目，怎样避免越界和误操作？",
+    "references": [
+      "rv"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "E007",
+    "title": "重组、重新布局和重绘是同一回事吗",
+    "category": "05-JetpackCompose",
+    "kind": "supplement",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [],
+    "answer": "Compose 的组合、布局和绘制是不同阶段。状态读取位置影响需要重启哪些阶段；某些绘制状态变化可以不重组，重组也不意味着所有节点重新绘制。",
+    "pitfall": "重组次数不是用户体验的单一代理指标，仍需测帧耗时。",
+    "followup": "为什么将高频位置读取移到布局或绘制 lambda 可能减少工作？",
+    "references": [
+      "cpphases",
+      "cpperf"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "E008",
+    "title": "remember 与 rememberSaveable 有什么边界",
+    "category": "05-JetpackCompose",
+    "kind": "supplement",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [],
+    "answer": "remember 在相应组合位置存续期间缓存值；rememberSaveable 可借助保存机制恢复符合条件的状态。重要业务数据仍需数据库或其他持久化，保存大量对象也不合适。",
+    "pitfall": "两者都不是任意情况下永不丢失的数据存储。",
+    "followup": "屏幕旋转、离开导航页面、系统回收进程分别怎样测试？",
+    "references": [
+      "cpstate"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "E009",
+    "title": "Compose 如何按生命周期收集 Flow",
+    "category": "05-JetpackCompose",
+    "kind": "supplement",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [],
+    "answer": "Android 页面可用 collectAsStateWithLifecycle 将 Flow 转为受生命周期约束的状态。需要同时考虑上游是否共享、订阅启停和初始值，避免页面不可见时持续做无关工作。",
+    "pitfall": "收集者停止不一定意味着独立运行的上游任务也自动结束。",
+    "followup": "多个页面收集同一个冷 Flow 会不会重复请求？",
+    "references": [
+      "cpstate",
+      "stateflow"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "E010",
+    "title": "LazyColumn 的 key 和 contentType 分别解决什么问题",
+    "category": "05-JetpackCompose",
+    "kind": "supplement",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [],
+    "answer": "key 标识项目身份，帮助重排时匹配状态；contentType 描述结构兼容性，帮助组合复用。身份稳定与类型准确应分别建模，不能让所有随机 key 每次都变化。",
+    "pitfall": "使用当前位置当作可重排业务数据的唯一身份，可能导致状态错位。",
+    "followup": "文件列表插入一条新记录后，怎样保持选中和滚动位置？",
+    "references": [
+      "cplists"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "E011",
+    "title": "Compose 与 RecyclerView 怎样做公平性能对比",
+    "category": "05-JetpackCompose",
+    "kind": "supplement",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [],
+    "answer": "固定设备、数据、图片缓存状态、构建模式和操作脚本，测帧时间分布、卡顿、分配与内存。两边先做合理优化，分别报告启动与持续滚动，不凭单一案例宣布框架全面获胜。",
+    "pitfall": "Debug 截图、一次肉眼判断或不同缓存条件不能证明性能优劣。",
+    "followup": "120Hz 与 60Hz 的帧预算不同，报告应怎样标注？",
+    "references": [
+      "render",
+      "cpperf"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "E012",
+    "title": "如何把现有 Custom View 嵌入 Compose",
+    "category": "05-JetpackCompose",
+    "kind": "supplement",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [],
+    "answer": "通过 AndroidView 创建并更新 View，明确状态如何流入以及回调如何流出。处理释放、生命周期和列表复用相关回调，避免在 update 中反复创建昂贵对象。",
+    "pitfall": "互操作不是忽略 View 生命周期的理由，也不需要为一个控件把整个页面退回 XML。",
+    "followup": "嵌入播放器或地图时，谁负责释放底层资源？",
+    "references": [
+      "cpinterop"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "E013",
+    "title": "Compose 中副作用为什么需要明确作用域",
+    "category": "05-JetpackCompose",
+    "kind": "supplement",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [],
+    "answer": "组合描述 UI，不宜直接执行不可控外部动作。使用适当 effect API 绑定启动、重启和清理条件，明确 key 的含义；业务请求也可能更适合由 ViewModel 管理。",
+    "pitfall": "在 Composable 函数体直接发请求会把重组变成重复副作用。",
+    "followup": "导航返回后需要重启请求还是复用结果，作用域应怎样选择？",
+    "references": [
+      "cpeffects"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "E014",
+    "title": "结构化并发和 Supervisor 有什么不同",
+    "category": "06-Kotlin与协程",
+    "kind": "supplement",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [],
+    "answer": "普通父子 Job 关系会传播取消与失败；监督关系允许某些子任务失败不取消兄弟任务。需要结合 coroutineScope、supervisorScope 和异常处理位置讲具体传播路径。",
+    "pitfall": "async 的异常不只是“永远等 await 才发生作用”；父子关系会影响取消传播。",
+    "followup": "两个并行请求中一个失败时，是整体失败还是保留另一个结果？",
+    "references": [
+      "kexception"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "E015",
+    "title": "StateFlow 与 SharedFlow 怎么选择",
+    "category": "06-Kotlin与协程",
+    "kind": "supplement",
+    "priority": "P0",
+    "scope": "应用开发",
+    "evidence": [],
+    "answer": "StateFlow 表达始终存在的当前状态，并有相等性合并语义；SharedFlow 可配置重放与缓冲，更适合某些广播需求。选择还要定义无订阅者时的数据命运与重建后的消费语义。",
+    "pitfall": "SharedFlow 不是天然保证只消费一次的事件队列。",
+    "followup": "支付成功导航在旋转后是否应重复发生，应该怎样建模？",
+    "references": [
+      "stateflow",
+      "sharedflow"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  },
+  {
+    "id": "E016",
+    "title": "为什么取消协程后 CPU 循环仍可能继续",
+    "category": "06-Kotlin与协程",
+    "kind": "supplement",
+    "priority": "P1",
+    "scope": "应用开发",
+    "evidence": [],
+    "answer": "取消是协作式的，纯计算循环若没有检查取消或调用可取消挂起点，可能继续占用线程。按合理粒度检查活动状态，并通过 finally 清理资源。",
+    "pitfall": "捕获所有异常后吞掉 CancellationException 会破坏取消传播。",
+    "followup": "计算批次过大和检查过于频繁各有什么代价？",
+    "references": [
+      "kcancellation"
+    ],
+    "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
+    "updated_at": "2026-10-30",
+    "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
+  }
+]

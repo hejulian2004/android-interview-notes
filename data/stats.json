@@ -1,0 +1,23 @@
+{
+  "as_of": "2026-10-30",
+  "window_start": "2023-10-30",
+  "window_end": "2026-10-30",
+  "observed_questions": 116,
+  "supplement_questions": 16,
+  "admitted_sources": 27,
+  "pending_sources": 2,
+  "companies": 20,
+  "categories": 16,
+  "date_basis": {
+    "面试日期明确": 6,
+    "仅帖子日期": 12,
+    "面试年份由上下文推定": 5,
+    "面试年份明确": 4
+  },
+  "access": {
+    "检索索引可见": 5,
+    "正文已读取": 21,
+    "仅公开预览已读取": 1
+  },
+  "technical_references": 89
+}
