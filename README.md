@@ -10,6 +10,12 @@
 
 [个人项目与实习面试问答手册（129 组问答）](docs/android-interview-handbook.md) · 基于个人项目与实习经历的准备材料，独立于下方公开来源题库。
 
+源码导读：[Rust SDK 与跨语言边界](docs/sdk-source-deep-dive.md) · [QUIC 与可靠文件传输](docs/quic-source-deep-dive.md) · [AI 辅助代码接管练习册](docs/ai-code-takeover-workbook.md)。源码链接固定到核对版本，私有仓库链接需要访问权限。
+
+建议顺序：先填写练习册的“贡献与理解程度模板” → 阅读 SDK 导读 → 阅读 QUIC 导读 → 回到练习册完成实践与验证；原 129 题手册作为概念参考。
+
+核对边界：新导读基于提交 `5aba1d8` 的静态源码阅读，不代表已完成运行、安全或性能验证；通用回答需要更精确的实现边界时，请以对应源码导读为参考。
+
 [按类别复习](indexes/by-category.md) · [按公司查证](indexes/by-company.md) · [按年份查看](indexes/by-year.md) · [来源总表](sources/README.md) · [建议学习顺序](indexes/study-order.md)
 
 [只看面试时间明确的子集](indexes/strict-interview-window.md) · [补充练习](supplements/README.md) · [技术参考](references/README.md)
