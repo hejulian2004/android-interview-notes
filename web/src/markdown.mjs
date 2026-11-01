@@ -91,11 +91,24 @@ export function renderMarkdown(markdown, sourceUrl = DEFAULT_SOURCE, {idPrefix =
     return `<figure class="markdown-code-block" data-code-language="${escapeHtml(result.language)}"><figcaption class="code-language-label">${escapeHtml(result.label)}</figcaption><pre tabindex="0" aria-label="${escapeHtml(result.label)} 代码，可横向滚动"><code class="${escapeHtml(className)}">${result.html ?? escapeHtml(code)}</code></pre></figure>\n`;
   };
   const anchorPattern = /^ {0,3}<a[ \t]+(?:id|name)[ \t]*=[ \t]*(["'])([\p{L}\p{N}_.:-]{1,200})\1[ \t]*>[ \t]*<\/a>[ \t]*(?:\n|$)/u;
+  // CommonMark treats punctuation-ending **中文：**正文 as literal delimiters.
+  // Recognize only bounded, paired CJK prose at the inline lexer cursor; code
+  // and escapes are consumed by Marked, and HTML still passes through sanitization.
+  const cjkStrong = /^\*\*(?!\*)([^\s*\\`<>\r\n][^*\\`<>\r\n]{0,510}?[：:；;，,。！？!?）】」』》])\*\*(?!\*)(?=[\p{L}\p{N}`])/u;
   const parser = new Marked({gfm:true,breaks:false,renderer,extensions:[{
     name:'safeSourceAnchor',level:'block',
     start(src) {const match=/^ {0,3}<a[ \t]+(?:id|name)[ \t]*=/m.exec(src);return match?.index;},
     tokenizer(src) {const match=anchorPattern.exec(src);if(match)return {type:'safeSourceAnchor',raw:match[0],anchor:match[2]};},
     renderer(token) {return `<span id="${escapeHtml(uniqueId('anchor-'+token.anchor))}" class="markdown-anchor" data-markdown-anchor="${escapeHtml(token.anchor)}" aria-hidden="true"></span>\n`;}
+  },{
+    name:'cjkPunctuationStrong',level:'inline',
+    start(src) {return src.indexOf('**');},
+    tokenizer(src) {
+      const match=cjkStrong.exec(src);
+      if(match && /\p{Script=Han}/u.test(match[1])) {
+        return {type:'strong',raw:match[0],text:match[1],tokens:this.lexer.inlineTokens(match[1])};
+      }
+    }
   }]});
   const clean = DOMPurify.sanitize(parser.parse(String(markdown || '')), {
     USE_PROFILES:{html:true},

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
 import { parseMarkdownSources } from '../engine/index.mjs';
+import { Marked } from '../src/vendor/marked.esm.js';
 
 const dom = new JSDOM('<!doctype html><body></body>', { url:'https://study.example/android-study/' });
 globalThis.window = dom.window;
@@ -107,4 +108,58 @@ test('real handbook and Flutter TOC targets survive parsing and sanitized render
     assert.equal(root.querySelector('script,img,iframe'),null);
   }
   assert.ok(catalog.questions.some(q=>q.id==='docs/android-interview-handbook.md#n01'));
+});
+
+test('real N01 screenshot labels and Chinese punctuation followed by Latin technical words render as strong',()=>{
+  const examples=[
+    ['**面试回答：**它是面向移动端的远程服务器管理与协作工具。','面试回答：'],
+    ['**追问：**你的贡献和使用开源库有什么区别？','追问：'],
+    ['**代码事实：**以下问题围绕当前简历的 SDK 展开。','代码事实：'],
+    ['**参考回答:**QUIC 提供可靠流。','参考回答:'],
+    ['**不能看到 pid 就说进程 ID，更不能把 gid 直接说成 Linux 组 ID。**需要回忆字段定义。','不能看到 pid 就说进程 ID，更不能把 gid 直接说成 Linux 组 ID。'],
+  ];
+  for(const [markdown,label]of examples) {
+    const root=render(markdown);
+    assert.equal(root.querySelector('strong')?.textContent,label);
+    assert.ok(!root.textContent.includes('**'));
+  }
+  const nested=render('- **面试回答：**正文\n  - **追问：**下一层\n\n### **参考回答：**标题正文');
+  assert.equal(nested.querySelectorAll('li strong').length,2);
+  assert.equal(nested.querySelector('h3 strong').textContent,'参考回答：');
+});
+
+test('compatibility does not consume escaped stars, multiplication, globs, code or other delimiter runs',()=>{
+  const standard=new Marked({gfm:true});
+  for(const source of [String.raw`\*\*参考回答：\*\*正文`,String.raw`\**参考回答：**正文`,'***中文：***正文','****中文：****正文','**中文粗体**紧接中文','a * b','a ** b ** c','**/*.md','**未闭合的双星号','`**面试回答：**它`']) {
+    const baseline=document.createElement('div');baseline.innerHTML=standard.parse(source);
+    const result=render(source);
+    assert.equal(result.innerHTML.trim(),baseline.innerHTML.trim(),source);
+  }
+  const code='let pointer: *mut u8;\nlet product = a * b;\nlet glob = "**/*.md";\nlet text = "**面试回答：**它";';
+  assert.equal(render('```rust\n'+code+'\n```').querySelector('pre code').textContent,code+'\n');
+  const raw=render('**代码事实：**<img src=x onerror=alert(1)>\n\n**危险标签：**javascript:alert(1)');
+  assert.equal(raw.querySelector('img,script,[onerror]'),null);
+});
+
+test('all 371 real answers and seven guides lose only unintended prose delimiters; code stars stay exact',()=>{
+  const snapshot=JSON.parse(readFileSync(new URL('../engine/snapshot.json',import.meta.url)));
+  const catalog=parseMarkdownSources(snapshot.files,{revision:snapshot.revision});
+  const standard=new Marked({gfm:true});
+  function visiblePairs(root) {
+    const walker=document.createTreeWalker(root,dom.window.NodeFilter.SHOW_TEXT);let node,count=0;
+    while(node=walker.nextNode())if(!node.parentElement?.closest('pre,code'))count+=(node.textContent.match(/\*\*[^*\n]{1,700}\*\*/g)||[]).length;
+    return count;
+  }
+  let baselineAffected=0,baselinePairs=0;
+  for(const item of [...catalog.questions,...catalog.documents]) {
+    const source=item.answerMarkdown??item.markdown;
+    const before=document.createElement('div');before.innerHTML=standard.parse(source);
+    const after=render(source,{documentPath:item.path});
+    const pairs=visiblePairs(before);
+    if(item.answerMarkdown&&pairs){baselineAffected++;baselinePairs+=pairs;}
+    assert.equal(visiblePairs(after),0,item.id);
+    assert.deepEqual([...after.querySelectorAll('code')].map(el=>el.textContent),[...before.querySelectorAll('code')].map(el=>el.textContent),item.id+' preserves all code');
+  }
+  assert.equal(catalog.questions.length,371);
+  assert.equal(baselineAffected,37);assert.equal(baselinePairs,98);
 });

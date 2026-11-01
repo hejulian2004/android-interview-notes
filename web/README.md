@@ -24,6 +24,8 @@
 
 高亮资源来自官方 `@highlightjs/cdn-assets` 的浏览器 ESM 发行包，随源码自托管，不请求第三方 CDN。jsdom 只用于开发期安全与 DOM 回归测试，不随公开站点运行。测试：`npm test`（先 `npm ci --ignore-scripts`）；生产构建只需 `node scripts/build.mjs`。
 
+中文标点兼容：CommonMark 会把部分 `**面试回答：**正文` 当作普通文字。组件只在 Marked 行内词法阶段识别包含汉字、以标点结束、与后续文字紧邻的有界双星号内容，并生成标准 strong token；不对原文全局替换或删除星号。围栏代码、行内代码、转义星号、乘法和通配符保留。该兼容也适用于缓存与打包快照；编辑新文档时推荐规范写法 `**面试回答：** 正文`。参见 [CommonMark 强调边界](https://spec.commonmark.org/0.31.2/#emphasis-and-strong-emphasis)。
+
 ## 源码与本地构建
 
 `src/` 是界面，`engine/` 是内容解析、GitHub 更新和快照，`scripts/` 是构建和静态服务工具。`src/vendor/` 已包含固定版本的 marked 和 DOMPurify，以及相应许可，服务器无需 npm 安装或 Node 运行时。
