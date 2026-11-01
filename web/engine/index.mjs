@@ -24,8 +24,9 @@ export function compatiblePath(path) {
   );
 }
 function cleanMarkdown(text) {
-  return String(text).replace(/^\uFEFF/, '').replace(/\r\n?/g,'\n')
-    .replace(/^<a\s+(?:id|name)=["'][^"']+["']\s*>\s*<\/a>\s*$/gm,'');
+  // Preserve inert source anchors so the Markdown renderer can map TOC links.
+  // Raw HTML remains untrusted and is never interpreted by this parser.
+  return String(text).replace(/^\uFEFF/, '').replace(/\r\n?/g,'\n');
 }
 function withoutFrontmatter(text) { return text.replace(/^---\n[\s\S]*?\n---\n+/, ''); }
 function headings(text) {
@@ -102,7 +103,8 @@ function parseFile(file, revision) {
     const match=h.text.match(/^([A-Z]{1,3}\d{1,4})(?:[.．｜:：·]\s*|\s+)(.+)$/);
     if(!match) continue;
     const next=hs.slice(i+1).find(n=>n.level<=h.level);
-    const answerMarkdown=markdown.slice(h.end,next?.start??markdown.length).trim();
+    const answerMarkdown=markdown.slice(h.end,next?.start??markdown.length)
+      .replace(/(?:\s*<a\s+(?:id|name)=["'][^"']+["']\s*>\s*<\/a>\s*)+$/g,'').trim();
     if(!answerMarkdown||answerMarkdown.length<10) continue;
     const number=match[1], section=hs.slice(0,i).reverse().find(n=>n.level===2)?.text??title;
     const topicIds=topicsFor(path,section,number,match[2]);

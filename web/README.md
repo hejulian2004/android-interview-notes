@@ -12,6 +12,18 @@
 - Markdown 原始 HTML 不执行，内容通过 DOMPurify 清洗；外链只允许 HTTP(S)，新窗口带 `noopener noreferrer`；不加载资料中的远程图片。
 - 保留笔记事实边界、源码版本和“通用原理/实际实现/待确认”说明。网站并不证明项目已运行或完成真机、性能测试。
 
+## Markdown 内容组件
+
+答案、来源说明与完整导读均通过 `src/markdown.mjs` 渲染，使用 **Marked 18.1.2 + DOMPurify 3.4.17 + Highlight.js 11.12.0**。这是一套适合现有静态站的成熟 Markdown 渲染管线，无需引入新前端框架或服务器运行时。
+
+支持 GFM 标题、粗体/强调/删除线、嵌套列表、表格、引用、链接、分隔线与围栏代码块。代码显示语言标签并高亮 Kotlin、Java、Dart、Rust、XML/HTML、Bash、JSON、JavaScript、TypeScript、SQL、YAML、C、C++；未标明或未知语言显示纯文本，不自动猜测语言、不执行代码。超过 100KB 的单个代码块保持纯文本，避免高亮阻塞。
+
+代码和表格的横向滚动限制在组件内部。原始 HTML 作为文字显示；只将原笔记中的独立空 `<a id="...栏位"></a>` 标记转换成无行为的锚点，其他标签和事件属性不被放行。资料图片保留替代文字，不自动加载远程图片。
+
+目录和题号锚点在当前内容中跳转；已加载导读的相对 Markdown 链接可站内打开，链接 URL 保留可直接打开的阅读路由。未纳入本站的来源档案、代码链接继续打开原文，并带安全外链属性。原文排版仍遵循 Markdown 语法；不会重写题库文字或将代码示例当作 HTML。
+
+高亮资源来自官方 `@highlightjs/cdn-assets` 的浏览器 ESM 发行包，随源码自托管，不请求第三方 CDN。jsdom 只用于开发期安全与 DOM 回归测试，不随公开站点运行。测试：`npm test`（先 `npm ci --ignore-scripts`）；生产构建只需 `node scripts/build.mjs`。
+
 ## 源码与本地构建
 
 `src/` 是界面，`engine/` 是内容解析、GitHub 更新和快照，`scripts/` 是构建和静态服务工具。`src/vendor/` 已包含固定版本的 marked 和 DOMPurify，以及相应许可，服务器无需 npm 安装或 Node 运行时。

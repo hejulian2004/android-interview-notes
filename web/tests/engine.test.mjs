@@ -39,6 +39,10 @@ test('source links honor explicit anchors and GitHub heading slug',()=>{
   assert.match(guide.find(q=>q.path.includes('flutter')&&q.number==='Q01').sourceUrl,/#q01$/);
   assert.match(guide.find(q=>q.path.includes('word-crush')&&q.number==='Q01').sourceUrl,/#q01$/);
   assert.match(decodeURIComponent(guide.find(q=>q.number==='A01').sourceUrl),/#a01-为什么项目-readme-写-room-但你说-sqliteopenhelper$/);
+  const handbook=catalog.documents.find(d=>d.path.endsWith('android-interview-handbook.md'));
+  assert.match(handbook.markdown,/<a id="network"><\/a>/);
+  assert.match(handbook.markdown,/<a id="q-n01"><\/a>/);
+  assert.doesNotMatch(guide.find(q=>q.number==='N01').answerMarkdown,/<a id="q-n02"><\/a>/);
 });
 test('stable IDs survive reorder; fenced code headings and TOC are ignored',()=>{
   const blocks=['### Q01 One\n\nAnswer one and followup.','### Q02 Two\n\nAnswer two and final boundary.'];

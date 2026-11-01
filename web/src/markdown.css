@@ -1,0 +1,42 @@
+/* Self-hosted documentation styles and a light syntax palette with readable contrast. */
+.markdown-body{color:#3c5146;font-size:14px;line-height:1.95;overflow-wrap:anywhere}
+.markdown-body h1,.markdown-body h2,.markdown-body h3,.markdown-body h4,.markdown-body h5,.markdown-body h6{line-height:1.55;scroll-margin-top:24px}
+.markdown-body h1{font-size:27px;margin:0 0 26px;padding-bottom:17px;border-bottom:1px solid #e3e9e6}
+.markdown-body h2{font-size:22px;margin:36px 0 17px;padding-bottom:9px;border-bottom:1px solid #edf0e8}
+.markdown-body h3{font-size:18px;margin:28px 0 13px}
+.markdown-body h4{font-size:16px;margin:25px 0 12px}
+.markdown-body h5,.markdown-body h6{font-size:14px;margin:22px 0 11px}
+.markdown-body p{margin:12px 0 18px}
+.markdown-body ul,.markdown-body ol{padding-left:25px;margin:13px 0 20px}
+.markdown-body li{margin:7px 0}
+.markdown-body li>ul,.markdown-body li>ol{margin:7px 0 10px}
+.markdown-body strong{color:#244d39;font-weight:700}
+.markdown-body blockquote{border-left:3px solid #9ebd99;border-radius:0 5px 5px 0;background:#f5f8ef;margin:22px 0;padding:7px 17px;color:#697f5b}
+.markdown-body blockquote>p:last-child{margin-bottom:10px}
+.markdown-body hr{margin:29px 0;border:0;border-top:1px solid #dde5d8}
+.markdown-body a{color:#176b5a;text-decoration-thickness:1px;text-underline-offset:3px}
+.markdown-body a:hover{color:#0d4c3e}
+.markdown-body :not(pre)>code{background:#edf3e7;color:#466b3b;border:1px solid #e4ecdc;padding:2px 5px;border-radius:4px;font:12px/1.8 'SFMono-Regular',Consolas,'Liberation Mono',monospace;overflow-wrap:anywhere}
+.markdown-body .markdown-anchor{display:block;position:relative;width:0;height:0;scroll-margin-top:24px}
+.markdown-body .markdown-image{color:#8b9b82;font-size:.9em}
+.markdown-body .markdown-code-block{margin:22px 0;max-width:100%;min-width:0;border:1px solid #dce6d7;border-radius:8px;background:#f5f8f1;overflow:hidden}
+.markdown-body .code-language-label{font:10px/1.5 'SFMono-Regular',Consolas,'Liberation Mono',monospace;letter-spacing:.4px;text-align:left;color:#6d8162;background:#edf3e6;border-bottom:1px solid #dfe8d8;padding:7px 13px;overflow-wrap:anywhere}
+.markdown-body .markdown-code-block pre{margin:0;border:0;border-radius:0;background:transparent;padding:15px;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;line-height:1.8;tab-size:2}
+.markdown-body .markdown-code-block pre code{display:block;min-width:max-content;max-width:none;color:#293d40;background:transparent;border:0;padding:0;white-space:pre;overflow-wrap:normal;font:12px/1.8 'SFMono-Regular',Consolas,'Liberation Mono',monospace}
+.markdown-body .hljs-comment,.markdown-body .hljs-quote{color:#6d7971;font-style:italic}
+.markdown-body .hljs-keyword,.markdown-body .hljs-selector-tag,.markdown-body .hljs-literal,.markdown-body .hljs-section,.markdown-body .hljs-link{color:#8a3c9d}
+.markdown-body .hljs-string,.markdown-body .hljs-regexp,.markdown-body .hljs-symbol,.markdown-body .hljs-template-tag,.markdown-body .hljs-template-variable{color:#247151}
+.markdown-body .hljs-number,.markdown-body .hljs-meta,.markdown-body .hljs-built_in,.markdown-body .hljs-type,.markdown-body .hljs-params{color:#9a5b1b}
+.markdown-body .hljs-title,.markdown-body .hljs-title.function_,.markdown-body .hljs-attr,.markdown-body .hljs-attribute,.markdown-body .hljs-selector-class,.markdown-body .hljs-selector-id{color:#1d6395}
+.markdown-body .hljs-name,.markdown-body .hljs-tag{color:#9b4643}
+.markdown-body .hljs-variable,.markdown-body .hljs-property{color:#576f23}
+.markdown-body .hljs-addition{color:#276a3c;background:#e2f0df}
+.markdown-body .hljs-deletion{color:#a03e3e;background:#f8e6e2}
+.markdown-body .hljs-emphasis{font-style:italic}.markdown-body .hljs-strong{font-weight:700}
+.markdown-body .table-scroll{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;margin:22px 0;border:1px solid #dce6d7;border-radius:7px}
+.markdown-body .table-scroll table{display:table;width:100%;max-width:none;margin:0;border-collapse:collapse;overflow:visible;font-size:12px;line-height:1.8}
+.markdown-body .table-scroll th,.markdown-body .table-scroll td{padding:10px 13px;min-width:95px;max-width:520px;vertical-align:top;border:0;border-right:1px solid #e2e9db;border-bottom:1px solid #e2e9db;text-align:left}
+.markdown-body .table-scroll th{background:#f0f5e9;color:#4d6b41;font-weight:650}
+.markdown-body .table-scroll tbody tr:nth-child(even){background:#fafcf7}
+.markdown-body .table-scroll tr:last-child td{border-bottom:0}.markdown-body .table-scroll th:last-child,.markdown-body .table-scroll td:last-child{border-right:0}
+@media(max-width:620px){.markdown-body{font-size:14px;line-height:1.95}.markdown-body h1{font-size:24px;margin-bottom:22px}.markdown-body h2{font-size:20px;margin-top:30px}.markdown-body h3{font-size:17px}.markdown-body h4{font-size:15px}.markdown-body h5,.markdown-body h6{font-size:14px}.markdown-body ul,.markdown-body ol{padding-left:23px}.markdown-body .markdown-code-block pre{padding:13px}.markdown-body .code-language-label{font-size:10px;padding:7px 12px}.markdown-body .markdown-code-block pre code{font-size:12px}.markdown-body .table-scroll table{font-size:12px}.markdown-body .table-scroll th,.markdown-body .table-scroll td{padding:9px 11px;min-width:100px}.context-details .markdown-body{font-size:12px}.context-details .markdown-body h1{font-size:20px}.context-details .markdown-body h2{font-size:17px}.context-details .markdown-body h3{font-size:15px}}
