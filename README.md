@@ -20,6 +20,8 @@
 
 历史 Java/XML：[Word Crush Android XML 与 View 面试问答指南](docs/word-crush-android-xml-guide.md)。固定到历史提交 `2a6e102bda5c3e7af8bf0d08f569c5de3d13fc8d`；核对时最新 main 已是 Kotlin/Compose，不混用两个版本。先读事实表与三条调用链，再练习问答；AIDL、MVVM 等未在该历史版核实的内容仅作为扩展题。
 
+Flutter 与 Dart：[52 道面试问答及 SSH Mobile 实践指南](docs/flutter-interview-guide.md)。先掌握 P0 语言、状态、生命周期、异步与性能问题，再结合固定提交 `5aba1d8` 的源码例子和 6 个练习；底层网络细节继续参考 SDK 与 QUIC 导读。项目核对为静态阅读，不代表已完成真机或性能验证，私有源码链接需要访问权限。
+
 [按类别复习](indexes/by-category.md) · [按公司查证](indexes/by-company.md) · [按年份查看](indexes/by-year.md) · [来源总表](sources/README.md) · [建议学习顺序](indexes/study-order.md)
 
 [只看面试时间明确的子集](indexes/strict-interview-window.md) · [补充练习](supplements/README.md) · [技术参考](references/README.md)
