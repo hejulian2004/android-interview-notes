@@ -18,6 +18,8 @@
 
 原生 Android：[FeedLine 与 Compose 源码学习指南](docs/feedline-android-deep-dive.md)。建议先读原手册 C01—C48 的概念，再对照本篇查看实现边界与练习。基于公开仓库 `testDemo` 的固定提交 `8aa963a945176f8d5903b0b706423fd95cc011ff` 静态核对，未编译 APK 或执行真机、性能测试；原手册保留，具体实现以本篇核对版本为准。
 
+历史 Java/XML：[Word Crush Android XML 与 View 面试问答指南](docs/word-crush-android-xml-guide.md)。固定到历史提交 `2a6e102bda5c3e7af8bf0d08f569c5de3d13fc8d`；核对时最新 main 已是 Kotlin/Compose，不混用两个版本。先读事实表与三条调用链，再练习问答；AIDL、MVVM 等未在该历史版核实的内容仅作为扩展题。
+
 [按类别复习](indexes/by-category.md) · [按公司查证](indexes/by-company.md) · [按年份查看](indexes/by-year.md) · [来源总表](sources/README.md) · [建议学习顺序](indexes/study-order.md)
 
 [只看面试时间明确的子集](indexes/strict-interview-window.md) · [补充练习](supplements/README.md) · [技术参考](references/README.md)
