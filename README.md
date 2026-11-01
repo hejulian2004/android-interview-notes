@@ -8,6 +8,8 @@
 
 ## 开始阅读
 
+[个人项目与实习面试问答手册（129 组问答）](docs/android-interview-handbook.md) · 基于个人项目与实习经历的准备材料，独立于下方公开来源题库。
+
 [按类别复习](indexes/by-category.md) · [按公司查证](indexes/by-company.md) · [按年份查看](indexes/by-year.md) · [来源总表](sources/README.md) · [建议学习顺序](indexes/study-order.md)
 
 [只看面试时间明确的子集](indexes/strict-interview-window.md) · [补充练习](supplements/README.md) · [技术参考](references/README.md)
