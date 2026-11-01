@@ -1,0 +1,8 @@
+node_modules/
+dist/
+content/
+artifacts/
+.deployment/
+__pycache__/
+*.log
+*.pid

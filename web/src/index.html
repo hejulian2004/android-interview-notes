@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#123b3b">
+  <meta name="description" content="来自 GitHub 笔记的安卓面试复习空间。按专题刷题、阅读源码笔记、收藏与记录掌握程度。">
+  <title>安卓复习室 · Android Study</title>
+  <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.mjs"></script>
+</head>
+<body>
+<a class="skip-link" href="#workspace">跳到学习内容</a>
+<div class="app-shell">
+  <aside class="sidebar" aria-label="学习导航">
+    <a class="brand" href="#practice"><span class="brand-mark" aria-hidden="true">a<span>↗</span></span><span>安卓复习室<small>ANDROID STUDY</small></span></a>
+    <div class="sidebar-caption">把每一次复习，都记下来。</div>
+    <div class="topics-heading">知识专题<span id="topic-total"></span></div>
+    <nav id="topics" class="topic-nav" aria-label="专题筛选"></nav>
+    <div class="sidebar-bottom">
+      <div class="sidebar-progress"><div><span>你的学习进度</span><strong id="sidebar-percent">0%</strong></div><progress id="sidebar-progress" value="0" max="100">0%</progress><p id="sidebar-progress-note">从第一道题开始积累</p></div>
+      <a class="repo-link" href="https://github.com/hejulian2004/android-interview-notes" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">↗</span> 查看 GitHub 题库</a>
+      <div class="local-note">进度仅保存在当前浏览器<br>无账号 · 不跨设备同步</div>
+    </div>
+  </aside>
+  <main class="main-content">
+    <header class="topbar"><span class="topbar-label"><span class="online-dot"></span>专注今天的一点进步</span><button id="settings-toggle" class="text-button" type="button" aria-expanded="false" aria-controls="settings">进度管理 <span aria-hidden="true">↗</span></button></header>
+    <section id="settings" class="settings-panel" hidden aria-label="本机进度管理"><div><h2>随身带走你的学习进度</h2><p>收藏和掌握程度保存在本机浏览器。换手机、清理浏览器前请导出；导入时会合并有效记录。题库始终来自公开 GitHub 仓库。</p></div><div class="settings-actions"><button class="button secondary" id="export-progress" type="button">导出进度</button><label class="button secondary import-label" for="import-progress">导入进度</label><input id="import-progress" type="file" accept=".json,application/json" class="visually-hidden"><button class="text-button danger" id="clean-orphans" type="button" hidden>清理已删除题目记录</button></div><p id="orphan-note" class="muted small"></p></section>
+    <div id="notice" class="notice" role="status" hidden></div>
+    <section class="hero" aria-labelledby="page-heading"><div class="hero-copy"><div class="eyebrow">YOUR INTERVIEW WORKSPACE</div><h1 id="page-heading">理解原理，<br class="mobile-break">练成自己的回答。</h1><p>从知识点到项目追问，一次专注一道题。</p><div class="sync-row"><span class="sync-indicator" id="sync-indicator"></span><span id="sync-status" role="status">正在读取题库…</span><button id="refresh-catalog" class="refresh-button" type="button" title="检查 GitHub 最新题库">↻ 更新题库</button></div></div><div class="hero-stats" aria-label="学习统计"><div><strong id="total-count">—</strong><span>可练习题目</span></div><div><strong id="mastered-count">0</strong><span>已经掌握</span></div><div><strong id="review-count">0</strong><span>等待复习</span></div></div></section>
+    <section id="workspace" class="workspace" tabindex="-1">
+      <div class="workspace-header"><nav class="mode-nav" aria-label="学习模式"><button data-mode="practice" class="mode-button active" type="button">开始刷题</button><button data-mode="bank" class="mode-button" type="button">浏览题库</button><button data-mode="reading" class="mode-button" type="button">专题阅读</button></nav><span class="workspace-version" id="revision-label"></span></div>
+      <div class="search-area"><label class="search-box" for="search-input"><span aria-hidden="true">⌕</span><input id="search-input" type="search" placeholder="搜索题目、知识点或答案…" autocomplete="off"><kbd aria-hidden="true">/</kbd></label><button id="clear-search" class="text-button" type="button" hidden>清空</button></div>
+      <div id="scope-bar" class="scope-bar" role="group" aria-label="学习状态筛选"></div>
+      <div class="result-bar"><span id="result-caption">题库准备中</span><button id="reset-filters" class="text-button" type="button" hidden>重置筛选</button></div>
+      <div id="study-content" class="study-content"><div class="loading-card"><div class="loading-line"></div><div class="loading-line short"></div><p>正在准备你的复习空间…</p></div></div>
+    </section>
+    <footer class="footer"><span>答案需要理解，进步值得记录。</span><span id="snapshot-note">公开笔记 · 本机进度</span></footer>
+  </main>
+</div>
+<div id="toast" class="toast" role="status" hidden></div>
+</body>
+</html>
