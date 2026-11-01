@@ -43,7 +43,7 @@ test('source links honor explicit anchors and GitHub heading slug',()=>{
 test('stable IDs survive reorder; fenced code headings and TOC are ignored',()=>{
   const blocks=['### Q01 One\n\nAnswer one and followup.','### Q02 Two\n\nAnswer two and final boundary.'];
   const make=blocks=>parseMarkdownSources([{path:'docs/new-guide.md',content:'# New Guide\n\nPublic boundary.\n\n- [Q01 One](#q01)\n\n```md\n### Q99 Fake\n```\n\n## Topic\n\n'+blocks.join('\n\n')}]);
-  const a=make(blocks),b=make(blocks.toReversed());
+  const a=make(blocks),b=make([...blocks].reverse());
   assert.equal(a.questions.length,2);assert.deepEqual(a.questions.map(q=>q.id).sort(),b.questions.map(q=>q.id).sort());
   assert.match(b.questions.find(q=>q.number==='Q02').answerMarkdown,/final boundary/);
   assert.ok(compatiblePath('docs/new-guide.md')); assert.ok(!compatiblePath('.env'));assert.ok(!compatiblePath('docs/../secret.md'));
