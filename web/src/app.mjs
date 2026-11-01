@@ -318,7 +318,11 @@ async function refreshCatalog(force = false) {
   try {
     catalog = await loadCatalog({force,onStatus:setSyncStatus});
     if (!catalog?.questions?.length) throw new Error('题库中暂未找到可用题目');
-    if (catalog.warning) setSyncStatus({phase:'offline',message:catalog.warning,fetchedAt:catalog.fetchedAt});
+    if (!catalog.fetchedAt) {
+      const date = catalog.generatedAt && !Number.isNaN(Date.parse(catalog.generatedAt))
+        ? new Intl.DateTimeFormat('zh-CN',{year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(catalog.generatedAt)) : '日期未知';
+      setSyncStatus({phase:'offline',message:`使用打包快照（${date}）· ${catalog.warning || '尚未完成 GitHub 在线校验'}`,warning:catalog.warning});
+    } else if (catalog.warning) setSyncStatus({phase:'offline',message:catalog.warning,fetchedAt:catalog.fetchedAt});
     render();
     if (force) toast(catalog.warning ? '更新暂未成功，继续使用上次可用题库' : `题库已检查，共 ${catalog.questions.length} 道题`);
   } catch (error) {
