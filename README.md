@@ -14,7 +14,9 @@
 
 建议顺序：先填写练习册的“贡献与理解程度模板” → 阅读 SDK 导读 → 阅读 QUIC 导读 → 回到练习册完成实践与验证；原 129 题手册作为概念参考。
 
-核对边界：新导读基于提交 `5aba1d8` 的静态源码阅读，不代表已完成运行、安全或性能验证；通用回答需要更精确的实现边界时，请以对应源码导读为参考。
+核对边界：SDK 与 QUIC 导读基于提交 `5aba1d8` 的静态源码阅读，不代表已完成运行、安全或性能验证；通用回答需要更精确的实现边界时，请以对应源码导读为参考。
+
+原生 Android：[FeedLine 与 Compose 源码学习指南](docs/feedline-android-deep-dive.md)。建议先读原手册 C01—C48 的概念，再对照本篇查看实现边界与练习。基于公开仓库 `testDemo` 的固定提交 `8aa963a945176f8d5903b0b706423fd95cc011ff` 静态核对，未编译 APK 或执行真机、性能测试；原手册保留，具体实现以本篇核对版本为准。
 
 [按类别复习](indexes/by-category.md) · [按公司查证](indexes/by-company.md) · [按年份查看](indexes/by-year.md) · [来源总表](sources/README.md) · [建议学习顺序](indexes/study-order.md)
 
