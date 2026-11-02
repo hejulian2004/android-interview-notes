@@ -73,6 +73,19 @@ class GitTransportTests(unittest.TestCase):
         self.assertIn((tree['docs/a.md']['sha']+' blob').encode(), objects)
         self.assertNotIn((tree['docs/keep.md']['sha']+' blob').encode(), objects)
 
+    def test_tree_cache_is_fixed_to_commit_and_caller_cannot_mutate_verified_entries(self):
+        adapter = self.adapter()
+        tree = adapter.tree(self.base)
+        original_sha = tree['docs/a.md']['sha']
+        tree['docs/a.md']['sha'] = 'f' * 40
+        before = len([call for call in self.calls if 'ls-tree' in call])
+        fresh = adapter.tree(self.base)
+        self.assertEqual(fresh['docs/a.md']['sha'], original_sha)
+        adapter.read(self.base, 'docs/a.md', fresh['docs/a.md'])
+        self.assertEqual(len([call for call in self.calls if 'ls-tree' in call]), before)
+        with self.assertRaises(RepoError):
+            adapter.read(self.base, 'docs/a.md', tree['docs/a.md'])
+
     def test_atomic_multifile_commit_preserves_neighbors_and_idempotency_survives_restart(self):
         adapter = self.adapter()
         changes = {'docs/a.md': '# Changed\n\nNew complete answer.\n', 'docs/new.md': 'A newly created text file.\n'}

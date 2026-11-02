@@ -8,6 +8,7 @@ no environment or HTTP input can set it.
 from __future__ import annotations
 from dataclasses import dataclass
 import hashlib
+import copy
 import json
 import os
 from pathlib import Path
@@ -138,6 +139,7 @@ class GitSSHAdapter:
         if any(c in self.remote for c in ('\r', '\n', '\x00')):
             raise RepoError('git_configuration', 'Git 测试地址无效。', 503)
         self._known_revisions = set()
+        self._trees = {}
         self._metadata_cache = None
         with self._lock:
             if not (self.path / 'HEAD').exists():
@@ -246,6 +248,10 @@ class GitSSHAdapter:
 
     def tree(self, revision):
         self._ensure_revision(revision)
+        with self._lock:
+            cached = self._trees.get(revision)
+            if cached is not None:
+                return copy.deepcopy(cached)
         raw = self._git(['ls-tree', '-r', '-z', revision], limit=5_000_000).stdout
         result = {}
         for row in raw.split(b'\0'):
@@ -262,7 +268,11 @@ class GitSSHAdapter:
             # read() verifies exact size/hash before returning any content.
             result[path] = {'sha': sha, 'mode': mode, 'size': 0, 'sizeKnown': False}
             if len(result) > 20000: raise RepoError('source_limit', 'Git 源码树超过文件数限制。', 413)
-        return result
+        with self._lock:
+            self._trees[revision] = result
+            while len(self._trees) > 8:
+                self._trees.pop(next(iter(self._trees)))
+        return copy.deepcopy(result)
 
     def read(self, revision, path, entry=None):
         if not _path_ok(path): raise RepoError('path_denied', 'Git 文件路径不在允许范围。', 403)
@@ -270,6 +280,9 @@ class GitSSHAdapter:
         if not actual or actual['mode'] not in ('100644', '100755') or entry and entry.get('sha') != actual['sha']:
             raise RepoError('path_denied', 'Git 目标不是已核验的普通文件。', 403)
         sha = actual['sha']
+        # The immutable commit's verified tree is cached, rather than re-running
+        # ls-tree for every blob. Content still receives size and hash checks.
+        # Keep a size preflight: it avoids downloading an oversized lazy blob.
         size = self._git(['cat-file', '-s', sha], limit=100).stdout.strip()
         if not size.isdigit() or int(size) > MAX_FILE_BYTES:
             raise RepoError('file_limit', 'Git 文件超过读取大小限制。', 413)

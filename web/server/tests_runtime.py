@@ -5,9 +5,17 @@ from .tests_auth import config
 from .repository import MemoryAdapter, REPOSITORY, RepoError
 from .runtime import build_services
 from .sources import RepositoryWithSources
+from .config import ConfigurationError
 
 
 class RuntimeTests(unittest.TestCase):
+    def test_private_content_cache_cannot_be_under_static_root(self):
+        with tempfile.TemporaryDirectory() as directory:
+            cfg = config(static_root=directory, data_cache_root=directory+'/cache')
+            with patch('web.server.runtime.GitHubAdapter'):
+                with self.assertRaises(ConfigurationError):
+                    build_services(cfg)
+
     def test_https_wiring_uses_registry_and_read_access_does_not_enable_write(self):
         adapter=MemoryAdapter({'docs/fixture.md':'# Fixture\n\n### A01 Question\n\nA sufficiently complete fixture answer.\n'})
         with patch('web.server.runtime.GitHubAdapter',return_value=adapter):
@@ -40,3 +48,5 @@ class RuntimeTests(unittest.TestCase):
                 [(REPOSITORY,True),(REPOSITORY,False),('hejulian2004/ssh_mobile',False)])
             self.assertNotEqual(created[0][1],created[1][1])
             self.assertIs(model.repository,repo)
+            self.assertEqual(repo.notes_repository._disk.root, created[0][1].parent/'content')
+            self.assertEqual(repo.registry._disk.root, repo.notes_repository._disk.root)

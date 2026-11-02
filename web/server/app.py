@@ -152,6 +152,8 @@ class App:
         if route == 'catalog/refresh' and method == 'POST':
             return _json_response(self.repository.catalog(force=True))
         if route == 'edit' and method == 'GET':
+            if query.get('fresh') == ['1']:
+                return _json_response(self.repository.editable(get_one('questionId'), fresh=True))
             return _json_response(self.repository.editable(get_one('questionId')))
         if route == 'changes/preview' and method == 'POST':
             return _json_response(self.repository.preview(payload))

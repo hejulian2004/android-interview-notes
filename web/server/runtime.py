@@ -1,7 +1,7 @@
 """Production service wiring. No credential discovery or network call at import."""
 from pathlib import Path
 from .ai import ModelService
-from .config import github_token_provider
+from .config import github_token_provider, ConfigurationError
 from .repository import ContentRepository, GitHubAdapter, REPOSITORY, RepoError
 from .sources import SourceRegistry, RepositoryWithSources
 
@@ -37,9 +37,19 @@ def build_services(config):
                            for name in config.source_repositories}
     else:
         adapter = GitHubAdapter(token_provider)
-    notes = ContentRepository(NotesWriteGate(adapter, config.github_write_enabled))
+    # Use the already dedicated persistent state volume in SSH deployments.
+    # HTTP deployments explicitly select their private disk root.
+    cache_root = config.data_cache_root or (str(Path(config.github_cache_root)/'content') if config.github_transport == 'ssh' else None)
+    if cache_root:
+        chosen = Path(cache_root).absolute()
+        public_roots = [Path(__file__).resolve().parents[1]]
+        if config.static_root:
+            public_roots.append(Path(config.static_root).absolute())
+        if any(chosen == public or public in chosen.parents for public in public_roots):
+            raise ConfigurationError('Private content cache must be outside every static root')
+    notes = ContentRepository(NotesWriteGate(adapter, config.github_write_enabled), cache_root=cache_root)
     registry = SourceRegistry(notes, token_provider, repositories=config.source_repositories,
-                              adapters=source_adapters)
+                              adapters=source_adapters, cache_root=cache_root)
     repository = RepositoryWithSources(notes, registry)
     model = ModelService(config, repository)
     registry.provider_version = lambda: model.public_settings()['configVersion']

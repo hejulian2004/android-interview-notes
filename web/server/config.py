@@ -38,6 +38,7 @@ class Config:
     github_token_file: str = field(default='', repr=False)
     github_transport: str = 'https'
     github_cache_root: str = ''
+    data_cache_root: str = ''
     github_write_enabled: bool = False
 
     def validate(self):
@@ -45,6 +46,8 @@ class Config:
             raise ConfigurationError('Invalid GitHub transport or explicit write permission')
         if self.github_transport == 'ssh' and (not self.github_cache_root or not Path(self.github_cache_root).is_absolute()):
             raise ConfigurationError('SSH transport requires an explicit absolute private cache root')
+        if self.data_cache_root and not Path(self.data_cache_root).is_absolute():
+            raise ConfigurationError('Data cache root must be an absolute private directory')
         p = urlsplit(self.public_origin)
         local_dev = self.allow_insecure_local_dev and p.hostname in ('localhost', '127.0.0.1', '::1')
         if not p.hostname or p.username or p.password or p.query or p.fragment or p.path not in ('', '/'):
@@ -102,6 +105,7 @@ class Config:
             github_token_file=os.environ.get('STUDY_GITHUB_TOKEN_FILE', ''),
             github_transport=os.environ.get('STUDY_GITHUB_TRANSPORT', 'https'),
             github_cache_root=os.environ.get('STUDY_GITHUB_CACHE_ROOT', ''),
+            data_cache_root=os.environ.get('STUDY_DATA_CACHE_ROOT', ''),
             github_write_enabled=os.environ.get('STUDY_GITHUB_WRITE_ENABLED') == '1',
             allow_insecure_local_dev=os.environ.get('STUDY_ALLOW_INSECURE_LOCAL_DEV') == '1',
             secure_cookies=os.environ.get('STUDY_ALLOW_INSECURE_LOCAL_DEV') != '1',

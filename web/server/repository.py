@@ -334,7 +334,7 @@ class MemoryAdapter:
 
 
 class ContentRepository:
-    def __init__(self, adapter, clock=time.time, draft_ttl=900, cache_ttl=1800, generator_path=None):
+    def __init__(self, adapter, clock=time.time, draft_ttl=900, cache_ttl=1800, generator_path=None, cache_root=None):
         if adapter.repository != REPOSITORY:
             raise RepoError('repository_denied', '只允许已注册的题库仓库。', 403)
         self.adapter, self.clock = adapter, clock
@@ -345,6 +345,26 @@ class ContentRepository:
         self._source_export = False
         self._lock = threading.RLock()
         self._io_lock = threading.Lock()
+        # Reads never acquire the draft/write lock: a slow upstream write must not
+        # block users opening a previously successful study catalog.
+        self._cache_condition = threading.Condition(threading.RLock())
+        self._refreshing = False
+        self._cache_epoch = 0
+        self._refresh_error = None
+        self._failures = 0
+        self._next_refresh = 0
+        self._restored = False
+        self._disk = None
+        if cache_root is not None:
+            from .cache import DiskCache
+            self._disk = DiskCache(cache_root, 'notes:' + REPOSITORY, clock=clock, retained_keys=('catalog',))
+            saved = self._disk.get('catalog')
+            if self._valid_catalog(saved):
+                self._cache, self._restored = saved, True
+                # Retain immutable blobs by their verified SHA across restarts.
+                self._text_cache.update({(f['path'], f['sha']): f['content'] for f in saved['files']})
+            elif saved is not None:
+                self._disk.delete('catalog')
 
     def _tree(self, revision):
         # Only dictionary operations share this lock. Holding it while fetching
@@ -353,13 +373,28 @@ class ContentRepository:
             cached = self._tree_cache.get(revision)
         if cached is not None:
             return cached
-        tree = self.adapter.tree(revision)
+        tree = self._disk.get('tree:' + revision) if self._disk else None
+        if not self._valid_tree(tree):
+            tree = self.adapter.tree(revision)
+            if not self._valid_tree(tree):
+                raise RepoError('invalid_tree', '题库文件索引未通过校验。', 502)
+            if self._disk:
+                self._disk.put('tree:' + revision, tree)
         with self._io_lock:
             self._tree_cache[revision] = tree
             while len(self._tree_cache) > 8:
                 self._tree_cache.pop(next(iter(self._tree_cache)))
         # Return the local immutable tree even if another request evicts its key.
         return tree
+
+    @staticmethod
+    def _valid_tree(tree):
+        return (isinstance(tree, dict) and len(tree) <= 20000
+            and all(valid_path(path) and isinstance(entry, dict)
+                and isinstance(entry.get('sha'), str) and re.fullmatch('[a-f0-9]{40}', entry['sha'])
+                and entry.get('mode') in ('100644', '100755', '120000', '160000')
+                and type(entry.get('size', 0)) is int and entry.get('size', 0) >= 0
+                for path, entry in tree.items()))
 
     def _read(self, revision, path):
         tree = self._tree(revision)
@@ -371,54 +406,156 @@ class ContentRepository:
             cached = self._text_cache.get(key)
         if cached is not None:
             return cached
-        text = self.adapter.read(revision, path, entry)
-        if len(text.encode()) > MAX_FILE_BYTES or '\0' in text or git_sha(text) != entry['sha']:
-            raise RepoError('file_invalid', '文件内容未通过大小或完整性校验。', 422)
+        disk_key = 'blob:' + path + ':' + entry['sha']
+        text = self._disk.get(disk_key) if self._disk else None
+        if (not isinstance(text, str) or len(text.encode()) > MAX_FILE_BYTES
+                or '\0' in text or git_sha(text) != entry['sha']):
+            text = self.adapter.read(revision, path, entry)
+            if not isinstance(text, str) or len(text.encode()) > MAX_FILE_BYTES or '\0' in text or git_sha(text) != entry['sha']:
+                raise RepoError('file_invalid', '文件内容未通过大小或完整性校验。', 422)
+            if self._disk:
+                self._disk.put(disk_key, text)
         with self._io_lock:
             self._text_cache[key] = text
             while len(self._text_cache) > 700:
                 self._text_cache.pop(next(iter(self._text_cache)))
         return text
 
-    def catalog(self, force=False):
-        with self._lock:
-            now = self.clock()
-            if self._cache and not force and now - self._cache['checkedAt'] / 1000 < self.cache_ttl:
-                return copy.deepcopy(self._cache)
+    @staticmethod
+    def _valid_catalog(value):
+        try:
+            if (not isinstance(value, dict) or value.get('version') != 1
+                    or value.get('repository') != REPOSITORY
+                    or not isinstance(value.get('revision'), str)
+                    or not re.fullmatch('[a-f0-9]{40}', value['revision'])
+                    or type(value.get('checkedAt')) is not int or value['checkedAt'] < 0
+                    or not isinstance(value.get('files'), list) or not 0 < len(value['files']) <= 400):
+                return False
+            total, files = 0, {}
+            for entry in value['files']:
+                path, sha, text = entry['path'], entry['sha'], entry['content']
+                if (not compatible_path(path) or path in files or not isinstance(text, str)
+                        or not isinstance(sha, str) or not re.fullmatch('[a-f0-9]{40}', sha)
+                        or '\0' in text or git_sha(text) != sha or len(text.encode()) > MAX_FILE_BYTES):
+                    return False
+                total += len(text.encode())
+                files[path] = entry
+            return total <= MAX_TOTAL_BYTES and bool(parse_questions(files))
+        except (ValueError, TypeError, KeyError, RepoError, RecursionError):
+            return False
+
+    def _build_catalog(self):
+        revision = self.adapter.head()
+        if not isinstance(revision, str) or not re.fullmatch('[a-f0-9]{40}', revision):
+            raise RepoError('invalid_revision', 'GitHub 返回的题库版本无效。', 502)
+        with self._cache_condition:
+            previous = self._cache
+            if previous and previous['revision'] == revision:
+                files = previous['files']
+            else:
+                files = None
+        if files is None:
+            tree = self._tree(revision)
+            paths = [p for p in tree if compatible_path(p) and tree[p]['mode'] in ('100644', '100755')]
+            if not paths or len(paths) > 400:
+                raise RepoError('catalog_limit', '题库为空或超过文件数限制。', 422)
+            files, total = [], 0
+            pool = ThreadPoolExecutor(max_workers=4, thread_name_prefix='study-github')
+            futures = {pool.submit(self._read, revision, path): path for path in sorted(paths)}
             try:
-                revision = self.adapter.head()
-                tree = self._tree(revision)
-                paths = [p for p in tree if compatible_path(p) and tree[p]['mode'] in ('100644', '100755')]
-                if not paths or len(paths) > 400:
-                    raise RepoError('catalog_limit', '题库为空或超过文件数限制。', 422)
-                files, total = [], 0
-                pool = ThreadPoolExecutor(max_workers=4, thread_name_prefix='study-github')
-                futures = {pool.submit(self._read, revision, path): path for path in sorted(paths)}
-                try:
-                    for future in as_completed(futures, timeout=65):
-                        path, text = futures[future], future.result()
-                        total += len(text.encode())
-                        if total > MAX_TOTAL_BYTES:
-                            raise RepoError('catalog_limit', '题库超过大小限制。', 422)
-                        files.append({'path': path, 'sha': tree[path]['sha'], 'content': text})
-                except FuturesTimeout:
-                    raise RepoError('github_timeout', '题库刷新超时，未替换成功缓存。', 503) from None
-                finally:
-                    pool.shutdown(wait=False, cancel_futures=True)
-                files.sort(key=lambda f: f['path'])
-                if not parse_questions({f['path']: f for f in files}):
-                    raise RepoError('invalid_catalog', '没有可解析的题目。', 422)
-                from datetime import datetime, timezone
-                self._cache = {'version': 1, 'revision': revision, 'files': files, 'checkedAt': int(now * 1000),
-                    'fetchedAt': datetime.fromtimestamp(now, timezone.utc).isoformat(), 'generatedAt': None,
-                    'origin': 'github', 'warning': ''}
-            except RepoError:
-                if not self._cache:
-                    raise
-                result = copy.deepcopy(self._cache)
-                result.update(origin='server-cache', warning='GitHub 更新失败，当前为服务器上次成功题库；尚未确认最新版本。')
-                return result
-            return copy.deepcopy(self._cache)
+                for future in as_completed(futures, timeout=65):
+                    path, text = futures[future], future.result()
+                    total += len(text.encode())
+                    if total > MAX_TOTAL_BYTES:
+                        raise RepoError('catalog_limit', '题库超过大小限制。', 422)
+                    files.append({'path': path, 'sha': tree[path]['sha'], 'content': text})
+            except FuturesTimeout:
+                raise RepoError('github_timeout', '题库刷新超时，未替换成功缓存。', 503) from None
+            finally:
+                pool.shutdown(wait=False, cancel_futures=True)
+            files.sort(key=lambda f: f['path'])
+            if not parse_questions({f['path']: f for f in files}):
+                raise RepoError('invalid_catalog', '没有可解析的题目。', 422)
+        from datetime import datetime, timezone
+        now = self.clock()
+        return {'version': 1, 'repository': REPOSITORY, 'revision': revision, 'files': files,
+            'checkedAt': int(now * 1000), 'fetchedAt': datetime.fromtimestamp(now, timezone.utc).isoformat(),
+            'generatedAt': None, 'origin': 'github', 'warning': ''}
+
+    def _cached_result_locked(self):
+        value = copy.deepcopy(self._cache)
+        stale = self._restored or self.clock() - value['checkedAt'] / 1000 >= self.cache_ttl
+        value.update(origin='server-cache', cacheStatus='stale' if stale else 'fresh', refreshing=self._refreshing)
+        if self._refresh_error:
+            value.update(cacheStatus='stale', warning='GitHub 更新失败，当前为服务器上次成功题库；尚未确认最新版本。')
+        elif stale:
+            value['warning'] = '已载入服务器缓存；正在后台检查 GitHub 更新。' if self._refreshing else '已载入服务器缓存；等待后台检查 GitHub 更新。'
+        return value
+
+    def _perform_refresh(self, epoch):
+        value, error = None, None
+        try:
+            value = self._build_catalog()
+        except RepoError as caught:
+            error = caught
+        except Exception:
+            # Cache failures must not expose upstream URLs, tokens, or file bodies.
+            error = RepoError('github_unavailable', 'GitHub 更新失败；未替换成功题库。', 503)
+        with self._cache_condition:
+            if epoch == self._cache_epoch:
+                if value is not None:
+                    self._cache, self._restored = value, False
+                    self._refresh_error, self._failures, self._next_refresh = None, 0, 0
+                    if self._disk:
+                        self._disk.put('catalog', value)
+                else:
+                    self._refresh_error = error
+                    self._failures += 1
+                    self._next_refresh = self.clock() + min(300, 15 * 2 ** min(self._failures, 5))
+            self._refreshing = False
+            self._cache_condition.notify_all()
+
+    def _refresh(self):
+        perform = False
+        with self._cache_condition:
+            if self._refreshing:
+                # A manual refresh joins the in-flight check rather than starting
+                # another 142-file build. All adapter I/O has independent bounds.
+                if not self._cache_condition.wait_for(lambda: not self._refreshing, timeout=120):
+                    raise RepoError('github_timeout', '题库检查仍在进行，请稍后重试。', 503)
+            else:
+                self._refreshing = True
+                epoch = self._cache_epoch
+                # Do synchronous I/O outside the cache lock so cached GETs stay fast.
+                perform = True
+            if not perform:
+                if self._cache is None:
+                    raise self._refresh_error or RepoError('github_unavailable', '题库暂不可用。', 503)
+                return self._cached_result_locked()
+        self._perform_refresh(epoch)
+        with self._cache_condition:
+            if self._cache is None:
+                raise self._refresh_error or RepoError('github_unavailable', '题库暂不可用。', 503)
+            return self._cached_result_locked()
+
+    def catalog(self, force=False):
+        with self._cache_condition:
+            if self._cache and not force:
+                stale = self._restored or self.clock() - self._cache['checkedAt'] / 1000 >= self.cache_ttl
+                if self._disk:
+                    if stale and not self._refreshing and self.clock() >= self._next_refresh:
+                        self._refreshing = True
+                        try:
+                            threading.Thread(target=self._perform_refresh, args=(self._cache_epoch,),
+                                name='study-catalog-refresh', daemon=True).start()
+                        except RuntimeError:
+                            self._refreshing = False
+                            self._refresh_error = RepoError('refresh_busy', '后台更新暂忙，保留服务器成功缓存。', 503)
+                            self._next_refresh = self.clock() + 30
+                    return self._cached_result_locked()
+                if not stale:
+                    return self._cached_result_locked()
+        return self._refresh()
 
     def _current(self, base_revision=None):
         value = self.catalog(force=True)
@@ -428,8 +565,12 @@ class ContentRepository:
             raise RepoError('conflict', '题库版本已变化，请刷新后合并；草稿没有提交。', 409)
         return value, {f['path']: f for f in value['files']}
 
-    def editable(self, question_id):
-        value, files = self._current()
+    def editable(self, question_id, fresh=False):
+        if fresh or self._disk is None:
+            value, files = self._current()
+        else:
+            value = self.catalog()
+            files = {f['path']: f for f in value['files']}
         question = parse_questions(files).get(question_id)
         if not question:
             raise RepoError('not_found', '题目不存在或已被删除。', 404)
@@ -710,8 +851,37 @@ class ContentRepository:
             while len(self._results) > 1000:
                 self._results.pop(next(iter(self._results)))
             draft['committed'] = result
-            self._cache = None
+            self._cache_after_commit(draft, commit)
             return copy.deepcopy(result)
+
+    def _cache_after_commit(self, draft, commit):
+        """Publish only a confirmed commit, never optimistic draft contents.
+
+        The generation guard invalidates any older background build. Disk writes
+        share this same lock, so a late old worker cannot regress restart state.
+        """
+        with self._cache_condition:
+            self._cache_epoch += 1
+            if self._cache and self._cache['revision'] == draft['baseRevision']:
+                files = {f['path']: dict(f) for f in self._cache['files']}
+                for path, text in draft['changes'].items():
+                    if compatible_path(path):
+                        if text is None:
+                            files.pop(path, None)
+                        else:
+                            files[path] = {'path': path, 'sha': git_sha(text), 'content': text}
+                from datetime import datetime, timezone
+                now = self.clock()
+                self._cache = dict(self._cache, revision=commit, files=[files[p] for p in sorted(files)],
+                    checkedAt=int(now * 1000), fetchedAt=datetime.fromtimestamp(now, timezone.utc).isoformat(),
+                    origin='github', warning='')
+                self._restored, self._refresh_error, self._failures, self._next_refresh = False, None, 0, 0
+                if self._disk:
+                    self._disk.put('catalog', self._cache)
+            elif not self._cache or self._cache['revision'] != commit:
+                # For uncertain-then-confirmed recovery the current cache may have
+                # moved independently. Keep it and require a fresh upstream check.
+                self._restored, self._next_refresh = True, 0
 
     def source_repos(self):
         value = self.catalog()

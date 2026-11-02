@@ -20,8 +20,8 @@ class FakeRepo:
     def catalog(self, force=False):
         self.calls.append(('catalog', force))
         return {'version': 1, 'revision': 'a' * 40, 'files': [], 'origin': 'server-cache'}
-    def editable(self, question_id):
-        self.calls.append(('editable', question_id))
+    def editable(self, question_id, fresh=False):
+        self.calls.append(('editable', question_id, True) if fresh else ('editable', question_id))
         return {'questionId': question_id}
     def preview(self, payload):
         self.calls.append(('preview', payload))
@@ -90,6 +90,14 @@ class AppTests(unittest.TestCase):
             with self.subTest(route=route):
                 self.assertEqual(self.call(method, route).status, 401)
         self.assertEqual(self.repo.calls, [])
+
+    def test_explicit_latest_edit_requires_auth_and_uses_strict_fresh_path(self):
+        route = 'edit?questionId=docs/a.md%23a01&fresh=1'
+        self.assertEqual(self.call('GET', route).status, 401)
+        self.assertEqual(self.repo.calls, [])
+        self.login()
+        self.assertEqual(self.call('GET', route).status, 200)
+        self.assertEqual(self.repo.calls[-1], ('editable', 'docs/a.md#a01', True))
 
     def test_trusted_proxy_client_buckets_are_isolated_and_cannot_be_forged(self):
         self.app = create_app(config(trusted_proxy_ips=('127.0.0.1',)), self.repo, FakeAI())
