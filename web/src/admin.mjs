@@ -37,8 +37,9 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
   loginBox.append(loginForm);document.body.prepend(loginBox);
   const topbar=document.querySelector('.topbar');
   const actions=el('div',{class:'account-actions'});
+  const agentLaunch=button('AI 助手 / Agent','agent-launch');agentLaunch.className='button agent-launch';agentLaunch.setAttribute('aria-controls','admin-panel');agentLaunch.setAttribute('aria-expanded','false');
   const manage=button('管理题库','admin-toggle');manage.setAttribute('aria-controls','admin-panel');manage.setAttribute('aria-expanded','false');
-  const signOut=button('退出','logout-button');actions.append(manage,signOut);topbar.append(actions);
+  const signOut=button('退出','logout-button');actions.append(agentLaunch,manage,signOut);topbar.append(actions);
   const panel=el('section',{id:'admin-panel',class:'admin-panel',hidden:true,'aria-labelledby':'admin-heading'});
   const close=button('收起','admin-close');
   const heading=el('div',{class:'admin-panel-heading'},[el('div',{},[el('div',{class:'eyebrow'},'YOUR CONTENT DESK'),el('h2',{id:'admin-heading'},'维护你的题库')]),close]);
@@ -164,7 +165,7 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
   for(const input of [titleInput,answerInput,documentSelect])input.addEventListener('input',invalidate);
   compareLatest.addEventListener('click',async()=>{
     if(!edit?.questionId)return;compareLatest.disabled=true;
-    try{latest=await apiRequest(`edit?questionId=${encodeURIComponent(edit.questionId)}`);latestText.textContent=`# ${latest.title}\n\n${latest.answerMarkdown}\n\n版本：${latest.baseRevision}`;conflictBox.hidden=false;baselineConfirm.checked=false;status(editorStatus,'已读取最新原文，当前草稿保持不变。');}
+    try{latest=await apiRequest(`edit?questionId=${encodeURIComponent(edit.questionId)}&fresh=1`);latestText.textContent=`# ${latest.title}\n\n${latest.answerMarkdown}\n\n版本：${latest.baseRevision}`;conflictBox.hidden=false;baselineConfirm.checked=false;status(editorStatus,'已读取最新原文，当前草稿保持不变。');}
     catch(error){status(editorStatus,error.message,true);}finally{compareLatest.disabled=false;}
   });
   adoptBaseline.addEventListener('click',()=>{
@@ -206,7 +207,8 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
     const question=getCurrentQuestion(),id=question?.id||null;
     questionDisclosure.textContent=question?`当前题目：${question.number||''} ${question.title||''}（${id}）`:'当前没有选定题目；选择题目后才能授权发送参考答案。';
     questionConsent.disabled=!id;
-    if(disclosedQuestionId!==id){disclosedQuestionId=id;questionConsent.checked=false;resetConversation('当前题目已变化，请重新核对并勾选题目授权。');}
+    const key=id?`${id}@${getCatalog()?.revision||''}`:null;
+    if(disclosedQuestionId!==key){disclosedQuestionId=key;questionConsent.checked=false;resetConversation('当前题目或题库版本已变化，请重新核对并勾选题目授权。');}
   }
   function allowedPrefixes(repo){const prefixes=repo?.allowedPathPrefixes||repo?.safeAllowedPathPrefixes;return Array.isArray(prefixes)?prefixes.filter(value=>typeof value==='string'&&value.length>0):[];}
   function selectedSourceScope(){
@@ -255,7 +257,7 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
       if(Array.isArray(value.citations)&&value.citations.length)message('assistant',value.citations.map(c=>typeof c==='string'?c:`${c.repository||''}@${c.revision||''} ${c.path||''}:${c.startLine||c.line||''}`).join('\n'));
       proposal=value.proposal?{...value.proposal,privateSourceUsed:value.privateSourceUsed===true||value.proposal.privateSourceUsed===true,sourceDisclosure:value.proposal.sourceDisclosure||value.sourceDisclosure}:null;proposalKey=token();renderProposal();preserveProposal();
       status(chatStatus,(value.historyReset?'对话上下文已重置或精简，请按当前授权继续。':'')+(proposal?'建议已生成，请检查差异；尚未写入 GitHub。':'对话完成，未写入 GitHub。'));
-    }catch(error){if(requestConversation!==conversationId)return;if(error.status===409||error.code==='supplier_config_changed'){questionConsent.checked=sourceConsent.checked=false;await loadManagement();status(chatStatus,`${error.message}。已重新加载范围，请核对新版本与供应商并重新勾选授权。`,true);}else status(chatStatus,error.message,true);}
+    }catch(error){if(requestConversation!==conversationId)return;if(error.status===409||error.code==='supplier_config_changed'){questionConsent.checked=sourceConsent.checked=false;await loadManagement({waitForMetadata:true});status(chatStatus,`${error.message}。已重新加载范围，请核对新版本与供应商并重新勾选授权。`,true);}else status(chatStatus,error.message,true);}
     finally{chatBusy=false;send.disabled=!configured;}
   });
   applyProposal.addEventListener('click',async()=>{
@@ -274,8 +276,9 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
   const sourceQuery=el('input',{id:'source-query',type:'search',required:'',maxlength:'500',placeholder:'输入类名、方法名或关键词'});
   const search=button('查询源码','source-search','submit');
   const sourceStatus=el('p',{id:'source-status',class:'admin-status',role:'status'});
+  const refreshSources=button('刷新仓库状态','source-refresh');
   const sourceResults=el('div',{id:'source-results',class:'source-results'});
-  sourceForm.append(el('p',{class:'admin-disclosure'},'只读查询服务器已授权的仓库；每次结果固定源码版本。其他仓库须先由管理员在服务器登记，查询不会自动发送给模型。'),field('已授权仓库',sourceRepo),field('检索关键词',sourceQuery),search,sourceStatus);
+  sourceForm.append(el('p',{class:'admin-disclosure'},'只读查询服务器已授权的仓库；每次结果固定源码版本。仓库缓存按需读取，准备中的仓库也可直接查询。其他仓库须先由管理员在服务器登记，查询不会自动发送给模型。'),field('已授权仓库',sourceRepo),refreshSources,field('检索关键词',sourceQuery),search,sourceStatus);
   panes.source.append(sourceForm,sourceResults);
   sourceForm.addEventListener('submit',async event=>{
     event.preventDefault();search.disabled=true;status(sourceStatus,'正在查询已授权源码…');sourceResults.replaceChildren();
@@ -319,31 +322,58 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
     try{const value=await apiRequest('settings/model',{method:'PUT',body});showModel(value);questionConsent.checked=sourceConsent.checked=false;status(modelStatus,'模型设置已保存。下一次发送前请重新确认内容授权。');}
     catch(error){status(modelStatus,error.message,true);}finally{saveModel.disabled=false;}
   });
-  async function loadManagement() {
-    renderChoices();questionChanged();
-    const values=await Promise.allSettled([apiRequest('settings/model'),apiRequest('source/repos')]);
-    if(values[0].status==='fulfilled')showModel(values[0].value);else{configured=false;send.disabled=true;status(modelStatus,values[0].reason.message,true);}
-    if(values[1].status==='fulfilled'){
+  let managementEpoch=0,modelLoadGeneration=0,sourceLoadPromise=null;
+  async function loadModel() {
+    const epoch=managementEpoch,generation=++modelLoadGeneration;
+    try{const value=await apiRequest('settings/model');if(!wasAuthenticated||epoch!==managementEpoch||generation!==modelLoadGeneration)return;showModel(value);}
+    catch(error){if(!wasAuthenticated||epoch!==managementEpoch||generation!==modelLoadGeneration)return;configured=false;send.disabled=true;status(modelStatus,error.message,true);}
+  }
+  async function loadSources() {
+    if(sourceLoadPromise)return sourceLoadPromise;
+    const epoch=managementEpoch;refreshSources.disabled=true;
+    const task=(async()=>{
+      try{
+      const value=await apiRequest('source/repos');
+      if(!wasAuthenticated||epoch!==managementEpoch)return;
       const previousScope=selectedSourceScope();
-      repos=values[1].value.repositories||[];
-      for(const select of [sourceRepo,agentRepo]){const previous=select.value;select.replaceChildren(...repos.map(repo=>el('option',{value:repo.repository},`${repo.repository}${repo.private?'（私有）':'（公开）'}`)));if(repos.some(repo=>repo.repository===previous))select.value=previous;}
+      repos=value.repositories||[];
+      for(const select of [sourceRepo,agentRepo]){const previous=select.value;select.replaceChildren(...repos.map(repo=>el('option',{value:repo.repository},`${repo.repository}${repo.pending?'（准备中，可直接查询）':repo.available===false?'（暂不可用）':repo.private===true?'（私有）':repo.private===false?'（公开）':'（权限待核验）'}`)));if(repos.some(repo=>repo.repository===previous))select.value=previous;}
       const currentRepo=repos.find(repo=>repo.repository===agentRepo.value);
       if(previousScope.repository!==currentRepo?.repository||previousScope.revision!==currentRepo?.revision||previousScope.private!==!!currentRepo?.private){sourceConsent.checked=false;showSourceScope(true);resetConversation('源码版本或仓库范围已更新，请重新核对授权。');}
       else showSourceScope();
-    }else status(sourceStatus,values[1].reason.message,true);
-    if(!edit&&questionSelect.value)await openQuestion();
-    if(!proposal){try{const stored=JSON.parse(localStorage.getItem(DRAFT_PREFIX+'agent-proposal'));if(stored?.version===1&&typeof stored.proposal?.draftId==='string'&&typeof stored.proposal?.diff==='string'){proposal=stored.proposal;proposalKey=stored.requestKey||token();renderProposal();status(chatStatus,'已恢复本机 AI 建议；提交时服务器仍会检查草稿有效期与版本。');}}catch{}}
+      const pendingCount=repos.filter(repo=>repo.pending).length;
+      const refreshingCount=repos.filter(repo=>repo.refreshing||repo.cacheStatus==='stale').length;
+      const unavailableCount=repos.filter(repo=>repo.available===false&&!repo.pending).length;
+      status(sourceStatus,pendingCount?`${pendingCount} 个仓库正在后台准备，可直接选择查询，或稍后刷新仓库状态。`:unavailableCount?`${unavailableCount} 个仓库暂不可用；可稍后刷新，其他可用仓库仍可查询。`:refreshingCount?'已载入服务器源码缓存，后台检查更新中；查询结果会标明固定版本。':'已载入服务器仓库状态；查询结果会标明固定版本。',unavailableCount>0);
+      }catch(error){if(wasAuthenticated&&epoch===managementEpoch)status(sourceStatus,error.message,true);}
+    })();
+    sourceLoadPromise=task;
+    try{await task;}finally{if(sourceLoadPromise===task)sourceLoadPromise=null;if(epoch===managementEpoch)refreshSources.disabled=false;}
   }
-  manage.addEventListener('click',async()=>{panel.hidden=!panel.hidden;manage.setAttribute('aria-expanded',String(!panel.hidden));if(!panel.hidden){await loadManagement();panel.scrollIntoView({block:'start',behavior:'smooth'});}});
-  close.addEventListener('click',()=>{panel.hidden=true;manage.setAttribute('aria-expanded','false');manage.focus();});
-  tabs.addEventListener('click',event=>{const id=event.target.closest('[data-admin-tab]')?.dataset.adminTab;if(!id)return;for(const [key,pane]of Object.entries(panes)){pane.hidden=key!==id;document.getElementById(`admin-tab-${key}`).setAttribute('aria-selected',String(key===id));}});
+  refreshSources.addEventListener('click',()=>loadSources());
+  async function loadManagement({openSelected=true,waitForMetadata=false}={}) {
+    renderChoices();questionChanged();
+    // An unrelated source clone or supplier check must not delay the editor.
+    const metadata=[loadModel(),loadSources()];
+    const editor=openSelected&&!edit&&questionSelect.value?openQuestion():Promise.resolve();
+    if(!proposal){try{const stored=JSON.parse(localStorage.getItem(DRAFT_PREFIX+'agent-proposal'));if(stored?.version===1&&typeof stored.proposal?.draftId==='string'&&typeof stored.proposal?.diff==='string'){proposal=stored.proposal;proposalKey=stored.requestKey||token();renderProposal();status(chatStatus,'已恢复本机 AI 建议；提交时服务器仍会检查草稿有效期与版本。');}}catch{}}
+    if(waitForMetadata)await Promise.allSettled([...metadata,editor]);else await editor;
+  }
+  let panelOpener=manage;
+  function selectPane(id){for(const [key,pane]of Object.entries(panes)){pane.hidden=key!==id;document.getElementById(`admin-tab-${key}`).setAttribute('aria-selected',String(key===id));}agentLaunch.setAttribute('aria-expanded',String(!panel.hidden&&id==='agent'));}
+  function hidePanel(){panel.hidden=true;manage.setAttribute('aria-expanded','false');agentLaunch.setAttribute('aria-expanded','false');}
+  manage.addEventListener('click',async()=>{if(!panel.hidden){hidePanel();return;}panelOpener=manage;panel.hidden=false;manage.setAttribute('aria-expanded','true');selectPane('editor');await loadManagement();panel.scrollIntoView({block:'start',behavior:'smooth'});});
+  agentLaunch.addEventListener('click',()=>{panelOpener=agentLaunch;panel.hidden=false;manage.setAttribute('aria-expanded','true');selectPane('agent');loadManagement({openSelected:false});panel.scrollIntoView({block:'start',behavior:'smooth'});chatInput.focus({preventScroll:true});});
+  close.addEventListener('click',()=>{hidePanel();panelOpener.focus();});
+  tabs.addEventListener('click',event=>{const id=event.target.closest('[data-admin-tab]')?.dataset.adminTab;if(id)selectPane(id);});
   function setAuthenticated(value) {
     const signed=!!value?.authenticated;shell.hidden=!signed;loginBox.hidden=signed;
     if(signed&&!wasAuthenticated)resetConversation('');
     wasAuthenticated=signed;
     if(!signed){
+      managementEpoch++;modelLoadGeneration++;sourceLoadPromise=null;repos=[];sourceRepo.replaceChildren();agentRepo.replaceChildren();refreshSources.disabled=false;
       editGeneration++;loadGeneration++;
-      panel.hidden=true;modelKey.value='';password.value='';questionConsent.checked=sourceConsent.checked=false;
+      hidePanel();modelKey.value='';password.value='';questionConsent.checked=sourceConsent.checked=false;
       resetConversation('');chatInput.value='';proposal=null;proposalBox.hidden=true;proposalDiff.textContent='';sourceResults.replaceChildren();sourcePrefixes.value='';sourceScopeDisclosure.textContent='';disclosedQuestionId=null;questionDisclosure.textContent='';
       titleInput.value='';answerInput.value='';editorContext.replaceChildren();diff.textContent='';questionSelect.replaceChildren();documentSelect.replaceChildren();
       edit=null;pending=null;latest=null;latestText.textContent='';conflictBox.hidden=true;configured=false;send.disabled=true;
@@ -359,5 +389,5 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
   });
   signOut.addEventListener('click',async()=>{signOut.disabled=true;try{await logout();status(loginStatus,'已退出，服务器会话已撤销。');}catch(error){notify(`退出未完成：${error.message}`);}finally{signOut.disabled=false;}});
   setAuthenticated(null);
-  return {async start(){try{await getSession();await onAuthenticated();return true;}catch(error){if(error.status!==401)status(loginStatus,error.message,true);return false;}}, refreshChoices:renderChoices,questionChanged, openEditor:async id=>{panel.hidden=false;await loadManagement();await openQuestion(id);}};
+  return {async start(){try{await getSession();await onAuthenticated();return true;}catch(error){if(error.status!==401)status(loginStatus,error.message,true);return false;}}, refreshChoices:renderChoices,questionChanged, openEditor:async id=>{panelOpener=manage;panel.hidden=false;manage.setAttribute('aria-expanded','true');selectPane('editor');await loadManagement({openSelected:false});await openQuestion(id);}};
 }

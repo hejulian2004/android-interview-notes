@@ -29,7 +29,7 @@ const assembly=await mkdtemp(join(tmpdir(),'study-server-catalog-'));
 await cp(new URL('../src/',import.meta.url),assembly,{recursive:true});
 await cp(new URL('../engine/',import.meta.url),join(assembly,'engine'),{recursive:true});
 after(()=>rm(assembly,{recursive:true,force:true}));
-const {parseServerCatalog,loadCatalog}=await import(pathToFileURL(join(assembly,'server-catalog.mjs')));
+const {parseServerCatalog,loadCatalog,createCatalogFollower}=await import(pathToFileURL(join(assembly,'server-catalog.mjs')));
 
 test('authenticated parser preserves all 491 question IDs, answers and context',()=>{
   const catalog=parseServerCatalog(snapshot);
@@ -52,4 +52,37 @@ test('authentication and upstream failures are never replaced with a public snap
   await assert.rejects(loadCatalog({request:async()=>{throw new Error('unauthenticated');}}),/unauthenticated/);
   assert.throws(()=>parseServerCatalog({...snapshot,files:[snapshot.files[0],snapshot.files[0]]}),/无效题库文件/);
   assert.throws(()=>parseServerCatalog({...snapshot,revision:'main'}),/无效题库版本/);
+});
+test('stale server data is usable immediately and its background check is disclosed',async()=>{
+  const statuses=[];
+  const catalog=await loadCatalog({request:async()=>({...snapshot,cacheStatus:'stale',refreshing:true}),onStatus:status=>statuses.push(status)});
+  assert.equal(catalog.questions.length,491);assert.equal(catalog.refreshing,true);
+  assert.equal(statuses.at(-1).phase,'cached');assert.match(statuses.at(-1).message,/缓存.*后台检查/);
+  assert.doesNotMatch(statuses.at(-1).message,/已更新|最新/);
+  await loadCatalog({request:async()=>({...snapshot,cacheStatus:'stale',refreshing:false,warning:'GitHub 暂不可用，使用服务器成功缓存'}),onStatus:status=>statuses.push(status)});
+  assert.equal(statuses.at(-1).phase,'offline');assert.match(statuses.at(-1).message,/成功缓存/);
+});
+function fakeTimers(){let id=0;const tasks=new Map();return {tasks,schedule:(run,ms)=>{tasks.set(++id,{run,ms});return id;},cancel:key=>tasks.delete(key),async run(){const [key,task]=tasks.entries().next().value;tasks.delete(key);await task.run();}};}
+test('background followup uses ordinary GET semantics, stops when complete and is bounded',async()=>{
+  const timers=fakeTimers(),seen=[],calls=[];
+  const follower=createCatalogFollower({...timers,load:async options=>{calls.push(options);return {revision:'b'.repeat(40),refreshing:false};},onCatalog:value=>seen.push(value)});
+  follower.start({revision:'a'.repeat(40),refreshing:true});assert.equal(timers.tasks.size,1);assert.equal([...timers.tasks.values()][0].ms,2000);
+  await timers.run();assert.equal(seen.length,1);assert.equal(seen[0].revision,'b'.repeat(40));assert.equal(calls[0].force,false);assert.equal(timers.tasks.size,0);
+  const bounded=fakeTimers(),statuses=[];let count=0;
+  const pending=createCatalogFollower({...bounded,load:async()=>{count++;return {refreshing:true};},onStatus:value=>statuses.push(value)});
+  pending.start({refreshing:true});await bounded.run();await bounded.run();await bounded.run();
+  assert.equal(count,3);assert.equal(bounded.tasks.size,0);assert.match(statuses.at(-1).message,/点击.*更新题库/);assert.doesNotMatch(statuses.at(-1).message,/后台检查.*中/);
+});
+test('cancelled or superseded in-flight followups cannot restore old content',async()=>{
+  const timers=fakeTimers(),seen=[];let release;
+  const follower=createCatalogFollower({...timers,load:()=>new Promise(resolve=>{release=resolve;}),onCatalog:value=>seen.push(value)});
+  follower.start({refreshing:true});const running=timers.run();follower.cancel();release({revision:'b'.repeat(40),refreshing:false});await running;
+  assert.deepEqual(seen,[]);assert.equal(timers.tasks.size,0);
+  follower.start({refreshing:true});assert.equal(timers.tasks.size,1);follower.start({refreshing:false});assert.equal(timers.tasks.size,0);
+});
+test('failed followups preserve the current catalog and stop after the retry budget',async()=>{
+  const timers=fakeTimers(),seen=[],statuses=[];
+  const follower=createCatalogFollower({...timers,load:async()=>{throw new Error('network');},onCatalog:value=>seen.push(value),onStatus:value=>statuses.push(value)});
+  follower.start({revision:'a'.repeat(40),refreshing:true});await timers.run();await timers.run();await timers.run();
+  assert.deepEqual(seen,[]);assert.equal(timers.tasks.size,0);assert.ok(statuses.some(value=>value.warning?.includes('进度已保留')));
 });

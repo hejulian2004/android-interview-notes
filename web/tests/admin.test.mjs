@@ -16,7 +16,7 @@ const question={id,path:'docs/android-interview-handbook.md',number:'N01',title:
 let activeQuestion=question;
 const privateRepository='example/private-project',privateRevision='e'.repeat(40);
 const catalog={revision,questions:[question],documents:[{path:question.path,title:'面试手册'}]};
-const requests=[];let authenticated=false,refreshNeeded=false,refreshCount=0,loginCount=0,logoutCount=0,commitMode='success',commits=0,previewCount=0,configured=false,lastVersion=revision,providerVersion='provider-version',modelConfigCounter=0,resetNextHistory=false,holdNextChat=false,releaseChat=null,holdNextPreview=false,releasePreview=null,holdNextCommit=false,releaseCommit=null;
+const requests=[];let authenticated=false,refreshNeeded=false,refreshCount=0,loginCount=0,logoutCount=0,commitMode='success',commits=0,previewCount=0,configured=false,lastVersion=revision,providerVersion='provider-version',modelConfigCounter=0,resetNextHistory=false,holdNextChat=false,releaseChat=null,holdNextPreview=false,releasePreview=null,holdNextCommit=false,releaseCommit=null,holdMetadata=false,releaseModel=null,releaseSources=null,sourcePending=false;
 const response=(value,status=200)=>({ok:status>=200&&status<300,status,json:async()=>value});
 const fail=(code,message,status)=>response({error:{code,message}},status);
 globalThis.fetch=async(url,options)=>{
@@ -33,9 +33,16 @@ globalThis.fetch=async(url,options)=>{
   if(!authenticated)return fail('unauthorized','请登录',401);
   if(options.method!=='GET')assert.equal(options.headers['X-CSRF-Token'],'csrf');
   if(path==='logout'){authenticated=false;logoutCount++;return response({ok:true});}
-  if(path==='settings/model'&&options.method==='GET')return response({configured,baseUrl:configured?'https://model.example/v1':'',model:configured?'test-model':'',keyConfigured:configured,configVersion:providerVersion});
+  if(path==='settings/model'&&options.method==='GET'){
+    const value={configured,baseUrl:configured?'https://model.example/v1':'',model:configured?'test-model':'',keyConfigured:configured,configVersion:providerVersion};
+    if(holdMetadata)return new Promise(resolve=>{releaseModel=()=>resolve(response(value));});return response(value);
+  }
   if(path==='settings/model'){configured=body.clearKey?false:!!body.key||configured;providerVersion='provider-version-'+(++modelConfigCounter);return response({configured,baseUrl:body.baseUrl,model:body.model,keyConfigured:configured,configVersion:providerVersion});}
-  if(path==='source/repos')return response({repositories:[{repository:'hejulian2004/android-interview-notes',private:false,allowModelExport:false,revision,allowedPathPrefixes:['docs/']},{repository:privateRepository,private:true,allowModelExport:false,revision:privateRevision,allowedPathPrefixes:['app/src/'],available:true}]});
+  if(path==='source/repos'){
+    const value={repositories:[{repository:'hejulian2004/android-interview-notes',private:false,allowModelExport:false,revision,allowedPathPrefixes:['docs/']},{repository:privateRepository,private:true,allowModelExport:false,revision:privateRevision,allowedPathPrefixes:['app/src/'],available:true}]};
+    if(sourcePending)value.repositories=value.repositories.map(repo=>({repository:repo.repository,private:null,revision:null,allowedPathPrefixes:[],available:false,pending:true}));
+    if(holdMetadata)return new Promise(resolve=>{releaseSources=()=>resolve(response(value));});return response(value);
+  }
   if(path.startsWith('edit?'))return response({...question,questionId:id,baseRevision:lastVersion,blobSha:'b'.repeat(40),sourceKind:'guide'});
   if(path==='changes/preview'){
     previewCount++;const value={draftId:'draft-'+previewCount,diff:'--- previous\n+++ proposed\n- old\n+ <script>example</script>',baseRevision:body.baseRevision,questionId:body.questionId||id,changedPaths:[question.path]};
@@ -78,6 +85,18 @@ test('login gates business requests; cookies and CSRF remain in-memory',async()=
   assert.ok(!Object.keys(localStorage).some(key=>/jwt|token|csrf/i.test(key)));
 });
 
+test('editor becomes usable while unrelated model settings and source metadata are still pending',async()=>{
+  holdMetadata=true;$('admin-toggle').click();
+  await until(()=>$('editor-title').value==='原始题目'&&releaseModel&&releaseSources);
+  assert.equal($('editor-save').disabled,false);
+  assert.equal($('agent-send').disabled,true);
+  assert.equal(requests.filter(r=>r.path.startsWith('edit?')).length,1);
+  releaseModel();await until(()=>$('model-status').textContent.includes('未启用'));
+  assert.equal($('source-refresh').disabled,true);
+  releaseSources();holdMetadata=false;await until(()=>!$('source-refresh').disabled);
+  $('admin-close').click();
+});
+
 test('manual drafts use original versions, safe diff and idempotent retries without losing progress',async()=>{
   $('admin-toggle').click();await until(()=>$('editor-title').value==='原始题目');
   assert.equal($('agent-send').disabled,true);
@@ -95,11 +114,29 @@ test('manual drafts use original versions, safe diff and idempotent retries with
   assert.match($('editor-status').textContent,/已保存到 GitHub/);
 });
 
+test('visible Agent shortcut opens chat directly even without a model, preserves context and returns focus',async()=>{
+  $('admin-close').click();
+  const before=requests.filter(r=>r.path.startsWith('edit?')).length;
+  assert.match($('agent-launch').textContent,/AI 助手.*Agent/);
+  assert.equal($('agent-launch').closest('.app-shell').hidden,false);
+  $('agent-launch').click();
+  assert.equal($('admin-panel').hidden,false);assert.equal($('admin-agent').hidden,false);assert.equal($('admin-editor').hidden,true);
+  assert.equal($('admin-tab-agent').getAttribute('aria-selected'),'true');assert.equal($('agent-launch').getAttribute('aria-expanded'),'true');
+  assert.equal(document.activeElement,$('agent-message'));assert.match($('agent-provider').textContent,/模型尚未配置|尚未配置模型/);
+  assert.equal($('agent-send').disabled,true);assert.match($('agent-question-scope').textContent,/原始题目/);
+  $('agent-launch').click();assert.equal($('admin-panel').hidden,false);assert.equal($('admin-agent').hidden,false);
+  assert.equal(requests.filter(r=>r.path.startsWith('edit?')).length,before);
+  $('admin-close').click();assert.equal($('admin-panel').hidden,true);assert.equal(document.activeElement,$('agent-launch'));
+  assert.equal($('agent-launch').getAttribute('aria-expanded'),'false');
+  $('admin-toggle').click();assert.equal($('admin-editor').hidden,false);
+});
+
 test('conflict resolution explicitly compares latest source and keeps draft until user adopts baseline',async()=>{
   input('editor-title','冲突草稿');input('editor-answer','保留这份手动草稿，并合并别人补充的新内容。');
   commitMode='conflict';submit('editor-form');await until(()=>$('editor-status').textContent.includes('对比最新原文'));
   assert.equal(readEditorDraft(localStorage,id).baseRevision,revision);
   lastVersion='d'.repeat(40);$('editor-compare').click();await until(()=>!$('editor-conflict').hidden);
+  assert.ok(requests.filter(r=>r.path.startsWith('edit?')).at(-1).path.endsWith('&fresh=1'));
   assert.match($('editor-latest').textContent,new RegExp(lastVersion));assert.equal($('editor-title').value,'冲突草稿');
   $('editor-adopt-baseline').click();assert.equal(readEditorDraft(localStorage,id).baseRevision,revision);
   $('editor-baseline-confirm').checked=true;$('editor-adopt-baseline').click();
@@ -250,4 +287,15 @@ test('changing the selected question immediately revokes its prior export consen
   const count=requests.filter(r=>r.path==='agent/chat').length;input('agent-message','不发送新题的答案');submit('agent-form');await until(()=>requests.filter(r=>r.path==='agent/chat').length===count+1&&!$('agent-send').disabled);
   const chat=requests.filter(r=>r.path==='agent/chat').at(-1).body;assert.equal(chat.allowQuestionExport,false);assert.equal(chat.questionId,undefined);
   activeQuestion=question;administration.questionChanged();
+});
+
+
+test('pending source caches remain queryable but cannot be authorized for model export',async()=>{
+  sourcePending=true;const before=requests.filter(r=>r.path==='source/repos').length;
+  $('agent-source-consent').checked=true;$('source-refresh').click();
+  await until(()=>requests.filter(r=>r.path==='source/repos').length===before+1&&!$('source-refresh').disabled);
+  assert.match($('source-status').textContent,/后台准备/);assert.match($('source-repository').selectedOptions[0].textContent,/准备中/);
+  assert.equal($('source-repository').selectedOptions[0].disabled,false);
+  assert.equal($('agent-source-consent').checked,false);assert.equal($('agent-source-consent').disabled,true);
+  sourcePending=false;$('source-refresh').click();await until(()=>!$('source-refresh').disabled&&!$('agent-source-consent').disabled);
 });

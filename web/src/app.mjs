@@ -1,4 +1,4 @@
-import { loadCatalog } from './server-catalog.mjs';
+import { loadCatalog, catalogStatus, createCatalogFollower } from './server-catalog.mjs';
 import { TOPICS } from './engine/parser.mjs';
 import { createAdmin } from './admin.mjs';
 import { renderMarkdown } from './markdown.mjs';
@@ -21,6 +21,12 @@ let administration = null;
 let recoveryRaw = null;
 let progress = readProgress();
 let ui = readRoute();
+let catalogLoadGeneration=0;
+const catalogFollower=createCatalogFollower({onCatalog:value=>{
+  const changed=catalog?.revision!==value.revision;
+  catalog=value;setSyncStatus(catalogStatus(value));
+  if(changed){render();administration?.refreshChoices();}
+},onStatus:setSyncStatus});
 
 function node(tag, attrs = {}, children = []) {
   const el = document.createElement(tag);
@@ -340,9 +346,12 @@ function setSyncStatus(status) {
 }
 async function refreshCatalog(force = false) {
   if (loadBusy) return;
+  catalogFollower.cancel();const generation=++catalogLoadGeneration;
   loadBusy = true; $('refresh-catalog').disabled = true;
   try {
-    catalog = await loadCatalog({force,onStatus:setSyncStatus});
+    const value = await loadCatalog({force,onStatus:status=>{if(generation===catalogLoadGeneration)setSyncStatus(status);}});
+    if(generation!==catalogLoadGeneration)return;
+    catalog=value;
     if (!catalog?.questions?.length) throw new Error('题库中暂未找到可用题目');
     if (!catalog.fetchedAt) {
       const date = catalog.generatedAt && !Number.isNaN(Date.parse(catalog.generatedAt))
@@ -350,12 +359,14 @@ async function refreshCatalog(force = false) {
       setSyncStatus({phase:'offline',message:`使用打包快照（${date}）· ${catalog.warning || '尚未完成 GitHub 在线校验'}`,warning:catalog.warning});
     } else if (catalog.warning) setSyncStatus({phase:'offline',message:catalog.warning,fetchedAt:catalog.fetchedAt});
     render();
+    catalogFollower.start(catalog);
     if (force) toast(catalog.warning ? '更新暂未成功，继续使用上次可用题库' : `题库已检查，共 ${catalog.questions.length} 道题`);
   } catch (error) {
+    if(generation!==catalogLoadGeneration)return;
     setSyncStatus({phase:'offline',message:'题库读取失败，请稍后重试',warning:error.message});
     if (!catalog) $('study-content').replaceChildren(node('div',{class:'empty-state'},[node('h2',{},'题库暂时无法读取'),node('p',{},'请检查网络后，点击上方“更新题库”重试。')]));
     toast('读取题库失败，请稍后重试');
-  } finally { loadBusy = false; $('refresh-catalog').disabled = false; }
+  } finally { if(generation===catalogLoadGeneration){loadBusy = false; $('refresh-catalog').disabled = false;} }
 }
 
 $('topics').addEventListener('click',event=>{const b=event.target.closest('[data-topic]');if(b)navigate({topic:b.dataset.topic,id:null,doc:null,anchor:''});});
@@ -438,13 +449,16 @@ administration = createAdmin({
   getCurrentQuestion:()=>catalog?.questions.find(question=>question.id===ui.id)||null,
   onAuthenticated:()=>refreshCatalog(),
   onLoggedOut:()=>{
+    catalogLoadGeneration++;catalogFollower.cancel();loadBusy=false;$('refresh-catalog').disabled=false;
     catalog=null;revealed=false;
     $('study-content').replaceChildren();
     $('total-count').textContent='—';
     $('revision-label').textContent='';
   },
   onSaved:async result=>{
-    await refreshCatalog(true);
+    // A confirmed commit has already updated the server cache. Read that
+    // revision instead of immediately doing another blocking GitHub refresh.
+    await refreshCatalog();
     if(result.questionId&&!result.deleted)navigate({mode:'practice',id:result.questionId,topic:'all',scope:'all',query:''});
     administration.refreshChoices();
   },
