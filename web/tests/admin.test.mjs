@@ -7,6 +7,7 @@ import {setTimeout as delay} from 'node:timers/promises';
 const dom=new JSDOM(readFileSync(new URL('../src/index.html',import.meta.url),'utf8'),{url:'https://study.example/android-study/',pretendToBeVisual:true});
 for(const key of ['window','document','Node','HTMLElement','localStorage','location','history'])Object.defineProperty(globalThis,key,{configurable:true,writable:true,value:key==='window'?dom.window:dom.window[key]});
 dom.window.HTMLElement.prototype.scrollIntoView=function(){};
+Object.defineProperty(dom.window,'innerWidth',{configurable:true,writable:true,value:1280});
 after(()=>dom.window.close());
 const {createAdmin,readEditorDraft,writeEditorDraft}=await import('../src/admin.mjs');
 const {apiRequest}=await import('../src/api.mjs');
@@ -16,7 +17,7 @@ const question={id,path:'docs/android-interview-handbook.md',number:'N01',title:
 let activeQuestion=question;
 const privateRepository='example/private-project',privateRevision='e'.repeat(40);
 const catalog={revision,questions:[question],documents:[{path:question.path,title:'面试手册'}]};
-const requests=[];let authenticated=false,refreshNeeded=false,refreshCount=0,loginCount=0,logoutCount=0,commitMode='success',commits=0,previewCount=0,configured=false,lastVersion=revision,providerVersion='provider-version',modelConfigCounter=0,resetNextHistory=false,holdNextChat=false,releaseChat=null,holdNextPreview=false,releasePreview=null,holdNextCommit=false,releaseCommit=null,holdMetadata=false,releaseModel=null,releaseSources=null,sourcePending=false;
+const requests=[];let authenticated=false,refreshNeeded=false,refreshCount=0,loginCount=0,logoutCount=0,commitMode='success',commits=0,previewCount=0,configured=false,lastVersion=revision,providerVersion='provider-version',modelConfigCounter=0,resetNextHistory=false,holdNextChat=false,releaseChat=null,holdNextPreview=false,releasePreview=null,holdNextCommit=false,releaseCommit=null,holdMetadata=false,releaseModel=null,releaseSources=null,sourcePending=false,agentDraftCount=0,proposalTargetOverride=null,holdCommitSuccess=false;
 const response=(value,status=200)=>({ok:status>=200&&status<300,status,json:async()=>value});
 const fail=(code,message,status)=>response({error:{code,message}},status);
 globalThis.fetch=async(url,options)=>{
@@ -49,7 +50,7 @@ globalThis.fetch=async(url,options)=>{
     if(holdNextPreview){holdNextPreview=false;return new Promise(resolve=>{releasePreview=()=>resolve(response(value));});}return response(value);
   }
   if(path==='changes/commit'){
-    commits++;if(holdNextCommit){holdNextCommit=false;return new Promise(resolve=>{releaseCommit=()=>resolve(fail('github_failed','GitHub 暂不可用',503));});}
+    commits++;if(holdNextCommit){holdNextCommit=false;return new Promise(resolve=>{releaseCommit=()=>resolve(holdCommitSuccess?response({commit:'c'.repeat(40),questionId:id,deleted:false}):fail('github_failed','GitHub 暂不可用',503));});}
     if(commitMode==='failure')return fail('github_failed','GitHub 暂不可用',503);
     if(commitMode==='conflict')return fail('conflict','文档已有新修改',409);
     if(commitMode==='expired')return fail('draft_expired','草稿已过期',410);
@@ -57,7 +58,7 @@ globalThis.fetch=async(url,options)=>{
   }
   if(path==='agent/chat'){
     const privateScope=body.allowSourceExport&&body.sourceRepository===privateRepository;
-    const value={reply:'这是改进建议。',proposal:{draftId:'agent-draft',diff:'- 原答案\n+ 改进答案',questionId:id,requiresPublicConfirmation:privateScope},citations:[],usage:{},historyReset:resetNextHistory,privateSourceUsed:false,sourceDisclosure:privateScope?{repository:privateRepository,private:true,revision:privateRevision,pathPrefixes:['app/src/main/']}:undefined};resetNextHistory=false;
+    const value={reply:'这是改进建议。',proposal:{draftId:'agent-draft-'+(++agentDraftCount),diff:'- 原答案\n+ 改进答案',questionId:proposalTargetOverride||activeQuestion.id,requiresPublicConfirmation:privateScope},citations:[],usage:{},historyReset:resetNextHistory,privateSourceUsed:false,sourceDisclosure:privateScope?{repository:privateRepository,private:true,revision:privateRevision,pathPrefixes:['app/src/main/']}:undefined};resetNextHistory=false;
     if(holdNextChat){holdNextChat=false;return new Promise(resolve=>{releaseChat=()=>resolve(response(value));});}
     return response(value);
   }
@@ -86,15 +87,19 @@ test('login gates business requests; cookies and CSRF remain in-memory',async()=
 });
 
 test('editor becomes usable while unrelated model settings and source metadata are still pending',async()=>{
+  localStorage.setItem('android-study.editor-draft.v1:agent-proposal',JSON.stringify({version:1,proposal:{draftId:'restored-draft',diff:'- old\n+ restored',questionId:id,subjectKey:id+'@'+revision,providerConfigVersion:providerVersion},requestKey:'restore-key'}));
   holdMetadata=true;$('admin-toggle').click();
   await until(()=>$('editor-title').value==='原始题目'&&releaseModel&&releaseSources);
   assert.equal($('editor-save').disabled,false);
   assert.equal($('agent-send').disabled,true);
   assert.equal(requests.filter(r=>r.path.startsWith('edit?')).length,1);
+  assert.equal($('agent-proposal').hidden,false);assert.equal($('agent-apply').disabled,true);
+  const before=commits;$('agent-commit-confirm').checked=true;$('agent-apply').dispatchEvent(new dom.window.Event('click'));assert.equal(commits,before);
   releaseModel();await until(()=>$('model-status').textContent.includes('未启用'));
   assert.equal($('source-refresh').disabled,true);
   releaseSources();holdMetadata=false;await until(()=>!$('source-refresh').disabled);
-  $('admin-close').click();
+  assert.equal($('agent-proposal').hidden,false);assert.equal($('agent-apply').disabled,false);
+  $('agent-new-conversation').click();$('admin-close').click();
 });
 
 test('manual drafts use original versions, safe diff and idempotent retries without losing progress',async()=>{
@@ -120,13 +125,13 @@ test('visible Agent shortcut opens chat directly even without a model, preserves
   assert.match($('agent-launch').textContent,/AI 助手.*Agent/);
   assert.equal($('agent-launch').closest('.app-shell').hidden,false);
   $('agent-launch').click();
-  assert.equal($('admin-panel').hidden,false);assert.equal($('admin-agent').hidden,false);assert.equal($('admin-editor').hidden,true);
+  assert.equal($('agent-drawer').hidden,false);assert.equal($('admin-agent').hidden,false);assert.equal($('admin-panel').hidden,true);
   assert.equal($('admin-tab-agent').getAttribute('aria-selected'),'true');assert.equal($('agent-launch').getAttribute('aria-expanded'),'true');
   assert.equal(document.activeElement,$('agent-message'));assert.match($('agent-provider').textContent,/模型尚未配置|尚未配置模型/);
   assert.equal($('agent-send').disabled,true);assert.match($('agent-question-scope').textContent,/原始题目/);
-  $('agent-launch').click();assert.equal($('admin-panel').hidden,false);assert.equal($('admin-agent').hidden,false);
+  $('agent-launch').click();assert.equal($('agent-drawer').hidden,false);assert.equal($('admin-agent').hidden,false);
   assert.equal(requests.filter(r=>r.path.startsWith('edit?')).length,before);
-  $('admin-close').click();assert.equal($('admin-panel').hidden,true);assert.equal(document.activeElement,$('agent-launch'));
+  $('agent-close').click();assert.equal($('agent-drawer').hidden,true);assert.equal(document.activeElement,$('agent-launch'));
   assert.equal($('agent-launch').getAttribute('aria-expanded'),'false');
   $('admin-toggle').click();assert.equal($('admin-editor').hidden,false);
 });
@@ -298,4 +303,79 @@ test('pending source caches remain queryable but cannot be authorized for model 
   assert.equal($('source-repository').selectedOptions[0].disabled,false);
   assert.equal($('agent-source-consent').checked,false);assert.equal($('agent-source-consent').disabled,true);
   sourcePending=false;$('source-refresh').click();await until(()=>!$('source-refresh').disabled&&!$('agent-source-consent').disabled);
+});
+
+
+test('desktop rail stays nonmodal and close/reopen preserves the same chat controls',async()=>{
+  window.innerWidth=1280;window.dispatchEvent(new dom.window.Event('resize'));
+  const inputNode=$('agent-message');input('agent-message','开合时保留这份聊天草稿');
+  $('agent-launch').click();
+  assert.equal($('agent-drawer').getAttribute('role'),'complementary');assert.equal($('agent-drawer').hasAttribute('aria-modal'),false);
+  assert.equal(document.querySelector('.app-shell').hasAttribute('inert'),false);assert.equal($('agent-backdrop').hidden,true);
+  assert.equal(document.body.classList.contains('agent-sidebar-open'),true);
+  $('search-input').focus();assert.equal(document.activeElement,$('search-input'));
+  $('agent-close').click();$('agent-launch').click();
+  assert.equal($('agent-message'),inputNode);assert.equal(inputNode.value,'开合时保留这份聊天草稿');
+  $('admin-tab-source').click();assert.equal($('admin-source').hidden,false);$('agent-launch').click();assert.equal($('admin-agent').hidden,false);
+  $('agent-close').click();
+});
+
+test('mobile drawer traps focus, makes all background controls inert and restores them on Escape',async()=>{
+  window.innerWidth=390;window.dispatchEvent(new dom.window.Event('resize'));
+  $('agent-launch').click();
+  const shell=document.querySelector('.app-shell'),skip=document.querySelector('.skip-link');
+  assert.equal($('agent-drawer').getAttribute('role'),'dialog');assert.equal($('agent-drawer').getAttribute('aria-modal'),'true');
+  assert.equal(shell.hasAttribute('inert'),true);assert.equal(skip.hasAttribute('inert'),true);assert.equal($('agent-backdrop').hidden,false);
+  assert.equal(document.body.classList.contains('agent-drawer-modal'),true);
+  $('agent-new-conversation').focus();document.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'Tab',bubbles:true,cancelable:true}));assert.equal(document.activeElement,$('agent-close'));
+  document.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'Tab',shiftKey:true,bubbles:true,cancelable:true}));assert.equal(document.activeElement,$('agent-new-conversation'));
+  $('search-input').focus();assert.ok($('agent-drawer').contains(document.activeElement));
+  document.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true}));
+  assert.equal($('agent-drawer').hidden,true);assert.equal(shell.hasAttribute('inert'),false);assert.equal(skip.hasAttribute('inert'),false);assert.equal(shell.getAttribute('aria-hidden'),null);assert.equal(document.activeElement,$('agent-launch'));
+  await delay(50);
+});
+
+test('mobile Back closes only its drawer entry; resizing to desktop unlocks the question',async()=>{
+  const route=location.hash,before=history.length;$('agent-launch').click();const opened=history.length;
+  assert.ok(opened<=before+1);const marker=history.state.androidStudyAgentDrawer;assert.ok(marker);$('agent-launch').click();assert.equal(history.length,opened);assert.equal(history.state.androidStudyAgentDrawer,marker);
+  history.back();await until(()=>$('agent-drawer').hidden);assert.equal(location.hash,route);assert.equal(document.querySelector('.app-shell').hasAttribute('inert'),false);
+  $('agent-launch').click();window.innerWidth=1280;window.dispatchEvent(new dom.window.Event('resize'));
+  assert.equal($('agent-drawer').hidden,false);assert.equal($('agent-drawer').hasAttribute('aria-modal'),false);assert.equal(document.querySelector('.app-shell').hasAttribute('inert'),false);
+  $('search-input').focus();assert.equal(document.activeElement,$('search-input'));$('agent-close').click();await delay(50);
+});
+
+test('proposal binds its generation subject without blocking a new question target; changing subject invalidates it',async()=>{
+  $('agent-source-consent').checked=false;$('agent-source-consent').dispatchEvent(new dom.window.Event('change',{bubbles:true}));
+  proposalTargetOverride=question.path+'#n99';input('agent-message','新增一份与当前题有关的练习');submit('agent-form');await until(()=>!$('agent-proposal').hidden&&!$('agent-send').disabled);
+  assert.match($('agent-proposal-target').textContent,/#n99/);assert.equal($('agent-apply').disabled,false);
+  const stored=JSON.parse(localStorage.getItem('android-study.editor-draft.v1:agent-proposal'));assert.equal(stored.proposal.subjectKey,id+'@'+revision);
+  $('agent-commit-confirm').checked=true;const before=commits;
+  activeQuestion={...question,id:question.path+'#n02',number:'N02',title:'新的当前题'};administration.questionChanged();
+  assert.equal($('agent-proposal').hidden,true);assert.equal($('agent-commit-confirm').checked,false);assert.equal(localStorage.getItem('android-study.editor-draft.v1:agent-proposal'),null);
+  $('agent-apply').click();assert.equal(commits,before);
+  activeQuestion=question;administration.questionChanged();proposalTargetOverride=null;
+});
+
+test('an old in-flight proposal commit cannot clear a new subject proposal or navigate to the old subject',async()=>{
+  input('agent-message','为旧题生成建议');submit('agent-form');await until(()=>!$('agent-proposal').hidden&&!$('agent-send').disabled);
+  const oldDraft=JSON.parse(localStorage.getItem('android-study.editor-draft.v1:agent-proposal')).proposal.draftId;
+  holdNextCommit=true;holdCommitSuccess=true;releaseCommit=null;$('agent-commit-confirm').checked=true;$('agent-apply').click();await until(()=>typeof releaseCommit==='function');
+  activeQuestion={...question,id:question.path+'#n02',number:'N02',title:'新的当前题'};administration.questionChanged();
+  input('agent-message','为新题生成独立建议');submit('agent-form');await until(()=>!$('agent-proposal').hidden&&!$('agent-send').disabled);
+  const newDraft=JSON.parse(localStorage.getItem('android-study.editor-draft.v1:agent-proposal')).proposal.draftId;assert.notEqual(newDraft,oldDraft);
+  const before=savedCalls;releaseCommit();await delay(20);holdCommitSuccess=false;
+  assert.equal(savedCalls,before);assert.equal($('agent-proposal').hidden,false);assert.match($('agent-proposal-target').textContent,/#n02/);
+  assert.equal(JSON.parse(localStorage.getItem('android-study.editor-draft.v1:agent-proposal')).proposal.draftId,newDraft);
+  activeQuestion=question;administration.questionChanged();
+});
+
+
+test('logout preserves a bound local proposal and metadata initialization can restore it safely',async()=>{
+  input('agent-message','保留可核验上下文的建议');submit('agent-form');await until(()=>!$('agent-proposal').hidden&&!$('agent-send').disabled);
+  const raw=localStorage.getItem('android-study.editor-draft.v1:agent-proposal'),count=logoutCount;
+  $('logout-button').click();await until(()=>logoutCount===count+1);assert.equal(localStorage.getItem('android-study.editor-draft.v1:agent-proposal'),raw);
+  const before=authenticatedCalls;input('login-username','admin');input('login-password','test-password');submit('login-form');await until(()=>authenticatedCalls===before+1);
+  $('agent-launch').click();await until(()=>!$('agent-proposal').hidden&&!$('agent-apply').disabled);
+  assert.equal(JSON.parse(localStorage.getItem('android-study.editor-draft.v1:agent-proposal')).proposal.draftId,JSON.parse(raw).proposal.draftId);
+  assert.equal($('agent-commit-confirm').checked,false);$('agent-close').click();
 });

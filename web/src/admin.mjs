@@ -37,7 +37,7 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
   loginBox.append(loginForm);document.body.prepend(loginBox);
   const topbar=document.querySelector('.topbar');
   const actions=el('div',{class:'account-actions'});
-  const agentLaunch=button('AI 助手 / Agent','agent-launch');agentLaunch.className='button agent-launch';agentLaunch.setAttribute('aria-controls','admin-panel');agentLaunch.setAttribute('aria-expanded','false');
+  const agentLaunch=button('AI 助手 / Agent','agent-launch');agentLaunch.className='button agent-launch';agentLaunch.setAttribute('aria-controls','agent-drawer');agentLaunch.setAttribute('aria-expanded','false');
   const manage=button('管理题库','admin-toggle');manage.setAttribute('aria-controls','admin-panel');manage.setAttribute('aria-expanded','false');
   const signOut=button('退出','logout-button');actions.append(agentLaunch,manage,signOut);topbar.append(actions);
   const panel=el('section',{id:'admin-panel',class:'admin-panel',hidden:true,'aria-labelledby':'admin-heading'});
@@ -52,6 +52,15 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
   const globalStatus=el('p',{id:'admin-global-status',class:'admin-status',role:'status'});
   panel.append(heading,el('p',{class:'admin-intro'},'手动保存会直接提交 GitHub。AI 建议先展示改动，确认后才提交。草稿仅保存在本机。'),tabs,...Object.values(panes),globalStatus);
   document.querySelector('.hero').after(panel);
+  // Move the existing tool panes once. Opening/closing never rebuilds chat state.
+  const drawer=el('aside',{id:'agent-drawer',class:'agent-drawer',hidden:true,tabindex:'-1','aria-labelledby':'agent-drawer-heading'});
+  const drawerBackdrop=el('div',{id:'agent-backdrop',class:'agent-backdrop',hidden:true,'aria-hidden':'true'});
+  const drawerClose=button('收起 · 返回学习','agent-close');
+  const drawerContext=el('p',{id:'agent-current-context',class:'agent-current-context'});
+  const drawerTabs=el('div',{class:'admin-tabs',role:'tablist','aria-label':'AI 助手工具'});
+  for(const id of ['agent','source','model'])drawerTabs.append(document.getElementById(`admin-tab-${id}`));
+  drawer.append(el('div',{class:'agent-drawer-header'},[el('div',{class:'admin-panel-heading'},[el('div',{},[el('div',{class:'eyebrow'},'STUDY COMPANION'),el('h2',{id:'agent-drawer-heading'},'AI 助手')]),drawerClose]),drawerContext,drawerTabs]),...['agent','source','model'].map(id=>panes[id]));
+  document.body.append(drawerBackdrop,drawer);
 
   // Editor: retain server-issued versions even when a draft is restored after another edit.
   const editorForm=el('form',{id:'editor-form'});
@@ -195,20 +204,24 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
   const privatePublicationConfirm=el('input',{id:'agent-publication-confirm',type:'checkbox'});
   const privatePublicationLabel=el('label',{id:'agent-publication-warning',class:'admin-check',hidden:true},[privatePublicationConfirm,'我确认可将建议中的内容公开到题库，已检查无私有敏感片段。授权发送私有源码给模型不代表授权公开源码。']);
   const proposalSources=el('p',{id:'agent-proposal-sources',class:'admin-disclosure',hidden:true});
+  const proposalTarget=el('p',{id:'agent-proposal-target',class:'admin-disclosure'});
   const applyProposal=button('确认并保存建议','agent-apply');applyProposal.className='button';
-  proposalBox.append(el('h3',{},'建议修改 · 尚未提交'),el('p',{class:'admin-disclosure'},'保存目标：公开仓库 hejulian2004/android-interview-notes。提交后的题目和答案可被任何人阅读；请检查完整差异。'),proposalSources,proposalDiff,el('label',{class:'admin-check'},[proposalConfirm,'我已检查改动，确认直接提交上述公开 GitHub 仓库。']),privatePublicationLabel,applyProposal);
+  proposalBox.append(el('h3',{},'建议修改 · 尚未提交'),el('p',{class:'admin-disclosure'},'保存目标：公开仓库 hejulian2004/android-interview-notes。提交后的题目和答案可被任何人阅读；请检查完整差异。'),proposalTarget,proposalSources,proposalDiff,el('label',{class:'admin-check'},[proposalConfirm,'我已检查改动，确认直接提交上述公开 GitHub 仓库。']),privatePublicationLabel,applyProposal);
   chatForm.append(providerDisclosure,el('p',{id:'agent-history-disclosure',class:'admin-disclosure'},'同一授权范围内，最近的对话与已授权参考片段会再次发送给所示供应商，以支持连续追问。授权范围、题目或供应商变化会自动开始新对话；对话历史不保存在浏览器存储。'),field('对话内容',chatInput,'你输入的对话会发送给配置的模型供应商；不要输入密码或密钥。'),questionDisclosure,el('label',{class:'admin-check'},[questionConsent,'本次允许发送上述题目与参考答案给上述供应商。']),field('源码仓库',agentRepo),sourceDefaults,field('允许发送的路径前缀',sourcePrefixes,'每行填写一个前缀；只能在服务器允许的范围内缩小授权，修改后须重新勾选。'),sourceScopeDisclosure,el('label',{class:'admin-check'},[sourceConsent,'本次允许把上方明确仓库、版本、路径范围内的必要源码片段发送给上述供应商；私有内容也包含在此授权中。']),el('div',{class:'admin-inline'},[send,newConversation]),chatStatus);
   panes.agent.append(chatLog,chatForm,proposalBox);
   let configured=false, providerConfigVersion='', disclosedBaseUrl='',disclosedModel='',proposal=null, proposalKey=token(), repos=[];
+  const submittingProposalIds=new Set();
   let conversationId=token(), conversationScope=null, wasAuthenticated=false, chatBusy=false, disclosedQuestionId=null;
-  function resetConversation(note='已开始新对话，后续请求不会使用此前的对话历史。',scope=null){conversationId=token();conversationScope=scope;chatLog.replaceChildren();if(note)status(chatStatus,note);}
-  newConversation.addEventListener('click',()=>resetConversation());
+  const subjectKey=()=>`${getCurrentQuestion()?.id||''}@${getCatalog()?.revision||''}`;
+  function resetConversation(note='已开始新对话，后续请求不会使用此前的对话历史。',scope=null,invalidateProposal=false){conversationId=token();conversationScope=scope;chatLog.replaceChildren();if(invalidateProposal&&proposal){proposal=null;renderProposal();preserveProposal();}if(note)status(chatStatus,note);}
+  newConversation.addEventListener('click',()=>resetConversation(undefined,null,true));
   function questionChanged(){
     const question=getCurrentQuestion(),id=question?.id||null;
     questionDisclosure.textContent=question?`当前题目：${question.number||''} ${question.title||''}（${id}）`:'当前没有选定题目；选择题目后才能授权发送参考答案。';
+    drawerContext.textContent=question?`当前题 · ${question.number||''} ${question.title||''}`:'当前未选择题目，可直接对话或查询源码。';
     questionConsent.disabled=!id;
     const key=id?`${id}@${getCatalog()?.revision||''}`:null;
-    if(disclosedQuestionId!==key){disclosedQuestionId=key;questionConsent.checked=false;resetConversation('当前题目或题库版本已变化，请重新核对并勾选题目授权。');}
+    if(disclosedQuestionId!==key){disclosedQuestionId=key;questionConsent.checked=false;resetConversation('当前题目或题库版本已变化，请重新核对并勾选题目授权；旧建议已失效。',null,true);}
   }
   function allowedPrefixes(repo){const prefixes=repo?.allowedPathPrefixes||repo?.safeAllowedPathPrefixes;return Array.isArray(prefixes)?prefixes.filter(value=>typeof value==='string'&&value.length>0):[];}
   function selectedSourceScope(){
@@ -225,16 +238,19 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
     sourceConsent.disabled=!scope.valid;if(!scope.valid)sourceConsent.checked=false;
     sourceScopeDisclosure.textContent=scope.valid?`仓库：${scope.repository}（${scope.private?'私有':'公开'}）\n版本：${scope.revision}\n供应商：${disclosedBaseUrl||'未配置'} · 模型：${disclosedModel||'未配置'}\n本次可发送范围：${scope.pathPrefixes.join('、')}`:'源码外发未授权：请加载有效的仓库完整版本，并填写服务器允许范围内的路径前缀。';
   }
-  for(const control of [questionConsent,sourceConsent])control.addEventListener('change',()=>resetConversation('授权范围已变化，已开始新对话。'));
-  agentRepo.addEventListener('change',()=>{sourceConsent.checked=false;showSourceScope(true);resetConversation('源码仓库已变化，旧授权已清除；请核对新范围后重新勾选。');});
-  sourcePrefixes.addEventListener('input',()=>{sourceConsent.checked=false;showSourceScope();resetConversation('源码路径范围已变化，请重新核对并勾选授权。');});
-  function renderProposal(){
-    proposalBox.hidden=!proposal;proposalConfirm.checked=privatePublicationConfirm.checked=false;
+  for(const control of [questionConsent,sourceConsent])control.addEventListener('change',()=>resetConversation('授权范围已变化，已开始新对话。',null,true));
+  agentRepo.addEventListener('change',()=>{sourceConsent.checked=false;showSourceScope(true);resetConversation('源码仓库已变化，旧授权已清除；请核对新范围后重新勾选。',null,true);});
+  sourcePrefixes.addEventListener('input',()=>{sourceConsent.checked=false;showSourceScope();resetConversation('源码路径范围已变化，请重新核对并勾选授权。',null,true);});
+  const proposalMatchesContext=()=>!!proposal&&proposal.subjectKey===subjectKey()&&!!providerConfigVersion&&proposal.providerConfigVersion===providerConfigVersion;
+  function renderProposal(resetConfirm=true){
+    proposalBox.hidden=!proposal;if(resetConfirm)proposalConfirm.checked=privatePublicationConfirm.checked=false;
+    applyProposal.disabled=!!proposal&&(!proposalMatchesContext()||submittingProposalIds.has(proposal.draftId));
     privatePublicationLabel.hidden=proposal?.privateSourceUsed!==true&&proposal?.requiresPublicConfirmation!==true;proposalSources.hidden=!proposal?.sourceDisclosure;
-    if(proposal){proposalDiff.textContent=text(proposal.diff);proposalSources.textContent=typeof proposal.sourceDisclosure==='string'?proposal.sourceDisclosure:JSON.stringify(proposal.sourceDisclosure||{},null,2);}
+    if(proposal){proposalDiff.textContent=text(proposal.diff);proposalTarget.textContent=`差异目标：${proposal.questionId||'新题（以差异中的文档与编号为准）'} · 基于 ${text(proposal.baseRevision||getCatalog()?.revision).slice(0,12)||'草稿版本'}。目标由服务器草稿固定，不会随左侧选题改变。`;proposalSources.textContent=typeof proposal.sourceDisclosure==='string'?proposal.sourceDisclosure:JSON.stringify(proposal.sourceDisclosure||{},null,2);}
   }
-  function preserveProposal(){try{if(proposal)localStorage.setItem(DRAFT_PREFIX+'agent-proposal',JSON.stringify({version:1,proposal:{draftId:proposal.draftId,diff:proposal.diff,questionId:proposal.questionId,baseRevision:proposal.baseRevision,privateSourceUsed:proposal.privateSourceUsed===true,requiresPublicConfirmation:proposal.requiresPublicConfirmation===true,sourceDisclosure:proposal.sourceDisclosure},requestKey:proposalKey}));else localStorage.removeItem(DRAFT_PREFIX+'agent-proposal');}catch{status(chatStatus,'无法持久保存 AI 建议，请保留当前页面或复制差异备份。',true);}}
-  function message(role,content) {chatLog.append(el('div',{class:`agent-message agent-${role}`},[el('strong',{},role==='user'?'你':'Agent'),el('p',{},content)]));while(chatLog.children.length>30)chatLog.firstElementChild.remove();}
+  function preserveProposal(){try{if(proposal)localStorage.setItem(DRAFT_PREFIX+'agent-proposal',JSON.stringify({version:1,proposal:{draftId:proposal.draftId,diff:proposal.diff,questionId:proposal.questionId,baseRevision:proposal.baseRevision,subjectKey:proposal.subjectKey,providerConfigVersion:proposal.providerConfigVersion,privateSourceUsed:proposal.privateSourceUsed===true,requiresPublicConfirmation:proposal.requiresPublicConfirmation===true,sourceDisclosure:proposal.sourceDisclosure},requestKey:proposalKey}));else localStorage.removeItem(DRAFT_PREFIX+'agent-proposal');}catch{status(chatStatus,'无法持久保存 AI 建议，请保留当前页面或复制差异备份。',true);}}
+  let messageSequence=0;
+  function message(role,content) {const body=el(role==='assistant'?'div':'p',role==='assistant'?{class:'markdown-body agent-message-body'}:{});if(role==='assistant')body.innerHTML=renderMarkdown(content,undefined,{idPrefix:`agent-message-${++messageSequence}-`});else body.textContent=content;chatLog.append(el('div',{class:`agent-message agent-${role}`},[el('strong',{},role==='user'?'你':'Agent'),body]));while(chatLog.children.length>30)chatLog.firstElementChild.remove();}
   chatForm.addEventListener('submit',async event=>{
     event.preventDefault();if(!configured||chatBusy)return;
     const content=chatInput.value.trim();if(!content)return;
@@ -243,9 +259,9 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
     const questionId=allowQuestionExport?getCurrentQuestion()?.id:undefined,sourceScope=selectedSourceScope();
     if(allowSourceExport&&!sourceScope.valid){sourceConsent.checked=false;status(chatStatus,'源码范围无效，请重新加载并核对仓库、版本与路径后授权。',true);return;}
     const scope=JSON.stringify([providerConfigVersion,allowQuestionExport,questionId||null,allowSourceExport,allowSourceExport?sourceScope:null]);
-    if(conversationScope!==null&&conversationScope!==scope)resetConversation('授权范围已变化，已开始新对话。',scope);
+    if(conversationScope!==null&&conversationScope!==scope)resetConversation('授权范围已变化，已开始新对话。',scope,true);
     conversationScope=scope;
-    const requestConversation=conversationId;
+    const requestConversation=conversationId,requestSubject=subjectKey();
     chatBusy=true;send.disabled=true;status(chatStatus,'正在请求模型；修改只会生成建议…');message('user',content);
     try{
       if(allowSourceExport)await apiRequest('source/authorize',{method:'POST',body:{repository:sourceScope.repository,allowModelExport:true,revision:sourceScope.revision,providerConfigVersion,pathPrefixes:sourceScope.pathPrefixes}});
@@ -255,19 +271,22 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
       if(value.historyReset){chatLog.replaceChildren();message('user',content);}
       message('assistant',text(value.reply)||'本次调用已结束。');chatInput.value='';
       if(Array.isArray(value.citations)&&value.citations.length)message('assistant',value.citations.map(c=>typeof c==='string'?c:`${c.repository||''}@${c.revision||''} ${c.path||''}:${c.startLine||c.line||''}`).join('\n'));
-      proposal=value.proposal?{...value.proposal,privateSourceUsed:value.privateSourceUsed===true||value.proposal.privateSourceUsed===true,sourceDisclosure:value.proposal.sourceDisclosure||value.sourceDisclosure}:null;proposalKey=token();renderProposal();preserveProposal();
+      proposal=value.proposal?{...value.proposal,subjectKey:requestSubject,providerConfigVersion,privateSourceUsed:value.privateSourceUsed===true||value.proposal.privateSourceUsed===true,sourceDisclosure:value.proposal.sourceDisclosure||value.sourceDisclosure}:null;proposalKey=token();renderProposal();preserveProposal();
       status(chatStatus,(value.historyReset?'对话上下文已重置或精简，请按当前授权继续。':'')+(proposal?'建议已生成，请检查差异；尚未写入 GitHub。':'对话完成，未写入 GitHub。'));
     }catch(error){if(requestConversation!==conversationId)return;if(error.status===409||error.code==='supplier_config_changed'){questionConsent.checked=sourceConsent.checked=false;await loadManagement({waitForMetadata:true});status(chatStatus,`${error.message}。已重新加载范围，请核对新版本与供应商并重新勾选授权。`,true);}else status(chatStatus,error.message,true);}
     finally{chatBusy=false;send.disabled=!configured;}
   });
   applyProposal.addEventListener('click',async()=>{
     if(!proposal?.draftId)return;
+    if(submittingProposalIds.has(proposal.draftId))return;
+    if(!proposalMatchesContext()){proposalConfirm.checked=privatePublicationConfirm.checked=false;status(chatStatus,'题目、题库版本或供应商信息尚未核对一致，旧建议不能在当前上下文提交；请等待设置载入或重新生成。',true);return;}
     if(!proposalConfirm.checked){status(chatStatus,'请先检查差异并勾选提交确认。',true);return;}
     if((proposal.privateSourceUsed===true||proposal.requiresPublicConfirmation===true)&&!privatePublicationConfirm.checked){status(chatStatus,'建议涉及私有源码授权范围；请确认已检查无敏感片段，并明确同意公开到题库。',true);return;}
-    applyProposal.disabled=true;
-    try{const value=await apiRequest('changes/commit',{method:'POST',body:{draftId:proposal.draftId,idempotencyKey:proposalKey,confirmPublicPublication:privatePublicationConfirm.checked}});if(!value.commit)throw new Error('提交尚未确认');await onSaved(value);proposal=null;preserveProposal();proposalBox.hidden=true;status(chatStatus,`建议已提交 · ${value.commit.slice(0,12)}`);notify('AI 建议已保存到 GitHub');}
-    catch(error){status(chatStatus,`${error.message}。建议仍保留，未确认成功前不会标记为已保存。`,true);}
-    finally{applyProposal.disabled=false;}
+    const submitted=proposal,submittedKey=proposalKey,submittedConversation=conversationId;
+    submittingProposalIds.add(submitted.draftId);applyProposal.disabled=true;
+    try{const value=await apiRequest('changes/commit',{method:'POST',body:{draftId:submitted.draftId,idempotencyKey:submittedKey,confirmPublicPublication:privatePublicationConfirm.checked}});if(!value.commit)throw new Error('提交尚未确认');if(proposal===submitted){proposal=null;preserveProposal();renderProposal();}if(submittedConversation===conversationId)await onSaved(value);if(submittedConversation===conversationId)status(chatStatus,`建议已提交 · ${value.commit.slice(0,12)}`);notify(`AI 建议已保存到 GitHub · ${submitted.questionId||'新题'}`);}
+    catch(error){if(proposal===submitted)status(chatStatus,`${error.message}。建议仍保留，未确认成功前不会标记为已保存。`,true);else notify(`此前建议的提交未确认：${error.message}`);}
+    finally{submittingProposalIds.delete(submitted.draftId);applyProposal.disabled=!!proposal&&(!proposalMatchesContext()||submittingProposalIds.has(proposal.draftId));}
   });
 
   // Source tools expose only repositories registered on the server.
@@ -305,7 +324,7 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
   modelForm.append(el('p',{class:'admin-disclosure'},'模型请求由本站服务器发起。Base URL 必须在服务器供应商允许列表中；填写新的地址不会自动扩大访问权限。密钥不会返回页面，也不保存到本机草稿。当前管理设置保存在服务进程内，重启后的配置由部署设置决定。费用限额还应在供应商侧设置。'),field('兼容 API 的 Base URL',baseUrl),field('模型名称',modelName),field('API Key',modelKey,'留空保留服务端已有密钥。保存后会立即清空此输入框。'),el('label',{class:'admin-check'},[clearKey,'清除服务器保存的模型密钥']),saveModel,modelStatus);
   panes.model.append(modelForm);
   function showModel(value) {
-    if(providerConfigVersion!==text(value.configVersion)){questionConsent.checked=sourceConsent.checked=false;resetConversation('供应商配置已变化，已开始新对话。');}
+    if(providerConfigVersion!==text(value.configVersion)){const changed=!!providerConfigVersion||!!proposal&&proposal.providerConfigVersion!==text(value.configVersion);questionConsent.checked=sourceConsent.checked=false;resetConversation(changed?'供应商配置已变化，旧建议已失效，请重新生成。':'已载入供应商信息。',null,changed);}
     providerConfigVersion=text(value.configVersion);
     disclosedBaseUrl=text(value.baseUrl);disclosedModel=text(value.model);
     configured=value.configured===true;send.disabled=!configured||chatBusy;
@@ -314,6 +333,7 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
     providerDisclosure.textContent=configured?`本次供应商：${supplier} · 模型：${modelName.value}。仅发送你勾选授权的题目或必要源码片段。`:'模型尚未配置或配置不完整，AI 暂不可用；手动题库编辑仍可使用。';
     showSourceScope();
     status(modelStatus,`模型${configured?'已启用':'未启用'} · 密钥${value.keyConfigured?'已在服务端配置':'未配置'}`);
+    if(proposal)renderProposal(false);
   }
   modelForm.addEventListener('submit',async event=>{
     event.preventDefault();saveModel.disabled=true;
@@ -339,7 +359,7 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
       repos=value.repositories||[];
       for(const select of [sourceRepo,agentRepo]){const previous=select.value;select.replaceChildren(...repos.map(repo=>el('option',{value:repo.repository},`${repo.repository}${repo.pending?'（准备中，可直接查询）':repo.available===false?'（暂不可用）':repo.private===true?'（私有）':repo.private===false?'（公开）':'（权限待核验）'}`)));if(repos.some(repo=>repo.repository===previous))select.value=previous;}
       const currentRepo=repos.find(repo=>repo.repository===agentRepo.value);
-      if(previousScope.repository!==currentRepo?.repository||previousScope.revision!==currentRepo?.revision||previousScope.private!==!!currentRepo?.private){sourceConsent.checked=false;showSourceScope(true);resetConversation('源码版本或仓库范围已更新，请重新核对授权。');}
+      if(previousScope.repository!==currentRepo?.repository||previousScope.revision!==currentRepo?.revision||previousScope.private!==!!currentRepo?.private){sourceConsent.checked=false;showSourceScope(true);resetConversation('源码版本或仓库范围已更新，请重新核对授权。',null,!!previousScope.repository);}
       else showSourceScope();
       const pendingCount=repos.filter(repo=>repo.pending).length;
       const refreshingCount=repos.filter(repo=>repo.refreshing||repo.cacheStatus==='stale').length;
@@ -356,16 +376,53 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
     // An unrelated source clone or supplier check must not delay the editor.
     const metadata=[loadModel(),loadSources()];
     const editor=openSelected&&!edit&&questionSelect.value?openQuestion():Promise.resolve();
-    if(!proposal){try{const stored=JSON.parse(localStorage.getItem(DRAFT_PREFIX+'agent-proposal'));if(stored?.version===1&&typeof stored.proposal?.draftId==='string'&&typeof stored.proposal?.diff==='string'){proposal=stored.proposal;proposalKey=stored.requestKey||token();renderProposal();status(chatStatus,'已恢复本机 AI 建议；提交时服务器仍会检查草稿有效期与版本。');}}catch{}}
+    if(!proposal){try{const stored=JSON.parse(localStorage.getItem(DRAFT_PREFIX+'agent-proposal'));if(stored?.version===1&&typeof stored.proposal?.draftId==='string'&&typeof stored.proposal?.diff==='string'){if(stored.proposal.subjectKey===subjectKey()&&typeof stored.proposal.providerConfigVersion==='string'&&(!providerConfigVersion||stored.proposal.providerConfigVersion===providerConfigVersion)){proposal=stored.proposal;proposalKey=stored.requestKey||token();renderProposal();status(chatStatus,'已恢复本机 AI 建议；提交时服务器仍会检查草稿有效期与版本。');}else{localStorage.removeItem(DRAFT_PREFIX+'agent-proposal');status(chatStatus,'已忽略不属于当前题目或旧版无上下文的建议，请重新生成。');}}}catch{}}
     if(waitForMetadata)await Promise.allSettled([...metadata,editor]);else await editor;
   }
   let panelOpener=manage;
-  function selectPane(id){for(const [key,pane]of Object.entries(panes)){pane.hidden=key!==id;document.getElementById(`admin-tab-${key}`).setAttribute('aria-selected',String(key===id));}agentLaunch.setAttribute('aria-expanded',String(!panel.hidden&&id==='agent'));}
-  function hidePanel(){panel.hidden=true;manage.setAttribute('aria-expanded','false');agentLaunch.setAttribute('aria-expanded','false');}
+  let backgroundState=[],drawerHistoryKey=null,pendingHistoryReturn=false;
+  const historyMarker='androidStudyAgentDrawer';
+  const isDrawerModal=()=>window.innerWidth<1100;
+  function restoreBackground(){for(const [node,inert,aria]of backgroundState){node.inert=inert;inert?node.setAttribute('inert',''):node.removeAttribute('inert');aria===null?node.removeAttribute('aria-hidden'):node.setAttribute('aria-hidden',aria);}backgroundState=[];}
+  function updateDrawerMode(){
+    const open=!drawer.hidden,modal=open&&isDrawerModal();
+    document.body.classList.toggle('agent-sidebar-open',open&&!modal);document.body.classList.toggle('agent-drawer-modal',modal);
+    drawer.setAttribute('role',modal?'dialog':'complementary');
+    if(modal){drawer.setAttribute('aria-modal','true');if(!backgroundState.length)for(const node of [...document.body.children].filter(node=>node!==drawer&&node!==drawerBackdrop&&node.tagName!=='SCRIPT')){backgroundState.push([node,node.hasAttribute('inert'),node.getAttribute('aria-hidden')]);node.inert=true;node.setAttribute('inert','');node.setAttribute('aria-hidden','true');}}
+    else{drawer.removeAttribute('aria-modal');restoreBackground();}
+    drawerBackdrop.hidden=!modal;
+  }
+  function ensureDrawerHistory(){if(!drawer.hidden&&isDrawerModal()&&!drawerHistoryKey&&!pendingHistoryReturn){drawerHistoryKey=token();history.pushState({...history.state,[historyMarker]:drawerHistoryKey},'',location.href);}}
+  function selectPane(id){
+    if(id==='editor'){panes.editor.hidden=false;document.getElementById('admin-tab-editor').setAttribute('aria-selected','true');return;}
+    for(const key of ['agent','source','model']){panes[key].hidden=key!==id;document.getElementById(`admin-tab-${key}`).setAttribute('aria-selected',String(key===id));}
+  }
+  function hidePanel(){panel.hidden=true;manage.setAttribute('aria-expanded','false');}
+  function hideDrawer({fromHistory=false,returnFocus=true}={}){
+    const key=drawerHistoryKey;drawerHistoryKey=null;drawer.hidden=true;agentLaunch.setAttribute('aria-expanded','false');updateDrawerMode();
+    if(!fromHistory&&key&&history.state?.[historyMarker]===key){pendingHistoryReturn=true;history.back();}
+    if(returnFocus&&wasAuthenticated)agentLaunch.focus({preventScroll:true});
+  }
+  function openDrawer(id='agent'){
+    if(!wasAuthenticated)return;drawer.hidden=false;selectPane(id);agentLaunch.setAttribute('aria-expanded','true');updateDrawerMode();ensureDrawerHistory();
+    loadManagement({openSelected:false});
+    const target=id==='agent'?chatInput:document.getElementById(`admin-tab-${id}`);target.focus({preventScroll:true});target.scrollIntoView({block:'nearest'});
+  }
   manage.addEventListener('click',async()=>{if(!panel.hidden){hidePanel();return;}panelOpener=manage;panel.hidden=false;manage.setAttribute('aria-expanded','true');selectPane('editor');await loadManagement();panel.scrollIntoView({block:'start',behavior:'smooth'});});
-  agentLaunch.addEventListener('click',()=>{panelOpener=agentLaunch;panel.hidden=false;manage.setAttribute('aria-expanded','true');selectPane('agent');loadManagement({openSelected:false});panel.scrollIntoView({block:'start',behavior:'smooth'});chatInput.focus({preventScroll:true});});
+  agentLaunch.addEventListener('click',()=>openDrawer());
   close.addEventListener('click',()=>{hidePanel();panelOpener.focus();});
+  drawerClose.addEventListener('click',()=>hideDrawer());drawerBackdrop.addEventListener('click',()=>hideDrawer());
   tabs.addEventListener('click',event=>{const id=event.target.closest('[data-admin-tab]')?.dataset.adminTab;if(id)selectPane(id);});
+  drawerTabs.addEventListener('click',event=>{const id=event.target.closest('[data-admin-tab]')?.dataset.adminTab;if(id)selectPane(id);});
+  window.addEventListener('resize',()=>{updateDrawerMode();ensureDrawerHistory();});
+  window.addEventListener('popstate',()=>{if(pendingHistoryReturn){pendingHistoryReturn=false;ensureDrawerHistory();return;}if(drawerHistoryKey&&history.state?.[historyMarker]!==drawerHistoryKey)hideDrawer({fromHistory:true});});
+  function drawerFocusables(){return [...drawer.querySelectorAll('button,a[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')].filter(node=>!node.disabled&&!node.closest('[hidden]'));}
+  document.addEventListener('keydown',event=>{
+    if(drawer.hidden)return;
+    if(event.key==='Escape'){event.preventDefault();hideDrawer();return;}
+    if(event.key==='Tab'&&isDrawerModal()){const items=drawerFocusables(),first=items[0]||drawer,last=items.at(-1)||drawer;if(event.shiftKey&&(document.activeElement===first||!drawer.contains(document.activeElement))){event.preventDefault();last.focus();}else if(!event.shiftKey&&(document.activeElement===last||!drawer.contains(document.activeElement))){event.preventDefault();first.focus();}}
+  });
+  document.addEventListener('focusin',event=>{if(!drawer.hidden&&isDrawerModal()&&!drawer.contains(event.target))(drawerFocusables()[0]||drawer).focus();});
   function setAuthenticated(value) {
     const signed=!!value?.authenticated;shell.hidden=!signed;loginBox.hidden=signed;
     if(signed&&!wasAuthenticated)resetConversation('');
@@ -373,7 +430,7 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
     if(!signed){
       managementEpoch++;modelLoadGeneration++;sourceLoadPromise=null;repos=[];sourceRepo.replaceChildren();agentRepo.replaceChildren();refreshSources.disabled=false;
       editGeneration++;loadGeneration++;
-      hidePanel();modelKey.value='';password.value='';questionConsent.checked=sourceConsent.checked=false;
+      hidePanel();hideDrawer({returnFocus:false});modelKey.value='';password.value='';questionConsent.checked=sourceConsent.checked=false;
       resetConversation('');chatInput.value='';proposal=null;proposalBox.hidden=true;proposalDiff.textContent='';sourceResults.replaceChildren();sourcePrefixes.value='';sourceScopeDisclosure.textContent='';disclosedQuestionId=null;questionDisclosure.textContent='';
       titleInput.value='';answerInput.value='';editorContext.replaceChildren();diff.textContent='';questionSelect.replaceChildren();documentSelect.replaceChildren();
       edit=null;pending=null;latest=null;latestText.textContent='';conflictBox.hidden=true;configured=false;send.disabled=true;
