@@ -30,6 +30,44 @@ class RepositoryTests(unittest.TestCase):
             self.assertEqual(len(check_links(p)),1)
             (p/'missing.md').write_text('ok',encoding='utf8')
             self.assertEqual(check_links(p),[])
+    def test_link_check_excludes_only_web_generated_docs_and_named_fixtures(self):
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td)
+            ignored=[
+                'web/node_modules/example/README.md',
+                'web/dist/README.md',
+                'web/tests/fixture-markdown-edge.md',
+                'web/tests/fixture-emphasis-real.md',
+            ]
+            authored=[
+                'docs/guide.md',
+                'docs/fixture-markdown-edge.md',
+                'docs/dist/README.md',
+                'web/README.md',
+                'web/tests/README.md',
+            ]
+            for name in ignored+authored:
+                p=root/name;p.parent.mkdir(parents=True,exist_ok=True)
+                p.write_text('[broken](missing.md)',encoding='utf8')
+            errors=check_links(root)
+            self.assertEqual(len(errors),len(authored))
+            for name in authored:
+                self.assertTrue(any(e.startswith(name+': 本地链接不存在 ') for e in errors),name)
+            for name in ignored:
+                self.assertFalse(any(e.startswith(name+': ') for e in errors),name)
+
+    def test_generated_readme_keeps_mobile_entry_and_editorial_guides(self):
+        generated,_=collect_files()
+        readme=generated['README.md']
+        for name in ('java-core','kotlin-coroutines','android-platform'):
+            self.assertIn('(docs/'+name+'-interview-guide.md)',readme)
+        self.assertIn('120 题为整理者设计的通用练习',readme)
+        self.assertIn('不进入来源题、公司或招聘频率统计',readme)
+        self.assertIn('(https://txy.hejulian.org/android-study/)',readme)
+        self.assertIn('(web/README.md)',readme)
+        self.assertNotIn('371 道题',readme)
+        self.assertNotIn('7 篇完整导读',readme)
+
     def test_deterministic_generation(self):
         self.assertEqual(collect_files(),collect_files())
     def test_dry_run_has_no_commands(self):

@@ -22,6 +22,8 @@
 
 Flutter 与 Dart：[52 道面试问答及 SSH Mobile 实践指南](docs/flutter-interview-guide.md)。先掌握 P0 语言、状态、生命周期、异步与性能问题，再结合固定提交 `5aba1d8` 的源码例子和 6 个练习；底层网络细节继续参考 SDK 与 QUIC 导读。项目核对为静态阅读，不代表已完成真机或性能验证，私有源码链接需要访问权限。
 
+基础深化：[Java 与 ART（40 题）](docs/java-core-interview-guide.md) · [Kotlin 与协程（40 题）](docs/kotlin-coroutines-interview-guide.md) · [Android 平台机制（40 题）](docs/android-platform-interview-guide.md)。这 120 题为整理者设计的通用练习，独立于有公开面经来源的 Q 系列；不归属于任何公司的已证实面试记录，不进入来源题、公司或招聘频率统计。每题提供官方依据与版本边界，不代表个人项目经历或已经完成编译、真机及性能验证。
+
 [按类别复习](indexes/by-category.md) · [按公司查证](indexes/by-company.md) · [按年份查看](indexes/by-year.md) · [来源总表](sources/README.md) · [建议学习顺序](indexes/study-order.md)
 
 [只看面试时间明确的子集](indexes/strict-interview-window.md) · [补充练习](supplements/README.md) · [技术参考](references/README.md)
@@ -74,6 +76,8 @@ python scripts/validate.py
 
 Markdown 由数据生成；直接编辑生成文件可能在下次生成时被覆盖。新增规范见 [贡献指南](CONTRIBUTING.md)。
 
+`docs/` 中的专题指南为人工维护的独立资料，不由上述 Q/E 数据生成。修改时保留已有文档路径、题号和显式锚点，新增题沿用原编号格式，避免重新排序编号导致收藏与学习进度失配。
+
 ## GitHub 仓库与后续更新
 
 仓库：[hejulian2004/android-interview-notes](https://github.com/hejulian2004/android-interview-notes)。由仓库所有者创建，公开可见。
@@ -84,7 +88,7 @@ Markdown 由数据生成；直接编辑生成文件可能在下次生成时被�
 
 ## 手机复习网站
 
-网站：[安卓复习室](https://txy.hejulian.org/android-study/)。支持专题、全文搜索、先答后看、收藏和掌握程度；当前汇合 371 道题与 7 篇完整导读，保留各题库独立来源与事实边界。
+网站：[安卓复习室](https://txy.hejulian.org/android-study/)。支持专题、全文搜索、先答后看、收藏和掌握程度；题目与完整导读按 GitHub 资料更新，保留各题库独立来源与事实边界，实际内容数量以网站载入的版本为准。
 
 网站源码、维护和部署说明位于 [web/](web/README.md)。题库仍维护在原来的 `docs/`、`questions/` 和 `supplements/`；浏览器打开时按 30 分钟缓存期限检查 GitHub main，也可手动更新。更新失败保留成功缓存或带日期的快照。学习进度只保存在当前浏览器，可导入导出，不跨设备同步。
 

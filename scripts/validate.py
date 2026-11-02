@@ -48,7 +48,13 @@ def check_links(root: Path) -> list[str]:
     errors=[]
     pattern=re.compile(r'\[[^\]\n]+\]\(([^)\n]+)\)')
     for p in sorted(root.rglob('*.md')):
-        if '.git' in p.parts: continue
+        relative=p.relative_to(root)
+        # Generated website dependencies/build output are not authored repository docs.
+        if '.git' in relative.parts or relative.parts[:2] in {
+            ('web','node_modules'),('web','dist')
+        }: continue
+        # These direct-child fixtures intentionally contain invalid/adversarial links.
+        if relative.parent==Path('web/tests') and relative.match('fixture-*.md'): continue
         for raw in pattern.findall(p.read_text(encoding='utf-8')):
             dest=raw.strip().split(' "',1)[0]
             u=urlsplit(dest)
