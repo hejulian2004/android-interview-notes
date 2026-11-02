@@ -1,5 +1,7 @@
 # 部署与回滚
 
+> 下文保留旧静态版的部署记录。认证版本应使用 [后端部署说明](server/DEPLOYMENT.md)，不能只更新静态页面。
+
 目标：现有服务器上的 `https://txy.hejulian.org/android-study/`。使用已有 Caddy 的 HTTPS、端口和证书；不安装运行时，不增加端口、后台数据库、账号或定时任务。
 
 ## 目录与持久化

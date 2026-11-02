@@ -48,11 +48,15 @@ Python 3.10+、Git、OpenSSH 是 SSH 模式所需运行时。`runtime-image/` �
 
 实际 Caddy 是容器时，宿主 loopback 与其 loopback 不同。一个可选隔离方案是新后端容器共享既有 Caddy 的网络命名空间，只监听 `127.0.0.1:8183`，不发布宿主端口、不改变现有容器网络。先核实命名空间内端口空闲和外连能力；不得据此重建/重启其他容器或开放防火墙。
 
-仅在现有学习路径静态路由前添加 API 匹配；先备份、校验候选配置，确认其他路由规范化结果不变，再平滑重载：
+使用两条内联路径匹配，并校验其排在原静态路由前；不要假定命名匹配器会保持相同排序。仅在现有学习路径静态路由前添加 API 匹配；先备份、校验候选配置，确认其他路由规范化结果不变，再平滑重载：
 
 ```caddyfile
-@android_study_api path /android-study/api /android-study/api/*
-handle @android_study_api {
+handle /android-study/api {
+    reverse_proxy 127.0.0.1:8183 {
+        header_up X-Study-Client-IP {remote_host}
+    }
+}
+handle /android-study/api/* {
     reverse_proxy 127.0.0.1:8183 {
         header_up X-Study-Client-IP {remote_host}
     }

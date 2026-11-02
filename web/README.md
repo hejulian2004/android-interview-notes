@@ -2,7 +2,7 @@
 
 手机优先的中文安卓面试复习网站，正式题库内容来自 [hejulian2004/android-interview-notes](https://github.com/hejulian2004/android-interview-notes)。项目位置约定为 txy 登录用户的 `~/coding/android-study-site/`。
 
-> 当前 checkout 是新增认证与服务端编辑的候选版本，尚未部署。线上旧版静态服务不受本轮本地修改影响。新版本必须与后端一起部署，不能单独上传 dist 后声称登录或编辑已经可用。
+> [线上复习室](https://txy.hejulian.org/android-study/)现已启用登录。学习记录仍保存在当前浏览器；维护界面或认证代码时，应验证后端与前端的配套版本。
 
 ## 使用与维护
 
