@@ -4,7 +4,7 @@ title: "LiveData 如何做到生命周期感知"
 category: "10-Jetpack架构与存储"
 kind: observed
 priority: P0
-updated_at: "2026-10-30"
+updated_at: "2026-11-02"
 ---
 
 # Q069 · LiveData 如何做到生命周期感知
@@ -26,7 +26,7 @@ updated_at: "2026-10-30"
 
 ## 参考回答提纲
 
-观察者与 LifecycleOwner 关联，只在合适的活跃状态接收更新，销毁后解除关联。区分 setValue 与 postValue 的线程要求以及多次待投递值可能合并的行为，避免把状态容器当成无损事件队列。
+观察者与 LifecycleOwner 关联，只在合适的活跃状态接收更新，销毁后解除关联。区分 setValue 与 postValue 的线程要求以及多次待投递值可能合并的行为，避免把状态容器当成无损事件队列。 活跃通常指 STARTED 或 RESUMED；DESTROYED 会移除绑定的观察者。直接读取 value 是当前快照，不会建立订阅，也未必反映尚未在主线程执行的 postValue；是否需要“直接 get”要结合调用线程和读取目的。
 
 ## 易错点
 

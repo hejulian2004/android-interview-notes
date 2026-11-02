@@ -93,3 +93,16 @@
 | sharedflow | [SharedFlow API](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-shared-flow/) | 2026-10-30 |
 | kcancellation | [Kotlin 协程取消（入口，本次页面直读为空）](https://kotlinlang.org/docs/cancellation-and-timeouts.html) | 未成功直读 |
 | cpeffects | [Compose 副作用](https://developer.android.com/develop/ui/compose/side-effects) | 2026-10-30 |
+| binder-buffer | [Binder 事务缓冲与异常边界](https://developer.android.com/reference/android/os/TransactionTooLargeException) | 2026-11-02 |
+| kcoroutine-spec | [Kotlin 协程规范：CPS 与状态机](https://kotlinlang.org/spec/asynchronous-programming-with-coroutines.html) | 2026-11-02 |
+| hashmap-jdk17-source | [OpenJDK 17 HashMap 源码（具体实现边界）](https://raw.githubusercontent.com/openjdk/jdk17u/master/src/java.base/share/classes/java/util/HashMap.java) | 2026-11-02 |
+| executor-jdk17 | [ThreadPoolExecutor Java SE 17](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html) | 2026-11-02 |
+| vmstore-owner | [ViewModelStoreOwner 接口契约](https://developer.android.com/reference/androidx/lifecycle/ViewModelStoreOwner) | 2026-11-02 |
+| provider-basics | [ContentProvider 基础与数据共享](https://developer.android.com/guide/topics/providers/content-provider-basics) | 2026-11-02 |
+| kensureactive | [ensureActive 协作式取消](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/ensure-active.html) | 2026-11-02 |
+| broadcast-guide | [广播注册、生命周期与权限](https://developer.android.com/develop/background-work/background-tasks/broadcasts) | 2026-11-02 |
+| view-layout | [XML View 布局声明与常见布局](https://developer.android.com/develop/ui/views/layout/declaring-layout) | 2026-11-02 |
+| chm-jdk17-source | [OpenJDK 17 ConcurrentHashMap 源码](https://raw.githubusercontent.com/openjdk/jdk17u/master/src/java.base/share/classes/java/util/concurrent/ConcurrentHashMap.java) | 2026-11-02 |
+| arraylist-jdk17-source | [OpenJDK 17 ArrayList 源码](https://raw.githubusercontent.com/openjdk/jdk17u/master/src/java.base/share/classes/java/util/ArrayList.java) | 2026-11-02 |
+| collections-synchronized | [Collections.synchronizedList 及遍历同步](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collections.html#synchronizedList(java.util.List)) | 2026-11-02 |
+| copyonwrite | [CopyOnWriteArrayList 快照与复制代价](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/CopyOnWriteArrayList.html) | 2026-11-02 |

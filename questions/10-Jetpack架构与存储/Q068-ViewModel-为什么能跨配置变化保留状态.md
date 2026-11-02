@@ -4,7 +4,7 @@ title: "ViewModel 为什么能跨配置变化保留状态"
 category: "10-Jetpack架构与存储"
 kind: observed
 priority: P0
-updated_at: "2026-10-30"
+updated_at: "2026-11-02"
 ---
 
 # Q068 · ViewModel 为什么能跨配置变化保留状态
@@ -35,7 +35,7 @@ updated_at: "2026-10-30"
 
 ## 参考回答提纲
 
-它由 ViewModelStoreOwner 管理，生命周期取决于 owner 而非某次 View 创建；配置重建时可以沿用对应存储。业务状态、可恢复 UI 状态和持久数据要分层，进程死亡后需要 SavedStateHandle 或持久化补充。
+它由 ViewModelStoreOwner 管理，生命周期取决于 owner 而非某次 View 创建；配置重建时可以沿用对应存储。业务状态、可恢复 UI 状态和持久数据要分层，进程死亡后需要 SavedStateHandle 或持久化补充。 以 ComponentActivity 的配置重建为例，可跟踪其非配置保留对象携带 ViewModelStore，再由重建的 owner 获取同一 Store；ViewModelStoreOwner 是暴露 Store 与管理其清理责任的接口。它不是把 ViewModel 序列化进 Bundle，也不能把某版 onRetainNonConfigurationInstance 调用链当所有 owner 的唯一实现。
 
 ## 易错点
 
@@ -50,6 +50,7 @@ ViewModel 不自动抗进程死亡，也不应长期持有 Activity 或 View。
 整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。
 
 - [ViewModel 概览](https://developer.android.com/topic/libraries/architecture/viewmodel)（网页入口已核查）
+- [ViewModelStoreOwner 接口契约](https://developer.android.com/reference/androidx/lifecycle/ViewModelStoreOwner)（网页入口已核查）
 
 复习时需结合目标 Android API、AndroidX、Kotlin、JDK 或协议版本。本文是回答提纲，不是企业标准答案，也不是已完成的性能实验。
 

@@ -4,7 +4,7 @@ title: "Compose 与 XML-View 的区别及选型依据"
 category: "05-JetpackCompose"
 kind: observed
 priority: P0
-updated_at: "2026-10-30"
+updated_at: "2026-11-02"
 ---
 
 # Q027 · Compose 与 XML-View 的区别及选型依据
@@ -35,7 +35,7 @@ updated_at: "2026-10-30"
 
 ## 参考回答提纲
 
-Compose 通过状态描述 UI；传统 View 常通过对象方法更新属性。比较状态管理、布局绘制、工具链、已有组件复用和团队维护成本，而非只比较代码量。现有 View 可通过互操作嵌入 Compose，迁移可以按页面或控件逐步进行。
+Compose 通过状态描述 UI；传统 View 常通过对象方法更新属性。比较状态管理、布局绘制、工具链、已有组件复用和团队维护成本，而非只比较代码量。现有 View 可通过互操作嵌入 Compose，迁移可以按页面或控件逐步进行。 XML/View 常见 LinearLayout 表达线性排列，FrameLayout 叠放，ConstraintLayout 表达约束关系；RecyclerView 负责可复用列表。Compose 中 Row/Column/Box 与 Lazy 列表是不同体系的布局与懒加载工具。选择依据约束复杂度、内容规模、可访问性和测量成本，不是见到嵌套就一律重构或只靠布局名字判断性能。
 
 ## 易错点
 
@@ -51,6 +51,7 @@ XML 只是布局描述方式；RecyclerView 可以不用 XML。Compose 也不能
 
 - [Compose 与 View 互操作](https://developer.android.com/develop/ui/compose/migrate/interoperability-apis)（网页入口已核查）
 - [Compose 三个阶段](https://developer.android.com/develop/ui/compose/phases)（网页入口已核查）
+- [XML View 布局声明与常见布局](https://developer.android.com/develop/ui/views/layout/declaring-layout)（网页入口已核查）
 
 复习时需结合目标 Android API、AndroidX、Kotlin、JDK 或协议版本。本文是回答提纲，不是企业标准答案，也不是已完成的性能实验。
 

@@ -16,15 +16,16 @@
         "observed_variant": "Android 基础：四大组件"
       }
     ],
-    "answer": "Activity 承载用户交互入口；Service 表达无界面的组件工作；BroadcastReceiver 接收广播；ContentProvider 以结构化接口暴露数据。回答时补充各自启动方式、生命周期和进程边界，再给出登录页、媒体播放、系统广播、文件共享等例子。",
+    "answer": "Activity 承载用户交互入口；Service 表达无界面的组件工作；BroadcastReceiver 接收广播；ContentProvider 以结构化接口暴露数据。回答时补充各自启动方式、生命周期和进程边界，再给出登录页、媒体播放、系统广播、文件共享等例子。 广播可在 Manifest 中声明或用 Context 注册；动态注册应把注册/注销与所选所有者生命周期对齐，按照系统和 targetSdk 规则明确 exported/not-exported 及权限。onReceive 默认在主线程，耗时工作不能直接长时间占用它；goAsync 也有完成时限，不是无限后台线程。",
     "pitfall": "Service 默认也运行在所在进程主线程；“后台组件”等于“后台线程”是错误理解。",
     "followup": "下载任务为什么不一定用长期存活的 Service？",
     "references": [
       "process",
-      "activity"
+      "activity",
+      "broadcast-guide"
     ],
     "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
-    "updated_at": "2026-10-30",
+    "updated_at": "2026-11-02",
     "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
   },
   {
@@ -346,14 +347,15 @@
         "observed_variant": "Android 基础：HandlerThread 与 new Thread"
       }
     ],
-    "answer": "HandlerThread 为后台线程建立 Looper，适合顺序处理多次投递的消息；普通 Thread 本身不自带消息循环。需要并发处理大量独立任务时，应评估线程池或协程；结束时选择适当退出方式并取消未完成任务。",
+    "answer": "HandlerThread 为后台线程建立 Looper，适合顺序处理多次投递的消息；普通 Thread 本身不自带消息循环。需要并发处理大量独立任务时，应评估线程池或协程；结束时选择适当退出方式并取消未完成任务。 若手动创建，在线程 run 中先 Looper.prepare()，再用该 Looper 创建 Handler，最后 Looper.loop()；Handler 发布给其他线程还需要就绪同步，不能刚 start 就假定可用。主线程 Looper 由 Android 环境创建，应用不应自行重复 prepare。",
     "pitfall": "带消息队列不意味着自动并行；一个 Looper 的长任务会阻塞后续任务。",
     "followup": "quit 与 quitSafely 对待执行任务的处理有什么不同？",
     "references": [
-      "handlerthread"
+      "handlerthread",
+      "looper"
     ],
     "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
-    "updated_at": "2026-10-30",
+    "updated_at": "2026-11-02",
     "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
   },
   {
@@ -396,15 +398,16 @@
         "observed_variant": "播放优化：Binder 上限和共享 fd"
       }
     ],
-    "answer": "Binder 适合传递控制消息与小型结构化数据。大型载荷要考虑事务缓冲区、并发事务和序列化开销；可传递文件描述符或共享内存句柄，并明确所有权、访问权限和关闭时机。",
+    "answer": "Binder 适合传递控制消息与小型结构化数据。大型载荷要考虑事务缓冲区、并发事务和序列化开销；可传递文件描述符或共享内存句柄，并明确所有权、访问权限和关闭时机。 官方文档当前描述事务缓冲约 1MB，由进程中所有进行中的事务共享，而非每次调用各有 1MB。异常时不能仅凭异常判断请求完全未执行还是响应返回失败，因此重试还要考虑幂等。",
     "pitfall": "不要假定“单次小于某个数字就绝对安全”；共享内存也不等于任意 Java 对象天然跨进程共享。",
     "followup": "共享数据正在被写入时，读端怎样获得一致快照？",
     "references": [
       "binder",
-      "sharedmemory"
+      "sharedmemory",
+      "binder-buffer"
     ],
     "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
-    "updated_at": "2026-10-30",
+    "updated_at": "2026-11-02",
     "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
   },
   {
@@ -673,15 +676,16 @@
         "observed_variant": "客户端一面：Compose、XML、View 的选择"
       }
     ],
-    "answer": "Compose 通过状态描述 UI；传统 View 常通过对象方法更新属性。比较状态管理、布局绘制、工具链、已有组件复用和团队维护成本，而非只比较代码量。现有 View 可通过互操作嵌入 Compose，迁移可以按页面或控件逐步进行。",
+    "answer": "Compose 通过状态描述 UI；传统 View 常通过对象方法更新属性。比较状态管理、布局绘制、工具链、已有组件复用和团队维护成本，而非只比较代码量。现有 View 可通过互操作嵌入 Compose，迁移可以按页面或控件逐步进行。 XML/View 常见 LinearLayout 表达线性排列，FrameLayout 叠放，ConstraintLayout 表达约束关系；RecyclerView 负责可复用列表。Compose 中 Row/Column/Box 与 Lazy 列表是不同体系的布局与懒加载工具。选择依据约束复杂度、内容规模、可访问性和测量成本，不是见到嵌套就一律重构或只靠布局名字判断性能。",
     "pitfall": "XML 只是布局描述方式；RecyclerView 可以不用 XML。Compose 也不能无条件保证比 View 快。",
     "followup": "既有复杂 Custom View，为什么不必为引入 Compose 立即重写？",
     "references": [
       "cpinterop",
-      "cpphases"
+      "cpphases",
+      "view-layout"
     ],
     "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
-    "updated_at": "2026-10-30",
+    "updated_at": "2026-11-02",
     "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
   },
   {
@@ -826,15 +830,16 @@
         "observed_variant": "Continuation 与协程"
       }
     ],
-    "answer": "可以从编译后的状态机说明：挂起点附近的局部状态由 continuation 保存，恢复时依据标签继续执行。真正挂起需要被调用的操作支持该协议；返回结果与抛出异常也通过恢复路径传播。",
+    "answer": "可以从编译后的状态机说明：挂起点附近的局部状态由 continuation 保存，恢复时依据标签继续执行。真正挂起需要被调用的操作支持该协议；返回结果与抛出异常也通过恢复路径传播。 Kotlin 的这类无栈协程不为每个协程保留独立原生调用栈：编译器用 Continuation/CPS 和状态标签衔接恢复，在需要时把跨挂起点仍存活的局部值保存到续体字段；同步返回的调用未必实际挂起。",
     "pitfall": "不是遇到 suspend 关键字就必然挂起，也不是把整条线程的调用栈原样搬到另一个线程。",
     "followup": "一个没有挂起点的 suspend 函数为什么可能从头执行到尾？",
     "references": [
       "kcoroutine",
-      "kdispatch"
+      "kdispatch",
+      "kcoroutine-spec"
     ],
     "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
-    "updated_at": "2026-10-30",
+    "updated_at": "2026-11-02",
     "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
   },
   {
@@ -890,14 +895,15 @@
         "observed_variant": "集合原理"
       }
     ],
-    "answer": "先通过哈希确定桶，再在桶内查找；冲突处理、树化阈值和迁移策略属于具体实现细节。以明确的 Java 版本讲数组、链表、树结构及容量与负载因子的权衡。它不提供并发更新安全保证。",
+    "answer": "先通过哈希确定桶，再在桶内查找；冲突处理、树化阈值和迁移策略属于具体实现细节。以明确的 Java 版本讲数组、链表、树结构及容量与负载因子的权衡。它不提供并发更新安全保证。 若以所链接的 OpenJDK 17 HashMap 源码为例，TREEIFY_THRESHOLD=8、MIN_TREEIFY_CAPACITY=64；普通 put 在桶已有至少 8 个节点后再追加节点时会触发树化检查，表容量不足 64 则优先扩容。不要把“阈值 8”机械回答成恰好插入第 8 个一定树化，其他插入路径也需读具体代码。",
     "pitfall": "不要把 JDK 7 的链表成环故事推广为每个 Android 运行时的现行实现。",
     "followup": "为什么容量、数据分布与键的 hashCode 质量都会影响性能？",
     "references": [
-      "hashmap"
+      "hashmap",
+      "hashmap-jdk17-source"
     ],
     "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
-    "updated_at": "2026-10-30",
+    "updated_at": "2026-11-02",
     "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
   },
   {
@@ -917,14 +923,15 @@
         "observed_variant": "HashMap、Hashtable 和并发容器"
       }
     ],
-    "answer": "说明并发读写的 API 保证，再按具体 JDK/Android 版本谈细粒度同步和 CAS 等实现。get 后再 put 的复合业务并不会自动变为原子操作，可使用 putIfAbsent、compute 等适配语义。",
+    "answer": "说明并发读写的 API 保证，再按具体 JDK/Android 版本谈细粒度同步和 CAS 等实现。get 后再 put 的复合业务并不会自动变为原子操作，可使用 putIfAbsent、compute 等适配语义。 若按所链接的 OpenJDK 17 实现展开：空桶插入可用 CAS，已有桶的修改涉及桶首节点监视器等细粒度同步，get 不以获取同一桶锁作为通常路径；扩容可由多个线程协作迁移。字段可见性与原子操作共同支撑并发契约，但不能推成跨键事务或任意值对象线程安全，Android 实现仍须核对版本。",
     "pitfall": "不要混用不同版本的分段锁和桶级实现；容器线程安全不等于值对象内部也安全。",
     "followup": "怎样安全地为不存在的 key 初始化一个昂贵对象？",
     "references": [
-      "chm"
+      "chm",
+      "chm-jdk17-source"
     ],
     "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
-    "updated_at": "2026-10-30",
+    "updated_at": "2026-11-02",
     "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
   },
   {
@@ -948,14 +955,17 @@
         "observed_variant": "ArrayList 与 HashSet"
       }
     ],
-    "answer": "数组提供按下标访问；中间插入或删除可能移动后续元素。动态扩容需要分配更大的存储并搬移，尾部追加通常具有摊还优势。容量、大小、迭代器失效与并发访问要分开讨论。",
+    "answer": "数组提供按下标访问；中间插入或删除可能移动后续元素。动态扩容需要分配更大的存储并搬移，尾部追加通常具有摊还优势。容量、大小、迭代器失效与并发访问要分开讨论。 按 OpenJDK 17 源码，容量不足时用 grow/ArraysSupport 计算新容量，常见首选增长为旧容量的一半，但还受最小所需容量与溢出/上限处理影响，不是所有情况固定乘 1.5，更不是 Java API 对 Android 所有版本的承诺。多线程可选外部统一锁或 synchronizedList（遍历仍在同一包装对象的锁内）、读多写少时评估 CopyOnWriteArrayList，或发布不可变快照；单次调用同步不自动保证多步业务原子性。",
     "pitfall": "不要把所有插入操作都概括成 O(1)，也不要认为 LinkedList 在真实设备上必然更快。",
     "followup": "已知最终元素数量时，预设容量有什么收益和代价？",
     "references": [
-      "arraylist"
+      "arraylist",
+      "arraylist-jdk17-source",
+      "collections-synchronized",
+      "copyonwrite"
     ],
     "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
-    "updated_at": "2026-10-30",
+    "updated_at": "2026-11-02",
     "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
   },
   {
@@ -1324,14 +1334,15 @@
         "observed_variant": "有界队列和最大线程数"
       }
     ],
-    "answer": "解释核心线程、等待队列、最大线程、空闲回收、线程工厂和拒绝策略的协作。常见路径是先补核心线程，再入队，队列拒绝后尝试扩到最大，最后执行拒绝策略。负载、队列长度和延迟预算共同决定配置。",
+    "answer": "解释核心线程、等待队列、最大线程、空闲回收、线程工厂和拒绝策略的协作。常见路径是先补核心线程，再入队，队列拒绝后尝试扩到最大，最后执行拒绝策略。负载、队列长度和延迟预算共同决定配置。 corePoolSize、maximumPoolSize、keepAliveTime、unit、workQueue、threadFactory、handler 是常说的七项构造参数。低于 core 时优先创建工作线程，达到 core 后先排队，队列拒绝入队才尝试扩到 max，再失败走拒绝策略。所谓核心/临时线程不是两种 Java Thread 类型；空闲淘汰受当前数量和 allowCoreThreadTimeOut 控制，无界队列通常让 max 难以发挥作用。",
     "pitfall": "无界队列可能使最大线程数很少发挥扩容作用；线程越多并不必然吞吐越高。",
     "followup": "如何设计大量文件扫描任务的背压与取消？",
     "references": [
-      "pool"
+      "pool",
+      "executor-jdk17"
     ],
     "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
-    "updated_at": "2026-10-30",
+    "updated_at": "2026-11-02",
     "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
   },
   {
@@ -1738,7 +1749,7 @@
         "observed_variant": "MVVM 与 Jetpack"
       }
     ],
-    "answer": "用同一个登录业务说明 UI、状态、业务规则和数据访问分别放在哪里。重点是依赖方向、生命周期与可测试性，而不是给类名加后缀。Android 推荐的分层和单向数据流可以辅助落地，但模式不是唯一正确结构。",
+    "answer": "用同一个登录业务说明 UI、状态、业务规则和数据访问分别放在哪里。重点是依赖方向、生命周期与可测试性，而不是给类名加后缀。Android 推荐的分层和单向数据流可以辅助落地，但模式不是唯一正确结构。 MVVM 不要求 ViewModel 反向持有 View；常见 Android 实现是 View 观察不可变 UI 状态并提交动作，ViewModel 依赖 Repository。Data Binding 的双向属性绑定也不等于 View 和 ViewModel 必须互相持有。分层可有 UI/data，按复杂度增加 domain，不按固定层数评分。",
     "pitfall": "有 ViewModel 类并不自动等于良好 MVVM；把网络、数据库和导航全部塞进其中仍可能过度耦合。",
     "followup": "不启动 Activity，如何测试登录失败和重试逻辑？",
     "references": [
@@ -1746,7 +1757,7 @@
       "vm"
     ],
     "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
-    "updated_at": "2026-10-30",
+    "updated_at": "2026-11-02",
     "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
   },
   {
@@ -1789,14 +1800,15 @@
         "observed_variant": "ViewModel 生命周期"
       }
     ],
-    "answer": "它由 ViewModelStoreOwner 管理，生命周期取决于 owner 而非某次 View 创建；配置重建时可以沿用对应存储。业务状态、可恢复 UI 状态和持久数据要分层，进程死亡后需要 SavedStateHandle 或持久化补充。",
+    "answer": "它由 ViewModelStoreOwner 管理，生命周期取决于 owner 而非某次 View 创建；配置重建时可以沿用对应存储。业务状态、可恢复 UI 状态和持久数据要分层，进程死亡后需要 SavedStateHandle 或持久化补充。 以 ComponentActivity 的配置重建为例，可跟踪其非配置保留对象携带 ViewModelStore，再由重建的 owner 获取同一 Store；ViewModelStoreOwner 是暴露 Store 与管理其清理责任的接口。它不是把 ViewModel 序列化进 Bundle，也不能把某版 onRetainNonConfigurationInstance 调用链当所有 owner 的唯一实现。",
     "pitfall": "ViewModel 不自动抗进程死亡，也不应长期持有 Activity 或 View。",
     "followup": "导航图级和 Activity 级 ViewModel 的共享边界有何不同？",
     "references": [
-      "vm"
+      "vm",
+      "vmstore-owner"
     ],
     "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
-    "updated_at": "2026-10-30",
+    "updated_at": "2026-11-02",
     "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
   },
   {
@@ -1812,14 +1824,14 @@
         "observed_variant": "一面：LiveData"
       }
     ],
-    "answer": "观察者与 LifecycleOwner 关联，只在合适的活跃状态接收更新，销毁后解除关联。区分 setValue 与 postValue 的线程要求以及多次待投递值可能合并的行为，避免把状态容器当成无损事件队列。",
+    "answer": "观察者与 LifecycleOwner 关联，只在合适的活跃状态接收更新，销毁后解除关联。区分 setValue 与 postValue 的线程要求以及多次待投递值可能合并的行为，避免把状态容器当成无损事件队列。 活跃通常指 STARTED 或 RESUMED；DESTROYED 会移除绑定的观察者。直接读取 value 是当前快照，不会建立订阅，也未必反映尚未在主线程执行的 postValue；是否需要“直接 get”要结合调用线程和读取目的。",
     "pitfall": "observeForever 不自动受页面生命周期保护；postValue 不能被假设保留每一次中间值。",
     "followup": "为什么支付结果等一次性行为需要额外设计消费语义？",
     "references": [
       "livedata"
     ],
     "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
-    "updated_at": "2026-10-30",
+    "updated_at": "2026-11-02",
     "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
   },
   {
@@ -1835,15 +1847,16 @@
         "observed_variant": "二面：偏好存储与数据库"
       }
     ],
-    "answer": "少量配置适合键值存储；需要查询、关系、一致更新与迁移的数据更适合数据库。还要根据一致性、数据量、多进程和损坏恢复要求评估 DataStore 等方案，而非仅比较 API 行数。",
+    "answer": "少量配置适合键值存储；需要查询、关系、一致更新与迁移的数据更适合数据库。还要根据一致性、数据量、多进程和损坏恢复要求评估 DataStore 等方案，而非仅比较 API 行数。 ContentProvider 是数据共享与受控访问的组件抽象，不是一种和 SQLite 并列的底层存储引擎；它背后可以是数据库、文件或其他来源。跨应用共享还要考虑 URI 权限与接口契约。",
     "pitfall": "把一整份不断增长的业务列表编码为一个字符串，并不会因此获得数据库能力。",
     "followup": "用户切换账号时，怎样避免配置与业务缓存互相串用？",
     "references": [
       "sp",
-      "room"
+      "room",
+      "provider-basics"
     ],
     "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
-    "updated_at": "2026-10-30",
+    "updated_at": "2026-11-02",
     "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
   },
   {
@@ -3246,14 +3259,15 @@
     "priority": "P1",
     "scope": "应用开发",
     "evidence": [],
-    "answer": "取消是协作式的，纯计算循环若没有检查取消或调用可取消挂起点，可能继续占用线程。按合理粒度检查活动状态，并通过 finally 清理资源。",
+    "answer": "取消是协作式的，纯计算循环若没有检查取消或调用可取消挂起点，可能继续占用线程。按合理粒度检查活动状态，并通过 finally 清理资源。 任意 suspend 调用都不保证检查取消；标准库中可取消的挂起操作、ensureActive/yield 或自定义取消协议才提供合作点。cancel() 只请求取消而不阻塞等待；join() 或 cancelAndJoin() 用于等待结束，父 Job 进入完成态也受子任务实际结束约束。不能把 cancel() 当强杀线程。",
     "pitfall": "捕获所有异常后吞掉 CancellationException 会破坏取消传播。",
     "followup": "计算批次过大和检查过于频繁各有什么代价？",
     "references": [
-      "kcancellation"
+      "kcancellation",
+      "kensureactive"
     ],
     "review_status": "整理版回答提纲，非企业官方答案；未逐题编译或实测",
-    "updated_at": "2026-10-30",
+    "updated_at": "2026-11-02",
     "answer_provenance": "整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。"
   }
 ]

@@ -4,7 +4,7 @@ title: "SharedPreferences、数据库各适合什么数据"
 category: "10-Jetpack架构与存储"
 kind: observed
 priority: P1
-updated_at: "2026-10-30"
+updated_at: "2026-11-02"
 ---
 
 # Q070 · SharedPreferences、数据库各适合什么数据
@@ -26,7 +26,7 @@ updated_at: "2026-10-30"
 
 ## 参考回答提纲
 
-少量配置适合键值存储；需要查询、关系、一致更新与迁移的数据更适合数据库。还要根据一致性、数据量、多进程和损坏恢复要求评估 DataStore 等方案，而非仅比较 API 行数。
+少量配置适合键值存储；需要查询、关系、一致更新与迁移的数据更适合数据库。还要根据一致性、数据量、多进程和损坏恢复要求评估 DataStore 等方案，而非仅比较 API 行数。 ContentProvider 是数据共享与受控访问的组件抽象，不是一种和 SQLite 并列的底层存储引擎；它背后可以是数据库、文件或其他来源。跨应用共享还要考虑 URI 权限与接口契约。
 
 ## 易错点
 
@@ -42,6 +42,7 @@ updated_at: "2026-10-30"
 
 - [SharedPreferences API](https://developer.android.com/reference/android/content/SharedPreferences)（网页入口已核查）
 - [Room 关系建模](https://developer.android.com/training/data-storage/room/relationships)（网页入口已核查）
+- [ContentProvider 基础与数据共享](https://developer.android.com/guide/topics/providers/content-provider-basics)（网页入口已核查）
 
 复习时需结合目标 Android API、AndroidX、Kotlin、JDK 或协议版本。本文是回答提纲，不是企业标准答案，也不是已完成的性能实验。
 

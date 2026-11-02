@@ -4,7 +4,7 @@ title: "HandlerThread 与普通 Thread 有何差别"
 category: "02-Handler线程与IPC"
 kind: observed
 priority: P1
-updated_at: "2026-10-30"
+updated_at: "2026-11-02"
 ---
 
 # Q014 · HandlerThread 与普通 Thread 有何差别
@@ -26,7 +26,7 @@ updated_at: "2026-10-30"
 
 ## 参考回答提纲
 
-HandlerThread 为后台线程建立 Looper，适合顺序处理多次投递的消息；普通 Thread 本身不自带消息循环。需要并发处理大量独立任务时，应评估线程池或协程；结束时选择适当退出方式并取消未完成任务。
+HandlerThread 为后台线程建立 Looper，适合顺序处理多次投递的消息；普通 Thread 本身不自带消息循环。需要并发处理大量独立任务时，应评估线程池或协程；结束时选择适当退出方式并取消未完成任务。 若手动创建，在线程 run 中先 Looper.prepare()，再用该 Looper 创建 Handler，最后 Looper.loop()；Handler 发布给其他线程还需要就绪同步，不能刚 start 就假定可用。主线程 Looper 由 Android 环境创建，应用不应自行重复 prepare。
 
 ## 易错点
 
@@ -41,6 +41,7 @@ quit 与 quitSafely 对待执行任务的处理有什么不同？
 整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。
 
 - [HandlerThread API](https://developer.android.com/reference/android/os/HandlerThread)（网页入口已核查）
+- [Looper API](https://developer.android.com/reference/android/os/Looper)（网页入口已核查）
 
 复习时需结合目标 Android API、AndroidX、Kotlin、JDK 或协议版本。本文是回答提纲，不是企业标准答案，也不是已完成的性能实验。
 

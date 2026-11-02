@@ -4,7 +4,7 @@ title: "MVC、MVP、MVVM 如何划分职责"
 category: "10-Jetpack架构与存储"
 kind: observed
 priority: P0
-updated_at: "2026-10-30"
+updated_at: "2026-11-02"
 ---
 
 # Q066 · MVC、MVP、MVVM 如何划分职责
@@ -44,7 +44,7 @@ updated_at: "2026-10-30"
 
 ## 参考回答提纲
 
-用同一个登录业务说明 UI、状态、业务规则和数据访问分别放在哪里。重点是依赖方向、生命周期与可测试性，而不是给类名加后缀。Android 推荐的分层和单向数据流可以辅助落地，但模式不是唯一正确结构。
+用同一个登录业务说明 UI、状态、业务规则和数据访问分别放在哪里。重点是依赖方向、生命周期与可测试性，而不是给类名加后缀。Android 推荐的分层和单向数据流可以辅助落地，但模式不是唯一正确结构。 MVVM 不要求 ViewModel 反向持有 View；常见 Android 实现是 View 观察不可变 UI 状态并提交动作，ViewModel 依赖 Repository。Data Binding 的双向属性绑定也不等于 View 和 ViewModel 必须互相持有。分层可有 UI/data，按复杂度增加 domain，不按固定层数评分。
 
 ## 易错点
 

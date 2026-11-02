@@ -4,7 +4,7 @@ title: "ArrayList 为什么查询快而中间插入可能昂贵"
 category: "07-Java集合与JVM"
 kind: observed
 priority: P1
-updated_at: "2026-10-30"
+updated_at: "2026-11-02"
 ---
 
 # Q037 · ArrayList 为什么查询快而中间插入可能昂贵
@@ -44,7 +44,7 @@ updated_at: "2026-10-30"
 
 ## 参考回答提纲
 
-数组提供按下标访问；中间插入或删除可能移动后续元素。动态扩容需要分配更大的存储并搬移，尾部追加通常具有摊还优势。容量、大小、迭代器失效与并发访问要分开讨论。
+数组提供按下标访问；中间插入或删除可能移动后续元素。动态扩容需要分配更大的存储并搬移，尾部追加通常具有摊还优势。容量、大小、迭代器失效与并发访问要分开讨论。 按 OpenJDK 17 源码，容量不足时用 grow/ArraysSupport 计算新容量，常见首选增长为旧容量的一半，但还受最小所需容量与溢出/上限处理影响，不是所有情况固定乘 1.5，更不是 Java API 对 Android 所有版本的承诺。多线程可选外部统一锁或 synchronizedList（遍历仍在同一包装对象的锁内）、读多写少时评估 CopyOnWriteArrayList，或发布不可变快照；单次调用同步不自动保证多步业务原子性。
 
 ## 易错点
 
@@ -59,6 +59,9 @@ updated_at: "2026-10-30"
 整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。
 
 - [ArrayList API（Java 8）](https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html)（网页入口已核查）
+- [OpenJDK 17 ArrayList 源码](https://raw.githubusercontent.com/openjdk/jdk17u/master/src/java.base/share/classes/java/util/ArrayList.java)（网页入口已核查）
+- [Collections.synchronizedList 及遍历同步](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collections.html#synchronizedList(java.util.List))（网页入口已核查）
+- [CopyOnWriteArrayList 快照与复制代价](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/CopyOnWriteArrayList.html)（网页入口已核查）
 
 复习时需结合目标 Android API、AndroidX、Kotlin、JDK 或协议版本。本文是回答提纲，不是企业标准答案，也不是已完成的性能实验。
 

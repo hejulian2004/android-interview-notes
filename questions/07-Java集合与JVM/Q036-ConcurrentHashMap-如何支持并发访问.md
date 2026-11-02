@@ -4,7 +4,7 @@ title: "ConcurrentHashMap 如何支持并发访问"
 category: "07-Java集合与JVM"
 kind: observed
 priority: P0
-updated_at: "2026-10-30"
+updated_at: "2026-11-02"
 ---
 
 # Q036 · ConcurrentHashMap 如何支持并发访问
@@ -35,7 +35,7 @@ updated_at: "2026-10-30"
 
 ## 参考回答提纲
 
-说明并发读写的 API 保证，再按具体 JDK/Android 版本谈细粒度同步和 CAS 等实现。get 后再 put 的复合业务并不会自动变为原子操作，可使用 putIfAbsent、compute 等适配语义。
+说明并发读写的 API 保证，再按具体 JDK/Android 版本谈细粒度同步和 CAS 等实现。get 后再 put 的复合业务并不会自动变为原子操作，可使用 putIfAbsent、compute 等适配语义。 若按所链接的 OpenJDK 17 实现展开：空桶插入可用 CAS，已有桶的修改涉及桶首节点监视器等细粒度同步，get 不以获取同一桶锁作为通常路径；扩容可由多个线程协作迁移。字段可见性与原子操作共同支撑并发契约，但不能推成跨键事务或任意值对象线程安全，Android 实现仍须核对版本。
 
 ## 易错点
 
@@ -50,6 +50,7 @@ updated_at: "2026-10-30"
 整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。
 
 - [ConcurrentHashMap API（Java 8）](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ConcurrentHashMap.html)（网页入口已核查）
+- [OpenJDK 17 ConcurrentHashMap 源码](https://raw.githubusercontent.com/openjdk/jdk17u/master/src/java.base/share/classes/java/util/concurrent/ConcurrentHashMap.java)（网页入口已核查）
 
 复习时需结合目标 Android API、AndroidX、Kotlin、JDK 或协议版本。本文是回答提纲，不是企业标准答案，也不是已完成的性能实验。
 

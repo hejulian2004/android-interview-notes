@@ -4,7 +4,7 @@ title: "为什么取消协程后 CPU 循环仍可能继续"
 category: "06-Kotlin与协程"
 kind: supplement
 priority: P1
-updated_at: "2026-10-30"
+updated_at: "2026-11-02"
 ---
 
 # E016 · 为什么取消协程后 CPU 循环仍可能继续
@@ -17,7 +17,7 @@ updated_at: "2026-10-30"
 
 ## 参考回答提纲
 
-取消是协作式的，纯计算循环若没有检查取消或调用可取消挂起点，可能继续占用线程。按合理粒度检查活动状态，并通过 finally 清理资源。
+取消是协作式的，纯计算循环若没有检查取消或调用可取消挂起点，可能继续占用线程。按合理粒度检查活动状态，并通过 finally 清理资源。 任意 suspend 调用都不保证检查取消；标准库中可取消的挂起操作、ensureActive/yield 或自定义取消协议才提供合作点。cancel() 只请求取消而不阻塞等待；join() 或 cancelAndJoin() 用于等待结束，父 Job 进入完成态也受子任务实际结束约束。不能把 cancel() 当强杀线程。
 
 ## 易错点
 
@@ -32,6 +32,7 @@ updated_at: "2026-10-30"
 整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。
 
 - [Kotlin 协程取消（入口，本次页面直读为空）](https://kotlinlang.org/docs/cancellation-and-timeouts.html)（本次未成功核查页面，仅保留学习入口）
+- [ensureActive 协作式取消](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/ensure-active.html)（网页入口已核查）
 
 复习时需结合目标 Android API、AndroidX、Kotlin、JDK 或协议版本。本文是回答提纲，不是企业标准答案，也不是已完成的性能实验。
 

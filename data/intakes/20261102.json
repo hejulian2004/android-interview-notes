@@ -1,0 +1,4050 @@
+{
+  "id": "intake-20261102",
+  "reviewed_at": "2026-11-02",
+  "base_commit": "990ea4a60983ac69f67bd89329f10bea82afc4d1",
+  "evidence_boundary": "用户提供面经线索/日期未核；非公司官方题库，不进入2023-10-30至2026-10-30检索来源、公司或频次统计",
+  "text_materials": 9,
+  "physical_images": 13,
+  "unique_images": 12,
+  "deduplicated_source_groups": 15,
+  "same_source_materials": [
+    [
+      "T07",
+      "IMG-E"
+    ],
+    [
+      "T08",
+      "IMG-G"
+    ]
+  ],
+  "duplicate_images": [
+    "IMG-F1",
+    "IMG-F2"
+  ],
+  "sources": [
+    {
+      "id": "U01",
+      "label": "研0小厂 Android 实习",
+      "materials": [
+        "T01"
+      ],
+      "original_url": null,
+      "interview_date": null,
+      "post_date": null,
+      "date_basis": "未核取，不进入原三年统计",
+      "source_type": "候选人自述线索",
+      "note": ""
+    },
+    {
+      "id": "U02",
+      "label": "影石 Android 一面",
+      "materials": [
+        "T02"
+      ],
+      "original_url": null,
+      "interview_date": null,
+      "post_date": null,
+      "date_basis": "未核取，不进入原三年统计",
+      "source_type": "候选人自述线索",
+      "note": ""
+    },
+    {
+      "id": "U03",
+      "label": "蚂蚁客户端移动端一面",
+      "materials": [
+        "T03"
+      ],
+      "original_url": null,
+      "interview_date": null,
+      "post_date": null,
+      "date_basis": "未核取，不进入原三年统计",
+      "source_type": "候选人自述线索",
+      "note": ""
+    },
+    {
+      "id": "U04",
+      "label": "字节客户端MVVM与协程一面",
+      "materials": [
+        "T04"
+      ],
+      "original_url": null,
+      "interview_date": null,
+      "post_date": null,
+      "date_basis": "未核取，不进入原三年统计",
+      "source_type": "候选人自述线索",
+      "note": "转载整理口吻；未认证亲历或来源身份。"
+    },
+    {
+      "id": "U05",
+      "label": "同花顺提前批 Android 一面",
+      "materials": [
+        "T05"
+      ],
+      "original_url": null,
+      "interview_date": null,
+      "post_date": null,
+      "date_basis": "未核取，不进入原三年统计",
+      "source_type": "候选人自述线索",
+      "note": "原帖自述Java转Android面试；不得当作岗位统一题纲。"
+    },
+    {
+      "id": "U06",
+      "label": "影石 Android 二面",
+      "materials": [
+        "T06"
+      ],
+      "original_url": null,
+      "interview_date": null,
+      "post_date": null,
+      "date_basis": "未核取，不进入原三年统计",
+      "source_type": "候选人自述线索",
+      "note": ""
+    },
+    {
+      "id": "U07",
+      "label": "腾讯地图客户端一面",
+      "materials": [
+        "T07",
+        "IMG-E"
+      ],
+      "original_url": null,
+      "interview_date": null,
+      "post_date": null,
+      "date_basis": "未核取，不进入原三年统计",
+      "source_type": "候选人自述线索",
+      "note": "文字与两张截图为同份线索，只计一个来源组。"
+    },
+    {
+      "id": "U08",
+      "label": "字节生服客户端日常实习一面",
+      "materials": [
+        "T08",
+        "IMG-G"
+      ],
+      "original_url": null,
+      "interview_date": null,
+      "post_date": null,
+      "date_basis": "未核取，不进入原三年统计",
+      "source_type": "候选人自述线索",
+      "note": "两张截图与文字同份；GET/POST/PUT和git merge为文字补充，保留。 图中2025/7/24仅笔记时间，不作为面试日期。"
+    },
+    {
+      "id": "U09",
+      "label": "米哈游26提前批移动客户端一面",
+      "materials": [
+        "T09"
+      ],
+      "original_url": null,
+      "interview_date": null,
+      "post_date": null,
+      "date_basis": "未核取，不进入原三年统计",
+      "source_type": "候选人自述线索",
+      "note": "校招届别不替代真实面试日期；原编号缺1不补造。"
+    },
+    {
+      "id": "U10",
+      "label": "百度网盘 Android 实习截图",
+      "materials": [
+        "IMG-A"
+      ],
+      "original_url": null,
+      "interview_date": null,
+      "post_date": null,
+      "date_basis": "未核取，不进入原三年统计",
+      "source_type": "候选人自述线索",
+      "note": "图中记事本2026/4/8仅笔记时间，不认定面试日期；原编号重复不补造。"
+    },
+    {
+      "id": "U11",
+      "label": "滴滴青桔 Android 二面截图",
+      "materials": [
+        "IMG-B"
+      ],
+      "original_url": null,
+      "interview_date": null,
+      "post_date": null,
+      "date_basis": "未核取，不进入原三年统计",
+      "source_type": "候选人自述线索",
+      "note": ""
+    },
+    {
+      "id": "U12",
+      "label": "小鹏 Android 一面截图",
+      "materials": [
+        "IMG-C"
+      ],
+      "original_url": null,
+      "interview_date": null,
+      "post_date": null,
+      "date_basis": "未核取，不进入原三年统计",
+      "source_type": "候选人自述线索",
+      "note": "标题标签#24不能证明面试年份。"
+    },
+    {
+      "id": "U13",
+      "label": "未标公司 Flutter/Android 连续三页截图",
+      "materials": [
+        "IMG-D"
+      ],
+      "original_url": null,
+      "interview_date": null,
+      "post_date": null,
+      "date_basis": "未核取，不进入原三年统计",
+      "source_type": "候选人自述线索",
+      "note": "公司、日期未知；末尾截断不补题。"
+    },
+    {
+      "id": "U14",
+      "label": "未标公司客户端面经重复截图",
+      "materials": [
+        "IMG-F1",
+        "IMG-F2"
+      ],
+      "original_url": null,
+      "interview_date": null,
+      "post_date": null,
+      "date_basis": "未核取，不进入原三年统计",
+      "source_type": "候选人自述线索",
+      "note": "第9、10张像素与SHA相同，合并为一个素材组，不重复计证据。"
+    },
+    {
+      "id": "U15",
+      "label": "小米高级Android服务账号整理图",
+      "materials": [
+        "IMG-H"
+      ],
+      "original_url": null,
+      "interview_date": null,
+      "post_date": null,
+      "date_basis": "未核取，不进入原三年统计",
+      "source_type": "服务账号二手整理，真实性未核",
+      "note": "面试服务类账号的二手总结，不能据此确认小米真实原题、面试轮次或频率。"
+    }
+  ],
+  "items": [
+    {
+      "id": "U01-01",
+      "source_id": "U01",
+      "topic": "自我介绍与可实习时间",
+      "note": "",
+      "targets": [
+        {
+          "key": "PREP",
+          "path": "docs/interview-intake-coverage-20261102.md#准备框架"
+        }
+      ],
+      "disposition": "准备框架"
+    },
+    {
+      "id": "U01-02",
+      "source_id": "U01",
+      "topic": "项目背景与个人贡献",
+      "note": "",
+      "targets": [
+        {
+          "key": "HI01",
+          "path": "docs/android-interview-handbook.md#q-i01"
+        },
+        {
+          "key": "HC01",
+          "path": "docs/android-interview-handbook.md#q-c01"
+        },
+        {
+          "key": "PREP",
+          "path": "docs/interview-intake-coverage-20261102.md#准备框架"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U01-03",
+      "source_id": "U01",
+      "topic": "本地歌曲、播放缓存与远程URL缓存",
+      "note": "",
+      "targets": [
+        {
+          "key": "media-cache",
+          "path": "docs/interview-intake-android-20261102.md#ad01"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U01-04",
+      "source_id": "U01",
+      "topic": "Hilt注入缓存与作用域",
+      "note": "",
+      "targets": [
+        {
+          "key": "hilt-cache",
+          "path": "docs/interview-intake-android-20261102.md#ad02"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U01-05",
+      "source_id": "U01",
+      "topic": "MVVM分层职责",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q066",
+          "path": "questions/10-Jetpack架构与存储/Q066-MVC、MVP、MVVM-如何划分职责.md"
+        },
+        {
+          "key": "HC05",
+          "path": "docs/android-interview-handbook.md#q-c05"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U01-06",
+      "source_id": "U01",
+      "topic": "自定义View实现步骤",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q022",
+          "path": "questions/03-View绘制与触摸/Q022-自定义-View-怎样兼顾正确测量与绘制性能.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U01-07",
+      "source_id": "U01",
+      "topic": "触摸事件分发",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q019",
+          "path": "questions/03-View绘制与触摸/Q019-触摸事件分发与拦截的职责如何划分.md"
+        },
+        {
+          "key": "Q020",
+          "path": "questions/03-View绘制与触摸/Q020-父容器中途拦截手势时子-View-会发生什么.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U01-08",
+      "source_id": "U01",
+      "topic": "冷流、热流、StateFlow与SharedFlow",
+      "note": "",
+      "targets": [
+        {
+          "key": "E015",
+          "path": "supplements/06-Kotlin与协程/E015-StateFlow-与-SharedFlow-怎么选择.md"
+        },
+        {
+          "key": "KT30",
+          "path": "docs/kotlin-coroutines-interview-guide.md#kt30"
+        },
+        {
+          "key": "KT33",
+          "path": "docs/kotlin-coroutines-interview-guide.md#kt33"
+        },
+        {
+          "key": "KT34",
+          "path": "docs/kotlin-coroutines-interview-guide.md#kt34"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U01-09",
+      "source_id": "U01",
+      "topic": "观察者模式及与Flow关系",
+      "note": "",
+      "targets": [
+        {
+          "key": "observer",
+          "path": "docs/interview-intake-java-systems-20261102.md#js04"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U01-10",
+      "source_id": "U01",
+      "topic": "ViewPager嵌套RecyclerView冲突",
+      "note": "",
+      "targets": [
+        {
+          "key": "pager-conflict",
+          "path": "docs/interview-intake-android-20261102.md#ad03"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U01-11",
+      "source_id": "U01",
+      "topic": "按可用宽度自适应瀑布流",
+      "note": "",
+      "targets": [
+        {
+          "key": "adaptive-grid",
+          "path": "docs/interview-intake-android-20261102.md#ad04"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U01-12",
+      "source_id": "U01",
+      "topic": "OkHttp封装与Cookie自动发送",
+      "note": "",
+      "targets": [
+        {
+          "key": "network-layer",
+          "path": "docs/interview-intake-android-20261102.md#ad05"
+        },
+        {
+          "key": "cookie",
+          "path": "docs/interview-intake-android-20261102.md#ad07"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U01-13",
+      "source_id": "U01",
+      "topic": "网络代理配置",
+      "note": "",
+      "targets": [
+        {
+          "key": "proxy",
+          "path": "docs/interview-intake-android-20261102.md#ad08"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U01-14",
+      "source_id": "U01",
+      "topic": "OkHttp阻塞与协程适配",
+      "note": "",
+      "targets": [
+        {
+          "key": "okhttp-cancel",
+          "path": "docs/interview-intake-android-20261102.md#ad09"
+        },
+        {
+          "key": "KT40",
+          "path": "docs/kotlin-coroutines-interview-guide.md#kt40"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U01-15",
+      "source_id": "U01",
+      "topic": "成功、业务失败、异常到Result和UiState",
+      "note": "",
+      "targets": [
+        {
+          "key": "result-layer",
+          "path": "docs/interview-intake-android-20261102.md#ad06"
+        },
+        {
+          "key": "KT06",
+          "path": "docs/kotlin-coroutines-interview-guide.md#kt06"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U01-16",
+      "source_id": "U01",
+      "topic": "Repository重复错误与拦截器边界",
+      "note": "",
+      "targets": [
+        {
+          "key": "result-layer",
+          "path": "docs/interview-intake-android-20261102.md#ad06"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U01-17",
+      "source_id": "U01",
+      "topic": "Set-Cookie保存与并发安全",
+      "note": "",
+      "targets": [
+        {
+          "key": "cookie",
+          "path": "docs/interview-intake-android-20261102.md#ad07"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U01-18",
+      "source_id": "U01",
+      "topic": "源码如何生成APK",
+      "note": "",
+      "targets": [
+        {
+          "key": "apk",
+          "path": "docs/interview-intake-android-20261102.md#ad10"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U01-19",
+      "source_id": "U01",
+      "topic": "项目演示遇第三方接口故障",
+      "note": "准备可控演示与失败路径；不认定用户项目发生过",
+      "targets": [
+        {
+          "key": "PREP",
+          "path": "docs/interview-intake-coverage-20261102.md#准备框架"
+        }
+      ],
+      "disposition": "准备框架"
+    },
+    {
+      "id": "U01-20",
+      "source_id": "U01",
+      "topic": "反问业务、工作时间与薪资",
+      "note": "",
+      "targets": [
+        {
+          "key": "PREP",
+          "path": "docs/interview-intake-coverage-20261102.md#准备框架"
+        }
+      ],
+      "disposition": "准备框架"
+    },
+    {
+      "id": "U02-01",
+      "source_id": "U02",
+      "topic": "进程间通信",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q015",
+          "path": "questions/02-Handler线程与IPC/Q015-Binder-如何完成一次跨进程调用.md"
+        },
+        {
+          "key": "HC32",
+          "path": "docs/android-interview-handbook.md#q-c32"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U02-02",
+      "source_id": "U02",
+      "topic": "HTTP/HTTPS与TLS握手",
+      "note": "",
+      "targets": [
+        {
+          "key": "tls",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt07"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U02-03",
+      "source_id": "U02",
+      "topic": "单例工厂与非懒加载单例",
+      "note": "",
+      "targets": [
+        {
+          "key": "dcl",
+          "path": "docs/interview-intake-java-systems-20261102.md#js02"
+        },
+        {
+          "key": "patterns",
+          "path": "docs/interview-intake-java-systems-20261102.md#js04"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U02-04",
+      "source_id": "U02",
+      "topic": "TCP三次握手原因",
+      "note": "",
+      "targets": [
+        {
+          "key": "tcp-syn",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt08"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U02-05",
+      "source_id": "U02",
+      "topic": "TCP与UDP比较",
+      "note": "",
+      "targets": [
+        {
+          "key": "osi-udp",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt17"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U02-06",
+      "source_id": "U02",
+      "topic": "HashMap、ConcurrentHashMap与树化",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q035",
+          "path": "questions/07-Java集合与JVM/Q035-HashMap-如何定位元素并处理冲突和扩容.md"
+        },
+        {
+          "key": "Q036",
+          "path": "questions/07-Java集合与JVM/Q036-ConcurrentHashMap-如何支持并发访问.md"
+        },
+        {
+          "key": "JA29",
+          "path": "docs/java-core-interview-guide.md#ja29"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U02-07",
+      "source_id": "U02",
+      "topic": "ArrayList原理与线程安全",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q037",
+          "path": "questions/07-Java集合与JVM/Q037-ArrayList-为什么查询快而中间插入可能昂贵.md"
+        },
+        {
+          "key": "JA30",
+          "path": "docs/java-core-interview-guide.md#ja30"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U02-08",
+      "source_id": "U02",
+      "topic": "虚拟内存",
+      "note": "",
+      "targets": [
+        {
+          "key": "vm-os",
+          "path": "docs/interview-intake-java-systems-20261102.md#js07"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U02-09",
+      "source_id": "U02",
+      "topic": "垃圾回收",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q040",
+          "path": "questions/07-Java集合与JVM/Q040-垃圾回收怎样判断对象是否仍然存活.md"
+        },
+        {
+          "key": "JA24",
+          "path": "docs/java-core-interview-guide.md#ja24"
+        },
+        {
+          "key": "JA37",
+          "path": "docs/java-core-interview-guide.md#ja37"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U02-10",
+      "source_id": "U02",
+      "topic": "public与static",
+      "note": "",
+      "targets": [
+        {
+          "key": "public-types",
+          "path": "docs/interview-intake-java-systems-20261102.md#js06"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U02-11",
+      "source_id": "U02",
+      "topic": "线程池参数与使用场景",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q051",
+          "path": "questions/08-并发与线程安全/Q051-线程池参数怎样共同决定任务执行.md"
+        },
+        {
+          "key": "JA21",
+          "path": "docs/java-core-interview-guide.md#ja21"
+        },
+        {
+          "key": "JA22",
+          "path": "docs/java-core-interview-guide.md#ja22"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U02-12",
+      "source_id": "U02",
+      "topic": "核心与非核心工作线程",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q051",
+          "path": "questions/08-并发与线程安全/Q051-线程池参数怎样共同决定任务执行.md"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U02-13",
+      "source_id": "U02",
+      "topic": "synchronized锁对象与static方法",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q048",
+          "path": "questions/08-并发与线程安全/Q048-synchronized-锁住的是哪个对象.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U02-14",
+      "source_id": "U02",
+      "topic": "二叉树类别",
+      "note": "",
+      "targets": [
+        {
+          "key": "tree-taxonomy",
+          "path": "docs/interview-intake-algorithms-20261102.md#al07"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U02-15",
+      "source_id": "U02",
+      "topic": "ThreadLocal",
+      "note": "",
+      "targets": [
+        {
+          "key": "JA31",
+          "path": "docs/java-core-interview-guide.md#ja31"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U02-16",
+      "source_id": "U02",
+      "topic": "快速排序",
+      "note": "",
+      "targets": [
+        {
+          "key": "quick-sort",
+          "path": "docs/interview-intake-algorithms-20261102.md#al02"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U02-17",
+      "source_id": "U02",
+      "topic": "异常捕获边界与锁释放",
+      "note": "",
+      "targets": [
+        {
+          "key": "JA14",
+          "path": "docs/java-core-interview-guide.md#ja14"
+        },
+        {
+          "key": "JA15",
+          "path": "docs/java-core-interview-guide.md#ja15"
+        },
+        {
+          "key": "JA27",
+          "path": "docs/java-core-interview-guide.md#ja27"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U02-18",
+      "source_id": "U02",
+      "topic": "C++指针与引用",
+      "note": "",
+      "targets": [
+        {
+          "key": "cpp-ref",
+          "path": "docs/interview-intake-java-systems-20261102.md#js08"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U02-19",
+      "source_id": "U02",
+      "topic": "volatile",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q047",
+          "path": "questions/08-并发与线程安全/Q047-volatile-保证什么，为什么不能保证自增原子性.md"
+        },
+        {
+          "key": "JA16",
+          "path": "docs/java-core-interview-guide.md#ja16"
+        },
+        {
+          "key": "JA17",
+          "path": "docs/java-core-interview-guide.md#ja17"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U02-20",
+      "source_id": "U02",
+      "topic": "线程中断",
+      "note": "",
+      "targets": [
+        {
+          "key": "JA20",
+          "path": "docs/java-core-interview-guide.md#ja20"
+        },
+        {
+          "key": "JA32",
+          "path": "docs/java-core-interview-guide.md#ja32"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U02-21",
+      "source_id": "U02",
+      "topic": "多线程顺序执行",
+      "note": "",
+      "targets": [
+        {
+          "key": "thread-order",
+          "path": "docs/interview-intake-java-systems-20261102.md#js05"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U03-01",
+      "source_id": "U03",
+      "topic": "面试官介绍、自我介绍",
+      "note": "",
+      "targets": [
+        {
+          "key": "PREP",
+          "path": "docs/interview-intake-coverage-20261102.md#准备框架"
+        }
+      ],
+      "disposition": "准备框架"
+    },
+    {
+      "id": "U03-02",
+      "source_id": "U03",
+      "topic": "Flutter、RN与原生绘制差别",
+      "note": "",
+      "targets": [
+        {
+          "key": "render-platforms",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt01"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U03-03",
+      "source_id": "U03",
+      "topic": "Flutter、RN与Java线程模型",
+      "note": "",
+      "targets": [
+        {
+          "key": "thread-platforms",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt02"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U03-04",
+      "source_id": "U03",
+      "topic": "Java与C堆栈比较",
+      "note": "",
+      "targets": [
+        {
+          "key": "heap-stack",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt04"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U03-05",
+      "source_id": "U03",
+      "topic": "TS执行模型和宏任务微任务",
+      "note": "",
+      "targets": [
+        {
+          "key": "js-loop",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt03"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U03-06",
+      "source_id": "U03",
+      "topic": "C堆栈速度原话含糊",
+      "note": "先区分分配成本、调用、局部性；不存在固定倍数",
+      "targets": [
+        {
+          "key": "heap-stack",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt04"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U03-07",
+      "source_id": "U03",
+      "topic": "Java调用速度原话含糊",
+      "note": "需要具体代码和运行时条件",
+      "targets": [
+        {
+          "key": "heap-stack",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt04"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U03-08",
+      "source_id": "U03",
+      "topic": "Flutter动态化能力边界",
+      "note": "",
+      "targets": [
+        {
+          "key": "compile-modes",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt05"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U03-09",
+      "source_id": "U03",
+      "topic": "JIT、AOT、解释执行",
+      "note": "",
+      "targets": [
+        {
+          "key": "compile-modes",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt05"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U03-10",
+      "source_id": "U03",
+      "topic": "语言与运行模式的关系",
+      "note": "",
+      "targets": [
+        {
+          "key": "compile-modes",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt05"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U03-11",
+      "source_id": "U03",
+      "topic": "JS/TS虚拟机与运行方式",
+      "note": "",
+      "targets": [
+        {
+          "key": "js-loop",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt03"
+        },
+        {
+          "key": "compile-modes",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt05"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U03-12",
+      "source_id": "U03",
+      "topic": "DEX设计及与class区别",
+      "note": "",
+      "targets": [
+        {
+          "key": "dex",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt06"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U03-13",
+      "source_id": "U03",
+      "topic": "反转链表",
+      "note": "帖子算法回忆不确定；按明确提及题名作练习导航",
+      "targets": [
+        {
+          "key": "Q096",
+          "path": "questions/15-数据结构与算法/Q096-如何原地反转单链表.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U04-01",
+      "source_id": "U04",
+      "topic": "项目MVVM层持有关系",
+      "note": "修正双向持有View说法",
+      "targets": [
+        {
+          "key": "Q066",
+          "path": "questions/10-Jetpack架构与存储/Q066-MVC、MVP、MVVM-如何划分职责.md"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U04-02",
+      "source_id": "U04",
+      "topic": "ViewModel配置重建保留与ViewModelStoreOwner",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q068",
+          "path": "questions/10-Jetpack架构与存储/Q068-ViewModel-为什么能跨配置变化保留状态.md"
+        },
+        {
+          "key": "PL01",
+          "path": "docs/android-platform-interview-guide.md#ad01"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U04-03",
+      "source_id": "U04",
+      "topic": "cancel后是否立刻停止",
+      "note": "",
+      "targets": [
+        {
+          "key": "E016",
+          "path": "supplements/06-Kotlin与协程/E016-为什么取消协程后-CPU-循环仍可能继续.md"
+        },
+        {
+          "key": "KT22",
+          "path": "docs/kotlin-coroutines-interview-guide.md#kt22"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U04-04",
+      "source_id": "U04",
+      "topic": "不检查取消的子任务与父任务",
+      "note": "",
+      "targets": [
+        {
+          "key": "E014",
+          "path": "supplements/06-Kotlin与协程/E014-结构化并发和-Supervisor-有什么不同.md"
+        },
+        {
+          "key": "E016",
+          "path": "supplements/06-Kotlin与协程/E016-为什么取消协程后-CPU-循环仍可能继续.md"
+        },
+        {
+          "key": "KT24",
+          "path": "docs/kotlin-coroutines-interview-guide.md#kt24"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U04-05",
+      "source_id": "U04",
+      "topic": "协程有栈/无栈与Continuation状态机",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q033",
+          "path": "questions/06-Kotlin与协程/Q033-挂起函数怎样保存和恢复执行状态.md"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U04-06",
+      "source_id": "U04",
+      "topic": "零钱兑换II",
+      "note": "",
+      "targets": [
+        {
+          "key": "coin-change",
+          "path": "docs/interview-intake-algorithms-20261102.md#al04"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U05-01",
+      "source_id": "U05",
+      "topic": "自介与项目介绍",
+      "note": "",
+      "targets": [
+        {
+          "key": "PREP",
+          "path": "docs/interview-intake-coverage-20261102.md#准备框架"
+        }
+      ],
+      "disposition": "准备框架"
+    },
+    {
+      "id": "U05-02",
+      "source_id": "U05",
+      "topic": "共享屏幕源码讲解及包职责",
+      "note": "",
+      "targets": [
+        {
+          "key": "source-ai",
+          "path": "docs/interview-intake-java-systems-20261102.md#js16"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U05-03",
+      "source_id": "U05",
+      "topic": "注解SOURCE/CLASS/RUNTIME策略",
+      "note": "",
+      "targets": [
+        {
+          "key": "annotation",
+          "path": "docs/interview-intake-java-systems-20261102.md#js01"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U05-04",
+      "source_id": "U05",
+      "topic": "密码加盐",
+      "note": "",
+      "targets": [
+        {
+          "key": "password",
+          "path": "docs/interview-intake-java-systems-20261102.md#js10"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U05-05",
+      "source_id": "U05",
+      "topic": "MD5碰撞与替代",
+      "note": "",
+      "targets": [
+        {
+          "key": "password",
+          "path": "docs/interview-intake-java-systems-20261102.md#js10"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U05-06",
+      "source_id": "U05",
+      "topic": "缓存key、内容和失效",
+      "note": "",
+      "targets": [
+        {
+          "key": "media-cache",
+          "path": "docs/interview-intake-android-20261102.md#ad01"
+        },
+        {
+          "key": "cache-expiry",
+          "path": "docs/interview-intake-java-systems-20261102.md#js11"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U05-07",
+      "source_id": "U05",
+      "topic": "CDN",
+      "note": "",
+      "targets": [
+        {
+          "key": "cdn",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt13"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U05-08",
+      "source_id": "U05",
+      "topic": "项目设计模式",
+      "note": "",
+      "targets": [
+        {
+          "key": "patterns",
+          "path": "docs/interview-intake-java-systems-20261102.md#js04"
+        },
+        {
+          "key": "observer",
+          "path": "docs/interview-intake-java-systems-20261102.md#js04"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U05-09",
+      "source_id": "U05",
+      "topic": "扩展上传实现",
+      "note": "",
+      "targets": [
+        {
+          "key": "upload-extension",
+          "path": "docs/interview-intake-java-systems-20261102.md#js03"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U05-10",
+      "source_id": "U05",
+      "topic": "开闭与里氏替换原则",
+      "note": "",
+      "targets": [
+        {
+          "key": "upload-extension",
+          "path": "docs/interview-intake-java-systems-20261102.md#js03"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U05-11",
+      "source_id": "U05",
+      "topic": "单例",
+      "note": "",
+      "targets": [
+        {
+          "key": "dcl",
+          "path": "docs/interview-intake-java-systems-20261102.md#js02"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U05-12",
+      "source_id": "U05",
+      "topic": "双重检查的两次判断",
+      "note": "",
+      "targets": [
+        {
+          "key": "dcl",
+          "path": "docs/interview-intake-java-systems-20261102.md#js02"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U05-13",
+      "source_id": "U05",
+      "topic": "volatile与DCL发布",
+      "note": "",
+      "targets": [
+        {
+          "key": "dcl",
+          "path": "docs/interview-intake-java-systems-20261102.md#js02"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U05-14",
+      "source_id": "U05",
+      "topic": "AI工具与AI编码IDE",
+      "note": "",
+      "targets": [
+        {
+          "key": "source-ai",
+          "path": "docs/interview-intake-java-systems-20261102.md#js16"
+        },
+        {
+          "key": "FL52",
+          "path": "docs/flutter-interview-guide.md#q52"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U05-15",
+      "source_id": "U05",
+      "topic": "实习贡献追问",
+      "note": "",
+      "targets": [
+        {
+          "key": "HI01",
+          "path": "docs/android-interview-handbook.md#q-i01"
+        },
+        {
+          "key": "HI08",
+          "path": "docs/android-interview-handbook.md#q-i08"
+        },
+        {
+          "key": "HI14",
+          "path": "docs/android-interview-handbook.md#q-i14"
+        },
+        {
+          "key": "PREP",
+          "path": "docs/interview-intake-coverage-20261102.md#准备框架"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U05-16",
+      "source_id": "U05",
+      "topic": "反问岗位背景与意愿",
+      "note": "",
+      "targets": [
+        {
+          "key": "PREP",
+          "path": "docs/interview-intake-coverage-20261102.md#准备框架"
+        }
+      ],
+      "disposition": "准备框架"
+    },
+    {
+      "id": "U06-01",
+      "source_id": "U06",
+      "topic": "快速排序",
+      "note": "",
+      "targets": [
+        {
+          "key": "quick-sort",
+          "path": "docs/interview-intake-algorithms-20261102.md#al02"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U06-02",
+      "source_id": "U06",
+      "topic": "项目秒杀逻辑",
+      "note": "他人项目背景，不推定用户做过；按一致性/并发/恢复框架准备",
+      "targets": [
+        {
+          "key": "PREP",
+          "path": "docs/interview-intake-coverage-20261102.md#准备框架"
+        }
+      ],
+      "disposition": "准备框架"
+    },
+    {
+      "id": "U06-03",
+      "source_id": "U06",
+      "topic": "论文相关",
+      "note": "缺论文题目和研究内容",
+      "targets": [
+        {
+          "key": "ASK",
+          "path": "docs/interview-intake-coverage-20261102.md#待澄清清单"
+        }
+      ],
+      "disposition": "待澄清"
+    },
+    {
+      "id": "U06-04",
+      "source_id": "U06",
+      "topic": "IPC",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q015",
+          "path": "questions/02-Handler线程与IPC/Q015-Binder-如何完成一次跨进程调用.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U06-05",
+      "source_id": "U06",
+      "topic": "LRU淘汰",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q108",
+          "path": "questions/15-数据结构与算法/Q108-怎样设计-LRU-缓存.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U06-06",
+      "source_id": "U06",
+      "topic": "线程池使用场景",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q051",
+          "path": "questions/08-并发与线程安全/Q051-线程池参数怎样共同决定任务执行.md"
+        },
+        {
+          "key": "JA21",
+          "path": "docs/java-core-interview-guide.md#ja21"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U06-07",
+      "source_id": "U06",
+      "topic": "TCP握手与不能两次",
+      "note": "",
+      "targets": [
+        {
+          "key": "tcp-syn",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt08"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U06-08",
+      "source_id": "U06",
+      "topic": "C++掌握程度",
+      "note": "",
+      "targets": [
+        {
+          "key": "cpp-ref",
+          "path": "docs/interview-intake-java-systems-20261102.md#js08"
+        },
+        {
+          "key": "PREP",
+          "path": "docs/interview-intake-coverage-20261102.md#准备框架"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U06-09",
+      "source_id": "U06",
+      "topic": "未给题目的多线程应用题",
+      "note": "只补通用练习，不还原未知原题",
+      "targets": [
+        {
+          "key": "thread-order",
+          "path": "docs/interview-intake-java-systems-20261102.md#js05"
+        },
+        {
+          "key": "ASK",
+          "path": "docs/interview-intake-coverage-20261102.md#待澄清清单"
+        }
+      ],
+      "disposition": "待澄清"
+    },
+    {
+      "id": "U06-10",
+      "source_id": "U06",
+      "topic": "逻辑过期处理缓存击穿",
+      "note": "",
+      "targets": [
+        {
+          "key": "cache-expiry",
+          "path": "docs/interview-intake-java-systems-20261102.md#js11"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U06-11",
+      "source_id": "U06",
+      "topic": "锁使用",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q048",
+          "path": "questions/08-并发与线程安全/Q048-synchronized-锁住的是哪个对象.md"
+        },
+        {
+          "key": "Q053",
+          "path": "questions/08-并发与线程安全/Q053-ReentrantLock-相比-synchronized-多了哪些控制能力.md"
+        },
+        {
+          "key": "Q055",
+          "path": "questions/08-并发与线程安全/Q055-乐观锁与悲观锁应怎样选择.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U06-12",
+      "source_id": "U06",
+      "topic": "CPU调度",
+      "note": "",
+      "targets": [
+        {
+          "key": "cpu-schedule",
+          "path": "docs/interview-intake-java-systems-20261102.md#js17"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U06-13",
+      "source_id": "U06",
+      "topic": "OSI七层",
+      "note": "只作网络模型，不暗示所有现代协议严格一一对应",
+      "targets": [
+        {
+          "key": "osi-udp",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt17"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U06-14",
+      "source_id": "U06",
+      "topic": "死锁条件",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q054",
+          "path": "questions/08-并发与线程安全/Q054-死锁的必要条件与排查方式是什么.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U06-15",
+      "source_id": "U06",
+      "topic": "内存泄漏与检测",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q074",
+          "path": "questions/11-性能与稳定性/Q074-内存泄漏与-OOM-是什么关系.md"
+        },
+        {
+          "key": "JA38",
+          "path": "docs/java-core-interview-guide.md#ja38"
+        },
+        {
+          "key": "PL35",
+          "path": "docs/android-platform-interview-guide.md#ad35"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U06-16",
+      "source_id": "U06",
+      "topic": "二叉树最近公共祖先",
+      "note": "",
+      "targets": [
+        {
+          "key": "lca",
+          "path": "docs/interview-intake-algorithms-20261102.md#al05"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U07-01",
+      "source_id": "U07",
+      "topic": "Java线程安全与synchronized",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q048",
+          "path": "questions/08-并发与线程安全/Q048-synchronized-锁住的是哪个对象.md"
+        },
+        {
+          "key": "JA16",
+          "path": "docs/java-core-interview-guide.md#ja16"
+        },
+        {
+          "key": "JA18",
+          "path": "docs/java-core-interview-guide.md#ja18"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U07-02",
+      "source_id": "U07",
+      "topic": "Flutter线程安全",
+      "note": "",
+      "targets": [
+        {
+          "key": "thread-platforms",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt02"
+        },
+        {
+          "key": "FL12",
+          "path": "docs/flutter-interview-guide.md#q12"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U07-03",
+      "source_id": "U07",
+      "topic": "TCP/IP特点与分层",
+      "note": "",
+      "targets": [
+        {
+          "key": "osi-udp",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt17"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U07-04",
+      "source_id": "U07",
+      "topic": "TCP拥塞控制",
+      "note": "",
+      "targets": [
+        {
+          "key": "congestion",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt10"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U07-05",
+      "source_id": "U07",
+      "topic": "MVC与MVVM",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q066",
+          "path": "questions/10-Jetpack架构与存储/Q066-MVC、MVP、MVVM-如何划分职责.md"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U07-06",
+      "source_id": "U07",
+      "topic": "MVVM项目应用",
+      "note": "",
+      "targets": [
+        {
+          "key": "HC04",
+          "path": "docs/android-interview-handbook.md#q-c04"
+        },
+        {
+          "key": "HC05",
+          "path": "docs/android-interview-handbook.md#q-c05"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U07-07",
+      "source_id": "U07",
+      "topic": "ViewModel直接get值问题",
+      "note": "上下文未给；区分快照读取、订阅、线程与异步尚未提交",
+      "targets": [
+        {
+          "key": "Q069",
+          "path": "questions/10-Jetpack架构与存储/Q069-LiveData-如何做到生命周期感知.md"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U07-08",
+      "source_id": "U07",
+      "topic": "IPC",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q015",
+          "path": "questions/02-Handler线程与IPC/Q015-Binder-如何完成一次跨进程调用.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U07-09",
+      "source_id": "U07",
+      "topic": "Flutter优势与取舍",
+      "note": "",
+      "targets": [
+        {
+          "key": "render-platforms",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt01"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U07-10",
+      "source_id": "U07",
+      "topic": "最小k个数并升序",
+      "note": "",
+      "targets": [
+        {
+          "key": "smallest-k",
+          "path": "docs/interview-intake-algorithms-20261102.md#al03"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U07-11",
+      "source_id": "U07",
+      "topic": "MVP模板代码含义不完整",
+      "note": "原图原话残缺，不生成猜测标准答案",
+      "targets": [
+        {
+          "key": "ASK",
+          "path": "docs/interview-intake-coverage-20261102.md#待澄清清单"
+        }
+      ],
+      "disposition": "待澄清"
+    },
+    {
+      "id": "U08-01",
+      "source_id": "U08",
+      "topic": "排序类别与复杂度最好最坏",
+      "note": "",
+      "targets": [
+        {
+          "key": "sort-taxonomy",
+          "path": "docs/interview-intake-algorithms-20261102.md#al01"
+        },
+        {
+          "key": "quick-sort",
+          "path": "docs/interview-intake-algorithms-20261102.md#al02"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U08-02",
+      "source_id": "U08",
+      "topic": "单例、责任链、模板、工厂",
+      "note": "",
+      "targets": [
+        {
+          "key": "patterns",
+          "path": "docs/interview-intake-java-systems-20261102.md#js04"
+        },
+        {
+          "key": "dcl",
+          "path": "docs/interview-intake-java-systems-20261102.md#js02"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U08-03",
+      "source_id": "U08",
+      "topic": "责任链项目用途",
+      "note": "",
+      "targets": [
+        {
+          "key": "patterns",
+          "path": "docs/interview-intake-java-systems-20261102.md#js04"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U08-04",
+      "source_id": "U08",
+      "topic": "单例与全局变量",
+      "note": "",
+      "targets": [
+        {
+          "key": "dcl",
+          "path": "docs/interview-intake-java-systems-20261102.md#js02"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U08-05",
+      "source_id": "U08",
+      "topic": "synchronized",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q048",
+          "path": "questions/08-并发与线程安全/Q048-synchronized-锁住的是哪个对象.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U08-06",
+      "source_id": "U08",
+      "topic": "进程与线程",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q081",
+          "path": "questions/12-Framework与系统/Q081-进程和线程的资源边界有什么不同.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U08-07",
+      "source_id": "U08",
+      "topic": "堆栈用途与必要性",
+      "note": "",
+      "targets": [
+        {
+          "key": "heap-stack",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt04"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U08-08",
+      "source_id": "U08",
+      "topic": "URL到网页与相关协议",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q060",
+          "path": "questions/09-网络与网络库/Q060-从输入-URL-到收到响应会经历哪些步骤.md"
+        },
+        {
+          "key": "cdn",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt13"
+        },
+        {
+          "key": "tls",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt07"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U08-09",
+      "source_id": "U08",
+      "topic": "HTTPS加密算法",
+      "note": "",
+      "targets": [
+        {
+          "key": "tls",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt07"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U08-10",
+      "source_id": "U08",
+      "topic": "GET、POST、PUT用途差别",
+      "note": "",
+      "targets": [
+        {
+          "key": "http-methods",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt12"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U08-11",
+      "source_id": "U08",
+      "topic": "项目来源、背景和结果",
+      "note": "",
+      "targets": [
+        {
+          "key": "PREP",
+          "path": "docs/interview-intake-coverage-20261102.md#准备框架"
+        },
+        {
+          "key": "source-ai",
+          "path": "docs/interview-intake-java-systems-20261102.md#js16"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U08-12",
+      "source_id": "U08",
+      "topic": "QPS与性能测量",
+      "note": "",
+      "targets": [
+        {
+          "key": "qps",
+          "path": "docs/interview-intake-java-systems-20261102.md#js14"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U08-13",
+      "source_id": "U08",
+      "topic": "短链创建与布隆过滤器",
+      "note": "",
+      "targets": [
+        {
+          "key": "bloom-shortlink",
+          "path": "docs/interview-intake-java-systems-20261102.md#js13"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U08-14",
+      "source_id": "U08",
+      "topic": "短链写库失败",
+      "note": "",
+      "targets": [
+        {
+          "key": "bloom-shortlink",
+          "path": "docs/interview-intake-java-systems-20261102.md#js13"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U08-15",
+      "source_id": "U08",
+      "topic": "效果验证",
+      "note": "",
+      "targets": [
+        {
+          "key": "qps",
+          "path": "docs/interview-intake-java-systems-20261102.md#js14"
+        },
+        {
+          "key": "Q115",
+          "path": "questions/16-工程设计与项目追问/Q115-怎样证明项目优化确实带来收益.md"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U08-16",
+      "source_id": "U08",
+      "topic": "Redis防重复消费",
+      "note": "",
+      "targets": [
+        {
+          "key": "idempotency",
+          "path": "docs/interview-intake-java-systems-20261102.md#js12"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U08-17",
+      "source_id": "U08",
+      "topic": "Redis与本地/数据库取舍",
+      "note": "",
+      "targets": [
+        {
+          "key": "idempotency",
+          "path": "docs/interview-intake-java-systems-20261102.md#js12"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U08-18",
+      "source_id": "U08",
+      "topic": "Redis数据类型",
+      "note": "",
+      "targets": [
+        {
+          "key": "idempotency",
+          "path": "docs/interview-intake-java-systems-20261102.md#js12"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U08-19",
+      "source_id": "U08",
+      "topic": "部署与使用云中间件的理由",
+      "note": "",
+      "targets": [
+        {
+          "key": "qps",
+          "path": "docs/interview-intake-java-systems-20261102.md#js14"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U08-20",
+      "source_id": "U08",
+      "topic": "云Redis性能测试",
+      "note": "",
+      "targets": [
+        {
+          "key": "qps",
+          "path": "docs/interview-intake-java-systems-20261102.md#js14"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U08-21",
+      "source_id": "U08",
+      "topic": "Git使用与merge",
+      "note": "",
+      "targets": [
+        {
+          "key": "git-merge",
+          "path": "docs/android-interview-handbook.md#q-c35"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U08-22",
+      "source_id": "U08",
+      "topic": "反转链表",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q096",
+          "path": "questions/15-数据结构与算法/Q096-如何原地反转单链表.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U08-23",
+      "source_id": "U08",
+      "topic": "矩阵最长递增路径",
+      "note": "",
+      "targets": [
+        {
+          "key": "matrix-lip",
+          "path": "docs/interview-intake-algorithms-20261102.md#al06"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U09-01",
+      "source_id": "U09",
+      "topic": "HTTP1.0和HTTP2及头部",
+      "note": "",
+      "targets": [
+        {
+          "key": "http2",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt11"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U09-02",
+      "source_id": "U09",
+      "topic": "TCP握手与第一次失败重试",
+      "note": "",
+      "targets": [
+        {
+          "key": "tcp-syn",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt08"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U09-03",
+      "source_id": "U09",
+      "topic": "为何三次握手",
+      "note": "",
+      "targets": [
+        {
+          "key": "tcp-syn",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt08"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U09-04",
+      "source_id": "U09",
+      "topic": "进程资源与线程切换成本",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q081",
+          "path": "questions/12-Framework与系统/Q081-进程和线程的资源边界有什么不同.md"
+        },
+        {
+          "key": "vm-os",
+          "path": "docs/interview-intake-java-systems-20261102.md#js07"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U09-05",
+      "source_id": "U09",
+      "topic": "进程崩溃是否影响其他进程",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q081",
+          "path": "questions/12-Framework与系统/Q081-进程和线程的资源边界有什么不同.md"
+        },
+        {
+          "key": "vm-os",
+          "path": "docs/interview-intake-java-systems-20261102.md#js07"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U09-06",
+      "source_id": "U09",
+      "topic": "线程切换指令与上下文",
+      "note": "依CPU/OS实现，不能统一背某一条指令",
+      "targets": [
+        {
+          "key": "vm-os",
+          "path": "docs/interview-intake-java-systems-20261102.md#js07"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U09-07",
+      "source_id": "U09",
+      "topic": "多线程共享竞争本质与互斥",
+      "note": "",
+      "targets": [
+        {
+          "key": "JA16",
+          "path": "docs/java-core-interview-guide.md#ja16"
+        },
+        {
+          "key": "JA18",
+          "path": "docs/java-core-interview-guide.md#ja18"
+        },
+        {
+          "key": "Q048",
+          "path": "questions/08-并发与线程安全/Q048-synchronized-锁住的是哪个对象.md"
+        },
+        {
+          "key": "Q053",
+          "path": "questions/08-并发与线程安全/Q053-ReentrantLock-相比-synchronized-多了哪些控制能力.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U09-08",
+      "source_id": "U09",
+      "topic": "Java堆栈",
+      "note": "",
+      "targets": [
+        {
+          "key": "JA24",
+          "path": "docs/java-core-interview-guide.md#ja24"
+        },
+        {
+          "key": "heap-stack",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt04"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U09-09",
+      "source_id": "U09",
+      "topic": "GC算法和可达性",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q040",
+          "path": "questions/07-Java集合与JVM/Q040-垃圾回收怎样判断对象是否仍然存活.md"
+        },
+        {
+          "key": "JA37",
+          "path": "docs/java-core-interview-guide.md#ja37"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U09-10",
+      "source_id": "U09",
+      "topic": "循环引用与GC",
+      "note": "追踪式GC不以引用计数是否归零判断",
+      "targets": [
+        {
+          "key": "Q040",
+          "path": "questions/07-Java集合与JVM/Q040-垃圾回收怎样判断对象是否仍然存活.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U09-11",
+      "source_id": "U09",
+      "topic": "StringBuffer与StringBuilder",
+      "note": "",
+      "targets": [
+        {
+          "key": "JA04",
+          "path": "docs/java-core-interview-guide.md#ja04"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U09-12",
+      "source_id": "U09",
+      "topic": "ArrayList并发和扩容",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q037",
+          "path": "questions/07-Java集合与JVM/Q037-ArrayList-为什么查询快而中间插入可能昂贵.md"
+        },
+        {
+          "key": "JA30",
+          "path": "docs/java-core-interview-guide.md#ja30"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U09-13",
+      "source_id": "U09",
+      "topic": "ConcurrentHashMap",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q036",
+          "path": "questions/07-Java集合与JVM/Q036-ConcurrentHashMap-如何支持并发访问.md"
+        },
+        {
+          "key": "JA29",
+          "path": "docs/java-core-interview-guide.md#ja29"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U09-14",
+      "source_id": "U09",
+      "topic": "Java基本类型大小",
+      "note": "",
+      "targets": [
+        {
+          "key": "public-types",
+          "path": "docs/interview-intake-java-systems-20261102.md#js06"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U09-15",
+      "source_id": "U09",
+      "topic": "Kotlin lazy线程安全",
+      "note": "",
+      "targets": [
+        {
+          "key": "KT08",
+          "path": "docs/kotlin-coroutines-interview-guide.md#kt08"
+        },
+        {
+          "key": "KT16",
+          "path": "docs/kotlin-coroutines-interview-guide.md#kt16"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U09-16",
+      "source_id": "U09",
+      "topic": "MVP和MVVM",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q066",
+          "path": "questions/10-Jetpack架构与存储/Q066-MVC、MVP、MVVM-如何划分职责.md"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U09-17",
+      "source_id": "U09",
+      "topic": "LiveData生命周期",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q069",
+          "path": "questions/10-Jetpack架构与存储/Q069-LiveData-如何做到生命周期感知.md"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U09-18",
+      "source_id": "U09",
+      "topic": "组件化",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q114",
+          "path": "questions/16-工程设计与项目追问/Q114-组件化的边界和通信协议怎样设计.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U09-19",
+      "source_id": "U09",
+      "topic": "实际需求介绍",
+      "note": "",
+      "targets": [
+        {
+          "key": "PREP",
+          "path": "docs/interview-intake-coverage-20261102.md#准备框架"
+        }
+      ],
+      "disposition": "准备框架"
+    },
+    {
+      "id": "U10-01",
+      "source_id": "U10",
+      "topic": "var与val",
+      "note": "",
+      "targets": [
+        {
+          "key": "KT03",
+          "path": "docs/kotlin-coroutines-interview-guide.md#kt03"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U10-02",
+      "source_id": "U10",
+      "topic": "!!、可空类型与安全调用",
+      "note": "原图单个?含义未指明，区分T?和?.",
+      "targets": [
+        {
+          "key": "KT01",
+          "path": "docs/kotlin-coroutines-interview-guide.md#kt01"
+        },
+        {
+          "key": "KT02",
+          "path": "docs/kotlin-coroutines-interview-guide.md#kt02"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U10-03",
+      "source_id": "U10",
+      "topic": "常用UI布局",
+      "note": "",
+      "targets": [
+        {
+          "key": "ui-layouts",
+          "path": "questions/05-JetpackCompose/Q027-Compose-与-XML-View-的区别及选型依据.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U10-04",
+      "source_id": "U10",
+      "topic": "跨线程通信",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q009",
+          "path": "questions/02-Handler线程与IPC/Q009-Handler、Looper-和-MessageQueue-如何协作.md"
+        },
+        {
+          "key": "Q093",
+          "path": "questions/14-Flutter与跨端/Q093-Dart-的事件循环、异步与-isolate-是什么关系.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U10-05",
+      "source_id": "U10",
+      "topic": "四组件与下载放Service的条件",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q001",
+          "path": "questions/01-Android基础与生命周期/Q001-四大组件各自解决什么问题.md"
+        },
+        {
+          "key": "Q007",
+          "path": "questions/01-Android基础与生命周期/Q007-Activity-和-Service-有什么区别.md"
+        },
+        {
+          "key": "PL18",
+          "path": "docs/android-platform-interview-guide.md#ad18"
+        },
+        {
+          "key": "PL19",
+          "path": "docs/android-platform-interview-guide.md#ad19"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U10-06",
+      "source_id": "U10",
+      "topic": "Handler组成及子线程创建",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q009",
+          "path": "questions/02-Handler线程与IPC/Q009-Handler、Looper-和-MessageQueue-如何协作.md"
+        },
+        {
+          "key": "Q014",
+          "path": "questions/02-Handler线程与IPC/Q014-HandlerThread-与普通-Thread-有何差别.md"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U10-07",
+      "source_id": "U10",
+      "topic": "Kotlin协程宽泛问题",
+      "note": "未给更细追问，不将状态机归为该截图原题",
+      "targets": [
+        {
+          "key": "Q032",
+          "path": "questions/06-Kotlin与协程/Q032-协程和线程是什么关系.md"
+        },
+        {
+          "key": "KT18",
+          "path": "docs/kotlin-coroutines-interview-guide.md#kt18"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U11-01",
+      "source_id": "U11",
+      "topic": "自我介绍",
+      "note": "",
+      "targets": [
+        {
+          "key": "PREP",
+          "path": "docs/interview-intake-coverage-20261102.md#准备框架"
+        }
+      ],
+      "disposition": "准备框架"
+    },
+    {
+      "id": "U11-02",
+      "source_id": "U11",
+      "topic": "后端实习职责",
+      "note": "原帖个人经历，不能替换用户经历",
+      "targets": [
+        {
+          "key": "PREP",
+          "path": "docs/interview-intake-coverage-20261102.md#准备框架"
+        }
+      ],
+      "disposition": "准备框架"
+    },
+    {
+      "id": "U11-03",
+      "source_id": "U11",
+      "topic": "反编译工具与困难",
+      "note": "",
+      "targets": [
+        {
+          "key": "authorized-tools",
+          "path": "docs/interview-intake-java-systems-20261102.md#js15"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U11-04",
+      "source_id": "U11",
+      "topic": "证书校验安全边界",
+      "note": "只谈授权自有应用实验，不提供第三方绕过操作",
+      "targets": [
+        {
+          "key": "authorized-tools",
+          "path": "docs/interview-intake-java-systems-20261102.md#js15"
+        },
+        {
+          "key": "tls",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt07"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U11-05",
+      "source_id": "U11",
+      "topic": "Frida与Xposed",
+      "note": "",
+      "targets": [
+        {
+          "key": "authorized-tools",
+          "path": "docs/interview-intake-java-systems-20261102.md#js15"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U11-06",
+      "source_id": "U11",
+      "topic": "Frida Hook机制和实验准备",
+      "note": "",
+      "targets": [
+        {
+          "key": "authorized-tools",
+          "path": "docs/interview-intake-java-systems-20261102.md#js15"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U11-07",
+      "source_id": "U11",
+      "topic": "环境音量采样与算法协作",
+      "note": "需求、权限、采样、算法接口与功耗为框架；不编具体模型",
+      "targets": [
+        {
+          "key": "sensor-pipeline",
+          "path": "docs/interview-intake-android-20261102.md#ad14"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U11-08",
+      "source_id": "U11",
+      "topic": "低端机性能专项",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q115",
+          "path": "questions/16-工程设计与项目追问/Q115-怎样证明项目优化确实带来收益.md"
+        },
+        {
+          "key": "Q116",
+          "path": "questions/16-工程设计与项目追问/Q116-多机型兼容问题应怎样建立验证矩阵.md"
+        },
+        {
+          "key": "PL33",
+          "path": "docs/android-platform-interview-guide.md#ad33"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U11-09",
+      "source_id": "U11",
+      "topic": "实习收获",
+      "note": "",
+      "targets": [
+        {
+          "key": "PREP",
+          "path": "docs/interview-intake-coverage-20261102.md#准备框架"
+        }
+      ],
+      "disposition": "准备框架"
+    },
+    {
+      "id": "U11-10",
+      "source_id": "U11",
+      "topic": "源码到APK",
+      "note": "",
+      "targets": [
+        {
+          "key": "apk",
+          "path": "docs/interview-intake-android-20261102.md#ad10"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U11-11",
+      "source_id": "U11",
+      "topic": "点图标启动",
+      "note": "",
+      "targets": [
+        {
+          "key": "app-start",
+          "path": "docs/interview-intake-android-20261102.md#ad15"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U11-12",
+      "source_id": "U11",
+      "topic": "Handler",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q009",
+          "path": "questions/02-Handler线程与IPC/Q009-Handler、Looper-和-MessageQueue-如何协作.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U11-13",
+      "source_id": "U11",
+      "topic": "Glide缓存",
+      "note": "",
+      "targets": [
+        {
+          "key": "glide",
+          "path": "docs/interview-intake-android-20261102.md#ad11"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U11-14",
+      "source_id": "U11",
+      "topic": "LRU",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q108",
+          "path": "questions/15-数据结构与算法/Q108-怎样设计-LRU-缓存.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U11-15",
+      "source_id": "U11",
+      "topic": "Looper不ANR与唤醒",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q012",
+          "path": "questions/02-Handler线程与IPC/Q012-Looper-队列空闲时为什么不会一直占用-CPU.md"
+        },
+        {
+          "key": "Q077",
+          "path": "questions/11-性能与稳定性/Q077-ANR-常见成因与排查流程是什么.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U11-16",
+      "source_id": "U11",
+      "topic": "源码学习方法",
+      "note": "",
+      "targets": [
+        {
+          "key": "source-ai",
+          "path": "docs/interview-intake-java-systems-20261102.md#js16"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U11-17",
+      "source_id": "U11",
+      "topic": "AIDL步骤与Binder",
+      "note": "",
+      "targets": [
+        {
+          "key": "WC33",
+          "path": "docs/word-crush-android-xml-guide.md#q33"
+        },
+        {
+          "key": "Q015",
+          "path": "questions/02-Handler线程与IPC/Q015-Binder-如何完成一次跨进程调用.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U11-18",
+      "source_id": "U11",
+      "topic": "后台不被杀",
+      "note": "无法给保活保证",
+      "targets": [
+        {
+          "key": "Q007",
+          "path": "questions/01-Android基础与生命周期/Q007-Activity-和-Service-有什么区别.md"
+        },
+        {
+          "key": "PL18",
+          "path": "docs/android-platform-interview-guide.md#ad18"
+        },
+        {
+          "key": "PL19",
+          "path": "docs/android-platform-interview-guide.md#ad19"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U11-19",
+      "source_id": "U11",
+      "topic": "View绘制",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q017",
+          "path": "questions/03-View绘制与触摸/Q017-View-的-measure、layout、draw-分别做什么.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U11-20",
+      "source_id": "U11",
+      "topic": "事件分发",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q019",
+          "path": "questions/03-View绘制与触摸/Q019-触摸事件分发与拦截的职责如何划分.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U11-21",
+      "source_id": "U11",
+      "topic": "触摸拦截",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q020",
+          "path": "questions/03-View绘制与触摸/Q020-父容器中途拦截手势时子-View-会发生什么.md"
+        },
+        {
+          "key": "PL15",
+          "path": "docs/android-platform-interview-guide.md#ad15"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U11-22",
+      "source_id": "U11",
+      "topic": "新闻App功能设计",
+      "note": "只按数据流/分页缓存/失败恢复设计，不编原项目",
+      "targets": [
+        {
+          "key": "PREP",
+          "path": "docs/interview-intake-coverage-20261102.md#准备框架"
+        },
+        {
+          "key": "HC02",
+          "path": "docs/android-interview-handbook.md#q-c02"
+        },
+        {
+          "key": "HC24",
+          "path": "docs/android-interview-handbook.md#q-c24"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U11-23",
+      "source_id": "U11",
+      "topic": "MVP重构动机",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q066",
+          "path": "questions/10-Jetpack架构与存储/Q066-MVC、MVP、MVVM-如何划分职责.md"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U11-24",
+      "source_id": "U11",
+      "topic": "MVP与MVVM",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q066",
+          "path": "questions/10-Jetpack架构与存储/Q066-MVC、MVP、MVVM-如何划分职责.md"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U11-25",
+      "source_id": "U11",
+      "topic": "反问业务栈与跨端",
+      "note": "",
+      "targets": [
+        {
+          "key": "PREP",
+          "path": "docs/interview-intake-coverage-20261102.md#准备框架"
+        },
+        {
+          "key": "render-platforms",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt01"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U12-01",
+      "source_id": "U12",
+      "topic": "存储选择与Provider边界",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q070",
+          "path": "questions/10-Jetpack架构与存储/Q070-SharedPreferences、数据库各适合什么数据.md"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U12-02",
+      "source_id": "U12",
+      "topic": "单例、工厂、适配器",
+      "note": "",
+      "targets": [
+        {
+          "key": "dcl",
+          "path": "docs/interview-intake-java-systems-20261102.md#js02"
+        },
+        {
+          "key": "patterns",
+          "path": "docs/interview-intake-java-systems-20261102.md#js04"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U12-03",
+      "source_id": "U12",
+      "topic": "String、Builder、Buffer",
+      "note": "",
+      "targets": [
+        {
+          "key": "JA04",
+          "path": "docs/java-core-interview-guide.md#ja04"
+        },
+        {
+          "key": "Q043",
+          "path": "questions/07-Java集合与JVM/Q043-String-常量池与对象创建有什么区别.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U12-04",
+      "source_id": "U12",
+      "topic": "ArrayList与LinkedList",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q037",
+          "path": "questions/07-Java集合与JVM/Q037-ArrayList-为什么查询快而中间插入可能昂贵.md"
+        },
+        {
+          "key": "JA08",
+          "path": "docs/java-core-interview-guide.md#ja08"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U12-05",
+      "source_id": "U12",
+      "topic": "四组件",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q001",
+          "path": "questions/01-Android基础与生命周期/Q001-四大组件各自解决什么问题.md"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U12-06",
+      "source_id": "U12",
+      "topic": "广播注册",
+      "note": "",
+      "targets": [
+        {
+          "key": "broadcast",
+          "path": "questions/01-Android基础与生命周期/Q001-四大组件各自解决什么问题.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U12-07",
+      "source_id": "U12",
+      "topic": "启动Service",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q007",
+          "path": "questions/01-Android基础与生命周期/Q007-Activity-和-Service-有什么区别.md"
+        },
+        {
+          "key": "WC32",
+          "path": "docs/word-crush-android-xml-guide.md#q32"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U12-08",
+      "source_id": "U12",
+      "topic": "A到B到A生命周期",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q002",
+          "path": "questions/01-Android基础与生命周期/Q002-Activity-切换与返回时的生命周期如何变化.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U12-09",
+      "source_id": "U12",
+      "topic": "源码和开源库阅读",
+      "note": "",
+      "targets": [
+        {
+          "key": "source-ai",
+          "path": "docs/interview-intake-java-systems-20261102.md#js16"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U12-10",
+      "source_id": "U12",
+      "topic": "TCP服务端感知断开",
+      "note": "",
+      "targets": [
+        {
+          "key": "disconnect",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt09"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U12-11",
+      "source_id": "U12",
+      "topic": "Binder载荷限制",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q016",
+          "path": "questions/02-Handler线程与IPC/Q016-为什么大数据不应直接塞进-Binder-事务.md"
+        },
+        {
+          "key": "PL13",
+          "path": "docs/android-platform-interview-guide.md#ad13"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U12-12",
+      "source_id": "U12",
+      "topic": "通话、日历提醒和音乐铃声互斥",
+      "note": "",
+      "targets": [
+        {
+          "key": "audio-focus",
+          "path": "docs/interview-intake-android-20261102.md#ad12"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U12-13",
+      "source_id": "U12",
+      "topic": "进程与线程",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q081",
+          "path": "questions/12-Framework与系统/Q081-进程和线程的资源边界有什么不同.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U12-14",
+      "source_id": "U12",
+      "topic": "Linux CPU与内存命令",
+      "note": "",
+      "targets": [
+        {
+          "key": "linux-metrics",
+          "path": "docs/interview-intake-java-systems-20261102.md#js09"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U12-15",
+      "source_id": "U12",
+      "topic": "系统启动与插充电流程",
+      "note": "原话为插充电一瞬间，按开机/关机充电/已开机区分",
+      "targets": [
+        {
+          "key": "startup-charging",
+          "path": "docs/interview-intake-android-20261102.md#ad13"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U12-16",
+      "source_id": "U12",
+      "topic": "Glide",
+      "note": "",
+      "targets": [
+        {
+          "key": "glide",
+          "path": "docs/interview-intake-android-20261102.md#ad11"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U12-17",
+      "source_id": "U12",
+      "topic": "冷启动",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q078",
+          "path": "questions/11-性能与稳定性/Q078-应用启动优化怎样区分首帧与可交互时间.md"
+        },
+        {
+          "key": "PL32",
+          "path": "docs/android-platform-interview-guide.md#ad32"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U12-18",
+      "source_id": "U12",
+      "topic": "GC",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q040",
+          "path": "questions/07-Java集合与JVM/Q040-垃圾回收怎样判断对象是否仍然存活.md"
+        },
+        {
+          "key": "JA37",
+          "path": "docs/java-core-interview-guide.md#ja37"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U12-19",
+      "source_id": "U12",
+      "topic": "两根木棍测45分钟",
+      "note": "",
+      "targets": [
+        {
+          "key": "burn-ropes",
+          "path": "docs/interview-intake-algorithms-20261102.md#al08"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U13-01",
+      "source_id": "U13",
+      "topic": "自介与Android掌握程度",
+      "note": "",
+      "targets": [
+        {
+          "key": "PREP",
+          "path": "docs/interview-intake-coverage-20261102.md#准备框架"
+        }
+      ],
+      "disposition": "准备框架"
+    },
+    {
+      "id": "U13-02",
+      "source_id": "U13",
+      "topic": "Dart GC",
+      "note": "不采用原帖口述算法数量作为事实",
+      "targets": [
+        {
+          "key": "dart-gc",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt15"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U13-03",
+      "source_id": "U13",
+      "topic": "const与final",
+      "note": "",
+      "targets": [
+        {
+          "key": "FL01",
+          "path": "docs/flutter-interview-guide.md#q01"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U13-04",
+      "source_id": "U13",
+      "topic": "Widget、Element、RenderObject",
+      "note": "原图Wind Object疑术语笔误，规范化说明",
+      "targets": [
+        {
+          "key": "FL15",
+          "path": "docs/flutter-interview-guide.md#q15"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U13-05",
+      "source_id": "U13",
+      "topic": "build范围、markNeedsBuild与BuildOwner",
+      "note": "",
+      "targets": [
+        {
+          "key": "FL16",
+          "path": "docs/flutter-interview-guide.md#q16"
+        },
+        {
+          "key": "FL22",
+          "path": "docs/flutter-interview-guide.md#q22"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U13-06",
+      "source_id": "U13",
+      "topic": "StatefulWidget生命周期与网络清理",
+      "note": "",
+      "targets": [
+        {
+          "key": "FL19",
+          "path": "docs/flutter-interview-guide.md#q19"
+        },
+        {
+          "key": "FL21",
+          "path": "docs/flutter-interview-guide.md#q21"
+        },
+        {
+          "key": "FL23",
+          "path": "docs/flutter-interview-guide.md#q23"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U13-07",
+      "source_id": "U13",
+      "topic": "原生通信",
+      "note": "",
+      "targets": [
+        {
+          "key": "FL40",
+          "path": "docs/flutter-interview-guide.md#q40"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U13-08",
+      "source_id": "U13",
+      "topic": "网络插件与路由库选择",
+      "note": "原文未知库名，不能猜所谓美团路由实现",
+      "targets": [
+        {
+          "key": "hybrid-routing",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt16"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U13-09",
+      "source_id": "U13",
+      "topic": "路由的平台差异",
+      "note": "",
+      "targets": [
+        {
+          "key": "hybrid-routing",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt16"
+        },
+        {
+          "key": "FL35",
+          "path": "docs/flutter-interview-guide.md#q35"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U13-10",
+      "source_id": "U13",
+      "topic": "Handler组成",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q009",
+          "path": "questions/02-Handler线程与IPC/Q009-Handler、Looper-和-MessageQueue-如何协作.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U13-11",
+      "source_id": "U13",
+      "topic": "主Looper未建情况及机制",
+      "note": "实际主Looper由系统创建，不建议应用prepareMainLooper",
+      "targets": [
+        {
+          "key": "Q014",
+          "path": "questions/02-Handler线程与IPC/Q014-HandlerThread-与普通-Thread-有何差别.md"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U13-12",
+      "source_id": "U13",
+      "topic": "四组件",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q001",
+          "path": "questions/01-Android基础与生命周期/Q001-四大组件各自解决什么问题.md"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U13-13",
+      "source_id": "U13",
+      "topic": "启动模式",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q003",
+          "path": "questions/01-Android基础与生命周期/Q003-Activity-启动模式与-onNewIntent-如何配合.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U13-14",
+      "source_id": "U13",
+      "topic": "Java四引用",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q041",
+          "path": "questions/07-Java集合与JVM/Q041-强引用、软引用、弱引用和虚引用如何使用.md"
+        },
+        {
+          "key": "JA36",
+          "path": "docs/java-core-interview-guide.md#ja36"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U13-15",
+      "source_id": "U13",
+      "topic": "线程池作用",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q051",
+          "path": "questions/08-并发与线程安全/Q051-线程池参数怎样共同决定任务执行.md"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U13-16",
+      "source_id": "U13",
+      "topic": "挑战案例",
+      "note": "",
+      "targets": [
+        {
+          "key": "PREP",
+          "path": "docs/interview-intake-coverage-20261102.md#准备框架"
+        },
+        {
+          "key": "source-ai",
+          "path": "docs/interview-intake-java-systems-20261102.md#js16"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U13-17",
+      "source_id": "U13",
+      "topic": "学习方法与AI",
+      "note": "",
+      "targets": [
+        {
+          "key": "source-ai",
+          "path": "docs/interview-intake-java-systems-20261102.md#js16"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U13-18",
+      "source_id": "U13",
+      "topic": "AI工具",
+      "note": "",
+      "targets": [
+        {
+          "key": "source-ai",
+          "path": "docs/interview-intake-java-systems-20261102.md#js16"
+        },
+        {
+          "key": "FL52",
+          "path": "docs/flutter-interview-guide.md#q52"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U13-19",
+      "source_id": "U13",
+      "topic": "新Flutter与老Java迁移",
+      "note": "工程取舍观点，不当成某公司固定路线",
+      "targets": [
+        {
+          "key": "render-platforms",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt01"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U13-20",
+      "source_id": "U13",
+      "topic": "移动端前景",
+      "note": "观点型问题，不写确定行业预测",
+      "targets": [
+        {
+          "key": "PREP",
+          "path": "docs/interview-intake-coverage-20261102.md#准备框架"
+        }
+      ],
+      "disposition": "准备框架"
+    },
+    {
+      "id": "U14-01",
+      "source_id": "U14",
+      "topic": "iOS了解程度",
+      "note": "按真实边界回答，不补iOS项目经历",
+      "targets": [
+        {
+          "key": "PREP",
+          "path": "docs/interview-intake-coverage-20261102.md#准备框架"
+        }
+      ],
+      "disposition": "准备框架"
+    },
+    {
+      "id": "U14-02",
+      "source_id": "U14",
+      "topic": "四组件",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q001",
+          "path": "questions/01-Android基础与生命周期/Q001-四大组件各自解决什么问题.md"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U14-03",
+      "source_id": "U14",
+      "topic": "Activity生命周期",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q002",
+          "path": "questions/01-Android基础与生命周期/Q002-Activity-切换与返回时的生命周期如何变化.md"
+        },
+        {
+          "key": "Q006",
+          "path": "questions/01-Android基础与生命周期/Q006-如何判断应用处于前台还是后台.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U14-04",
+      "source_id": "U14",
+      "topic": "Activity A跳B",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q002",
+          "path": "questions/01-Android基础与生命周期/Q002-Activity-切换与返回时的生命周期如何变化.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U14-05",
+      "source_id": "U14",
+      "topic": "图片缓存",
+      "note": "",
+      "targets": [
+        {
+          "key": "glide",
+          "path": "docs/interview-intake-android-20261102.md#ad11"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U14-06",
+      "source_id": "U14",
+      "topic": "LRU",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q108",
+          "path": "questions/15-数据结构与算法/Q108-怎样设计-LRU-缓存.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U14-07",
+      "source_id": "U14",
+      "topic": "实习节假日三级数据源",
+      "note": "不知原项目哪三级，不能编内存磁盘网络当原答",
+      "targets": [
+        {
+          "key": "ASK",
+          "path": "docs/interview-intake-coverage-20261102.md#待澄清清单"
+        }
+      ],
+      "disposition": "待澄清"
+    },
+    {
+      "id": "U14-08",
+      "source_id": "U14",
+      "topic": "RN页面改H5原因",
+      "note": "",
+      "targets": [
+        {
+          "key": "h5-bridge",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt14"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U14-09",
+      "source_id": "U14",
+      "topic": "RN热更新后为何仍选H5",
+      "note": "",
+      "targets": [
+        {
+          "key": "h5-bridge",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt14"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U14-10",
+      "source_id": "U14",
+      "topic": "JSBridge新增接口",
+      "note": "",
+      "targets": [
+        {
+          "key": "h5-bridge",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt14"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U14-11",
+      "source_id": "U14",
+      "topic": "老版本接口适配",
+      "note": "",
+      "targets": [
+        {
+          "key": "h5-bridge",
+          "path": "docs/interview-intake-network-runtime-20261102.md#nt14"
+        },
+        {
+          "key": "Q116",
+          "path": "questions/16-工程设计与项目追问/Q116-多机型兼容问题应怎样建立验证矩阵.md"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U14-12",
+      "source_id": "U14",
+      "topic": "RecyclerView复用",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q023",
+          "path": "questions/04-RecyclerView/Q023-RecyclerView-所谓四级缓存究竟是什么.md"
+        },
+        {
+          "key": "Q024",
+          "path": "questions/04-RecyclerView/Q024-从缓存或回收池取出的-ViewHolder-是否都要重新绑定.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U14-13",
+      "source_id": "U14",
+      "topic": "Activity外内存泄漏",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q074",
+          "path": "questions/11-性能与稳定性/Q074-内存泄漏与-OOM-是什么关系.md"
+        },
+        {
+          "key": "JA31",
+          "path": "docs/java-core-interview-guide.md#ja31"
+        },
+        {
+          "key": "JA38",
+          "path": "docs/java-core-interview-guide.md#ja38"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U14-14",
+      "source_id": "U14",
+      "topic": "第n大与复杂度",
+      "note": "",
+      "targets": [
+        {
+          "key": "smallest-k",
+          "path": "docs/interview-intake-algorithms-20261102.md#al03"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U15-01",
+      "source_id": "U15",
+      "topic": "Activity后台生命周期",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q002",
+          "path": "questions/01-Android基础与生命周期/Q002-Activity-切换与返回时的生命周期如何变化.md"
+        },
+        {
+          "key": "Q006",
+          "path": "questions/01-Android基础与生命周期/Q006-如何判断应用处于前台还是后台.md"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U15-02",
+      "source_id": "U15",
+      "topic": "Service启动绑定与机器人前台服务",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q007",
+          "path": "questions/01-Android基础与生命周期/Q007-Activity-和-Service-有什么区别.md"
+        },
+        {
+          "key": "WC32",
+          "path": "docs/word-crush-android-xml-guide.md#q32"
+        },
+        {
+          "key": "PL20",
+          "path": "docs/android-platform-interview-guide.md#ad20"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U15-03",
+      "source_id": "U15",
+      "topic": "多进程IPC取舍",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q015",
+          "path": "questions/02-Handler线程与IPC/Q015-Binder-如何完成一次跨进程调用.md"
+        },
+        {
+          "key": "PL11",
+          "path": "docs/android-platform-interview-guide.md#ad11"
+        },
+        {
+          "key": "PL12",
+          "path": "docs/android-platform-interview-guide.md#ad12"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U15-04",
+      "source_id": "U15",
+      "topic": "Handler高频传感器阻塞",
+      "note": "",
+      "targets": [
+        {
+          "key": "sensor-pipeline",
+          "path": "docs/interview-intake-android-20261102.md#ad14"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U15-05",
+      "source_id": "U15",
+      "topic": "View卡顿",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q076",
+          "path": "questions/11-性能与稳定性/Q076-列表滚动掉帧应怎样定位.md"
+        },
+        {
+          "key": "PL33",
+          "path": "docs/android-platform-interview-guide.md#ad33"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U15-06",
+      "source_id": "U15",
+      "topic": "权限与机器人硬件适配",
+      "note": "",
+      "targets": [
+        {
+          "key": "device-engineering",
+          "path": "docs/interview-intake-android-20261102.md#ad14"
+        },
+        {
+          "key": "PL36",
+          "path": "docs/android-platform-interview-guide.md#ad36"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U15-07",
+      "source_id": "U15",
+      "topic": "多屏适配",
+      "note": "",
+      "targets": [
+        {
+          "key": "adaptive-grid",
+          "path": "docs/interview-intake-android-20261102.md#ad04"
+        },
+        {
+          "key": "device-engineering",
+          "path": "docs/interview-intake-android-20261102.md#ad14"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U15-08",
+      "source_id": "U15",
+      "topic": "高频上传防抖与背压",
+      "note": "",
+      "targets": [
+        {
+          "key": "sensor-pipeline",
+          "path": "docs/interview-intake-android-20261102.md#ad14"
+        },
+        {
+          "key": "KT35",
+          "path": "docs/kotlin-coroutines-interview-guide.md#kt35"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U15-09",
+      "source_id": "U15",
+      "topic": "常驻对象泄漏",
+      "note": "",
+      "targets": [
+        {
+          "key": "device-engineering",
+          "path": "docs/interview-intake-android-20261102.md#ad14"
+        },
+        {
+          "key": "JA38",
+          "path": "docs/java-core-interview-guide.md#ja38"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U15-10",
+      "source_id": "U15",
+      "topic": "大量传感器持久化",
+      "note": "",
+      "targets": [
+        {
+          "key": "sensor-pipeline",
+          "path": "docs/interview-intake-android-20261102.md#ad14"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U15-11",
+      "source_id": "U15",
+      "topic": "JNI驱动接口",
+      "note": "",
+      "targets": [
+        {
+          "key": "device-engineering",
+          "path": "docs/interview-intake-android-20261102.md#ad14"
+        },
+        {
+          "key": "JA39",
+          "path": "docs/java-core-interview-guide.md#ja39"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U15-12",
+      "source_id": "U15",
+      "topic": "长期日志容量",
+      "note": "",
+      "targets": [
+        {
+          "key": "device-engineering",
+          "path": "docs/interview-intake-android-20261102.md#ad14"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U15-13",
+      "source_id": "U15",
+      "topic": "冷启动",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q078",
+          "path": "questions/11-性能与稳定性/Q078-应用启动优化怎样区分首帧与可交互时间.md"
+        },
+        {
+          "key": "PL32",
+          "path": "docs/android-platform-interview-guide.md#ad32"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U15-14",
+      "source_id": "U15",
+      "topic": "Jetpack与ViewModel",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q068",
+          "path": "questions/10-Jetpack架构与存储/Q068-ViewModel-为什么能跨配置变化保留状态.md"
+        },
+        {
+          "key": "PL01",
+          "path": "docs/android-platform-interview-guide.md#ad01"
+        }
+      ],
+      "disposition": "扩充已有"
+    },
+    {
+      "id": "U15-15",
+      "source_id": "U15",
+      "topic": "协程与线程",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q032",
+          "path": "questions/06-Kotlin与协程/Q032-协程和线程是什么关系.md"
+        },
+        {
+          "key": "KT18",
+          "path": "docs/kotlin-coroutines-interview-guide.md#kt18"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U15-16",
+      "source_id": "U15",
+      "topic": "后台查杀和保活",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q007",
+          "path": "questions/01-Android基础与生命周期/Q007-Activity-和-Service-有什么区别.md"
+        },
+        {
+          "key": "PL19",
+          "path": "docs/android-platform-interview-guide.md#ad19"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U15-17",
+      "source_id": "U15",
+      "topic": "线上ANR",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q077",
+          "path": "questions/11-性能与稳定性/Q077-ANR-常见成因与排查流程是什么.md"
+        },
+        {
+          "key": "PL31",
+          "path": "docs/android-platform-interview-guide.md#ad31"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U15-18",
+      "source_id": "U15",
+      "topic": "指令队列顺序",
+      "note": "区分投递、执行、完成和重试，不承诺exactly-once",
+      "targets": [
+        {
+          "key": "sensor-pipeline",
+          "path": "docs/interview-intake-android-20261102.md#ad14"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U15-19",
+      "source_id": "U15",
+      "topic": "实时预览图像内存",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q079",
+          "path": "questions/11-性能与稳定性/Q079-Bitmap-的内存占用怎样估算.md"
+        },
+        {
+          "key": "PL34",
+          "path": "docs/android-platform-interview-guide.md#ad34"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U15-20",
+      "source_id": "U15",
+      "topic": "版本碎片化",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q116",
+          "path": "questions/16-工程设计与项目追问/Q116-多机型兼容问题应怎样建立验证矩阵.md"
+        },
+        {
+          "key": "JA40",
+          "path": "docs/java-core-interview-guide.md#ja40"
+        }
+      ],
+      "disposition": "既有导航"
+    },
+    {
+      "id": "U15-21",
+      "source_id": "U15",
+      "topic": "受限设备轻量化",
+      "note": "",
+      "targets": [
+        {
+          "key": "Q080",
+          "path": "questions/11-性能与稳定性/Q080-怎样减少-APK-体积且避免破坏运行时行为.md"
+        },
+        {
+          "key": "device-engineering",
+          "path": "docs/interview-intake-android-20261102.md#ad14"
+        }
+      ],
+      "disposition": "新题深化"
+    },
+    {
+      "id": "U15-22",
+      "source_id": "U15",
+      "topic": "反问",
+      "note": "",
+      "targets": [
+        {
+          "key": "PREP",
+          "path": "docs/interview-intake-coverage-20261102.md#准备框架"
+        }
+      ],
+      "disposition": "准备框架"
+    }
+  ],
+  "enriched_ids": [
+    "Q014",
+    "Q016",
+    "Q033",
+    "Q035",
+    "Q051",
+    "Q066",
+    "Q068",
+    "Q069",
+    "Q070",
+    "E016",
+    "Q001",
+    "Q027",
+    "Q036",
+    "Q037"
+  ],
+  "new_guides": [
+    {
+      "path": "docs/interview-intake-android-20261102.md",
+      "prefix": "AD",
+      "label": "Android缓存、网络与设备场景",
+      "question_count": 15
+    },
+    {
+      "path": "docs/interview-intake-java-systems-20261102.md",
+      "prefix": "JS",
+      "label": "Java、并发与工程设计",
+      "question_count": 17
+    },
+    {
+      "path": "docs/interview-intake-network-runtime-20261102.md",
+      "prefix": "NT",
+      "label": "网络与跨端运行时",
+      "question_count": 17
+    },
+    {
+      "path": "docs/interview-intake-algorithms-20261102.md",
+      "prefix": "AL",
+      "label": "算法演练",
+      "question_count": 8
+    }
+  ],
+  "image_groups": [
+    {
+      "group": "A",
+      "image_count": 1
+    },
+    {
+      "group": "B",
+      "image_count": 1
+    },
+    {
+      "group": "C",
+      "image_count": 1
+    },
+    {
+      "group": "D",
+      "image_count": 3
+    },
+    {
+      "group": "E",
+      "image_count": 2
+    },
+    {
+      "group": "F",
+      "image_count": 2
+    },
+    {
+      "group": "G",
+      "image_count": 2
+    },
+    {
+      "group": "H",
+      "image_count": 1
+    }
+  ]
+}

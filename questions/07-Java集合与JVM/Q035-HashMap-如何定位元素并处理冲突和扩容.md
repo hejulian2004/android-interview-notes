@@ -4,7 +4,7 @@ title: "HashMap 如何定位元素并处理冲突和扩容"
 category: "07-Java集合与JVM"
 kind: observed
 priority: P0
-updated_at: "2026-10-30"
+updated_at: "2026-11-02"
 ---
 
 # Q035 · HashMap 如何定位元素并处理冲突和扩容
@@ -44,7 +44,7 @@ updated_at: "2026-10-30"
 
 ## 参考回答提纲
 
-先通过哈希确定桶，再在桶内查找；冲突处理、树化阈值和迁移策略属于具体实现细节。以明确的 Java 版本讲数组、链表、树结构及容量与负载因子的权衡。它不提供并发更新安全保证。
+先通过哈希确定桶，再在桶内查找；冲突处理、树化阈值和迁移策略属于具体实现细节。以明确的 Java 版本讲数组、链表、树结构及容量与负载因子的权衡。它不提供并发更新安全保证。 若以所链接的 OpenJDK 17 HashMap 源码为例，TREEIFY_THRESHOLD=8、MIN_TREEIFY_CAPACITY=64；普通 put 在桶已有至少 8 个节点后再追加节点时会触发树化检查，表容量不足 64 则优先扩容。不要把“阈值 8”机械回答成恰好插入第 8 个一定树化，其他插入路径也需读具体代码。
 
 ## 易错点
 
@@ -59,6 +59,7 @@ updated_at: "2026-10-30"
 整理者独立撰写的复习提纲；下列技术参考用于学习核查，不代表企业官方答案。
 
 - [HashMap API（Java 8）](https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html)（网页入口已核查）
+- [OpenJDK 17 HashMap 源码（具体实现边界）](https://raw.githubusercontent.com/openjdk/jdk17u/master/src/java.base/share/classes/java/util/HashMap.java)（网页入口已核查）
 
 复习时需结合目标 Android API、AndroidX、Kotlin、JDK 或协议版本。本文是回答提纲，不是企业标准答案，也不是已完成的性能实验。
 

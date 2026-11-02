@@ -533,5 +533,83 @@
     "url": "https://developer.android.com/develop/ui/compose/side-effects",
     "access_checked": "2026-10-30",
     "role": "技术学习参考；不是面试发生证明"
+  },
+  "binder-buffer": {
+    "title": "Binder 事务缓冲与异常边界",
+    "url": "https://developer.android.com/reference/android/os/TransactionTooLargeException",
+    "access_checked": "2026-11-02",
+    "role": "技术学习参考；不是面试发生证明"
+  },
+  "kcoroutine-spec": {
+    "title": "Kotlin 协程规范：CPS 与状态机",
+    "url": "https://kotlinlang.org/spec/asynchronous-programming-with-coroutines.html",
+    "access_checked": "2026-11-02",
+    "role": "技术学习参考；不是面试发生证明"
+  },
+  "hashmap-jdk17-source": {
+    "title": "OpenJDK 17 HashMap 源码（具体实现边界）",
+    "url": "https://raw.githubusercontent.com/openjdk/jdk17u/master/src/java.base/share/classes/java/util/HashMap.java",
+    "access_checked": "2026-11-02",
+    "role": "技术学习参考；不是面试发生证明"
+  },
+  "executor-jdk17": {
+    "title": "ThreadPoolExecutor Java SE 17",
+    "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html",
+    "access_checked": "2026-11-02",
+    "role": "技术学习参考；不是面试发生证明"
+  },
+  "vmstore-owner": {
+    "title": "ViewModelStoreOwner 接口契约",
+    "url": "https://developer.android.com/reference/androidx/lifecycle/ViewModelStoreOwner",
+    "access_checked": "2026-11-02",
+    "role": "技术学习参考；不是面试发生证明"
+  },
+  "provider-basics": {
+    "title": "ContentProvider 基础与数据共享",
+    "url": "https://developer.android.com/guide/topics/providers/content-provider-basics",
+    "access_checked": "2026-11-02",
+    "role": "技术学习参考；不是面试发生证明"
+  },
+  "kensureactive": {
+    "title": "ensureActive 协作式取消",
+    "url": "https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/ensure-active.html",
+    "access_checked": "2026-11-02",
+    "role": "技术学习参考；不是面试发生证明"
+  },
+  "broadcast-guide": {
+    "title": "广播注册、生命周期与权限",
+    "url": "https://developer.android.com/develop/background-work/background-tasks/broadcasts",
+    "access_checked": "2026-11-02",
+    "role": "技术学习参考；不是面试发生证明"
+  },
+  "view-layout": {
+    "title": "XML View 布局声明与常见布局",
+    "url": "https://developer.android.com/develop/ui/views/layout/declaring-layout",
+    "access_checked": "2026-11-02",
+    "role": "技术学习参考；不是面试发生证明"
+  },
+  "chm-jdk17-source": {
+    "title": "OpenJDK 17 ConcurrentHashMap 源码",
+    "url": "https://raw.githubusercontent.com/openjdk/jdk17u/master/src/java.base/share/classes/java/util/concurrent/ConcurrentHashMap.java",
+    "access_checked": "2026-11-02",
+    "role": "技术学习参考；不是面试发生证明"
+  },
+  "arraylist-jdk17-source": {
+    "title": "OpenJDK 17 ArrayList 源码",
+    "url": "https://raw.githubusercontent.com/openjdk/jdk17u/master/src/java.base/share/classes/java/util/ArrayList.java",
+    "access_checked": "2026-11-02",
+    "role": "技术学习参考；不是面试发生证明"
+  },
+  "collections-synchronized": {
+    "title": "Collections.synchronizedList 及遍历同步",
+    "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collections.html#synchronizedList(java.util.List)",
+    "access_checked": "2026-11-02",
+    "role": "技术学习参考；不是面试发生证明"
+  },
+  "copyonwrite": {
+    "title": "CopyOnWriteArrayList 快照与复制代价",
+    "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/CopyOnWriteArrayList.html",
+    "access_checked": "2026-11-02",
+    "role": "技术学习参考；不是面试发生证明"
   }
 }

@@ -4,7 +4,7 @@ title: "为什么大数据不应直接塞进 Binder 事务"
 category: "02-Handler线程与IPC"
 kind: observed
 priority: P2
-updated_at: "2026-10-30"
+updated_at: "2026-11-02"
 ---
 
 # Q016 · 为什么大数据不应直接塞进 Binder 事务
@@ -26,7 +26,7 @@ updated_at: "2026-10-30"
 
 ## 参考回答提纲
 
-Binder 适合传递控制消息与小型结构化数据。大型载荷要考虑事务缓冲区、并发事务和序列化开销；可传递文件描述符或共享内存句柄，并明确所有权、访问权限和关闭时机。
+Binder 适合传递控制消息与小型结构化数据。大型载荷要考虑事务缓冲区、并发事务和序列化开销；可传递文件描述符或共享内存句柄，并明确所有权、访问权限和关闭时机。 官方文档当前描述事务缓冲约 1MB，由进程中所有进行中的事务共享，而非每次调用各有 1MB。异常时不能仅凭异常判断请求完全未执行还是响应返回失败，因此重试还要考虑幂等。
 
 ## 易错点
 
@@ -42,6 +42,7 @@ Binder 适合传递控制消息与小型结构化数据。大型载荷要考虑�
 
 - [AOSP Binder 概览](https://source.android.com/docs/core/architecture/ipc/binder-overview)（网页入口已核查）
 - [SharedMemory API](https://developer.android.com/reference/android/os/SharedMemory)（网页入口已核查）
+- [Binder 事务缓冲与异常边界](https://developer.android.com/reference/android/os/TransactionTooLargeException)（网页入口已核查）
 
 复习时需结合目标 Android API、AndroidX、Kotlin、JDK 或协议版本。本文是回答提纲，不是企业标准答案，也不是已完成的性能实验。
 

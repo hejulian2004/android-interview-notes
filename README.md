@@ -24,6 +24,8 @@ Flutter 与 Dart：[52 道面试问答及 SSH Mobile 实践指南](docs/flutter-
 
 基础深化：[Java 与 ART（40 题）](docs/java-core-interview-guide.md) · [Kotlin 与协程（40 题）](docs/kotlin-coroutines-interview-guide.md) · [Android 平台机制（40 题）](docs/android-platform-interview-guide.md)。这 120 题为整理者设计的通用练习，独立于有公开面经来源的 Q 系列；不归属于任何公司的已证实面试记录，不进入来源题、公司或招聘频率统计。每题提供官方依据与版本边界，不代表个人项目经历或已经完成编译、真机及性能验证。
 
+本批用户面经补充（2026-11-02）：[逐项覆盖与来源边界](docs/interview-intake-coverage-20261102.md) · [Android缓存、网络与设备场景](docs/interview-intake-android-20261102.md) · [Java、并发与工程设计](docs/interview-intake-java-systems-20261102.md) · [网络与跨端运行时](docs/interview-intake-network-runtime-20261102.md) · [算法演练](docs/interview-intake-algorithms-20261102.md)。新增57道深化练习，补充14道旧题，保留原题号与路径；文字与截图按同内容合并，原帖URL、面试日期和真实性未核，不计入上述三年来源、公司和频率统计。个人实习与项目背景不当作本人经历。
+
 [按类别复习](indexes/by-category.md) · [按公司查证](indexes/by-company.md) · [按年份查看](indexes/by-year.md) · [来源总表](sources/README.md) · [建议学习顺序](indexes/study-order.md)
 
 [只看面试时间明确的子集](indexes/strict-interview-window.md) · [补充练习](supplements/README.md) · [技术参考](references/README.md)
