@@ -1,5 +1,6 @@
 import {apiRequest, getSession, login, logout, subscribeSession} from './api.mjs';
 import {renderMarkdown} from './markdown.mjs';
+import {AGENT_ENABLED} from './features.mjs';
 
 const DRAFT_PREFIX = 'android-study.editor-draft.v1:';
 const token = () => globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -25,7 +26,7 @@ export function writeEditorDraft(storage,key,value) {
   const safe={version:1,questionId:value.questionId||null,operation:value.operation,documentPath:value.documentPath,title:value.title,answerMarkdown:value.answerMarkdown,baseRevision:value.baseRevision,blobSha:value.blobSha,requestKey:value.requestKey,pendingDraftId:value.pendingDraftId||null,pendingOperation:value.pendingOperation||null};
   storage.setItem(DRAFT_PREFIX+key,JSON.stringify(safe));
 }
-export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuthenticated=()=>{},onLoggedOut=()=>{},notify=()=>{}}) {
+export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuthenticated=()=>{},onLoggedOut=()=>{},notify=()=>{},agentEnabled=AGENT_ENABLED}) {
   const shell=document.querySelector('.app-shell');
   const loginBox=el('section',{id:'login-screen',class:'login-screen','aria-labelledby':'login-heading'});
   const loginForm=el('form',{id:'login-form',class:'login-card',method:'post',action:'./api/login'});
@@ -33,11 +34,12 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
   const password=el('input',{id:'login-password',name:'password',type:'password',autocomplete:'current-password',required:'',maxlength:'1024'});
   const loginStatus=el('p',{id:'login-status',class:'admin-status',role:'status','aria-live':'polite'});
   const signIn=button('登录复习室','login-submit','submit');signIn.className='button';
-  loginForm.append(el('div',{class:'eyebrow'},'ANDROID STUDY'),el('h1',{id:'login-heading'},'登录你的复习室'),el('p',{class:'muted'},'题库管理与 AI 操作仅向管理员开放。学习进度仍保存在当前浏览器。'),field('管理员账号',username),field('密码',password),signIn,loginStatus);
+  loginForm.append(el('div',{class:'eyebrow'},'ANDROID STUDY'),el('h1',{id:'login-heading'},'登录你的复习室'),el('p',{class:'muted'},agentEnabled?'题库管理与 AI 操作仅向管理员开放。学习进度仍保存在当前浏览器。':'登录后可以刷题、阅读和手动维护题库。学习进度仍保存在当前浏览器。'),field('管理员账号',username),field('密码',password),signIn,loginStatus);
   loginBox.append(loginForm);document.body.prepend(loginBox);
   const topbar=document.querySelector('.topbar');
   const actions=el('div',{class:'account-actions'});
   const agentLaunch=button('AI 助手 / Agent','agent-launch');agentLaunch.className='button agent-launch';agentLaunch.setAttribute('aria-controls','agent-drawer');agentLaunch.setAttribute('aria-expanded','false');
+  agentLaunch.hidden=!agentEnabled;
   const manage=button('管理题库','admin-toggle');manage.setAttribute('aria-controls','admin-panel');manage.setAttribute('aria-expanded','false');
   const signOut=button('退出','logout-button');actions.append(agentLaunch,manage,signOut);topbar.append(actions);
   const panel=el('section',{id:'admin-panel',class:'admin-panel',hidden:true,'aria-labelledby':'admin-heading'});
@@ -50,7 +52,7 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
     panes[id]=el('div',{id:`admin-${id}`,class:'admin-pane',role:'tabpanel','aria-labelledby':`admin-tab-${id}`,hidden:id!=='editor'});
   }
   const globalStatus=el('p',{id:'admin-global-status',class:'admin-status',role:'status'});
-  panel.append(heading,el('p',{class:'admin-intro'},'手动保存会直接提交 GitHub。AI 建议先展示改动，确认后才提交。草稿仅保存在本机。'),tabs,...Object.values(panes),globalStatus);
+  panel.append(heading,el('p',{class:'admin-intro'},agentEnabled?'手动保存会直接提交 GitHub。AI 建议先展示改动，确认后才提交。草稿仅保存在本机。':'手动新增、编辑和删除题目；预览差异后保存，修改会直接同步 GitHub。草稿仅保存在本机。'),tabs,...Object.values(panes),globalStatus);
   document.querySelector('.hero').after(panel);
   // Move the existing tool panes once. Opening/closing never rebuilds chat state.
   const drawer=el('aside',{id:'agent-drawer',class:'agent-drawer',hidden:true,tabindex:'-1','aria-labelledby':'agent-drawer-heading'});
@@ -252,7 +254,7 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
   let messageSequence=0;
   function message(role,content) {const body=el(role==='assistant'?'div':'p',role==='assistant'?{class:'markdown-body agent-message-body'}:{});if(role==='assistant')body.innerHTML=renderMarkdown(content,undefined,{idPrefix:`agent-message-${++messageSequence}-`});else body.textContent=content;chatLog.append(el('div',{class:`agent-message agent-${role}`},[el('strong',{},role==='user'?'你':'Agent'),body]));while(chatLog.children.length>30)chatLog.firstElementChild.remove();}
   chatForm.addEventListener('submit',async event=>{
-    event.preventDefault();if(!configured||chatBusy)return;
+    event.preventDefault();if(!agentEnabled||!configured||chatBusy)return;
     const content=chatInput.value.trim();if(!content)return;
     questionChanged();
     const allowQuestionExport=questionConsent.checked,allowSourceExport=sourceConsent.checked;
@@ -277,6 +279,7 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
     finally{chatBusy=false;send.disabled=!configured;}
   });
   applyProposal.addEventListener('click',async()=>{
+    if(!agentEnabled)return;
     if(!proposal?.draftId)return;
     if(submittingProposalIds.has(proposal.draftId))return;
     if(!proposalMatchesContext()){proposalConfirm.checked=privatePublicationConfirm.checked=false;status(chatStatus,'题目、题库版本或供应商信息尚未核对一致，旧建议不能在当前上下文提交；请等待设置载入或重新生成。',true);return;}
@@ -300,7 +303,7 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
   sourceForm.append(el('p',{class:'admin-disclosure'},'只读查询服务器已授权的仓库；每次结果固定源码版本。仓库缓存按需读取，准备中的仓库也可直接查询。其他仓库须先由管理员在服务器登记，查询不会自动发送给模型。'),field('已授权仓库',sourceRepo),refreshSources,field('检索关键词',sourceQuery),search,sourceStatus);
   panes.source.append(sourceForm,sourceResults);
   sourceForm.addEventListener('submit',async event=>{
-    event.preventDefault();search.disabled=true;status(sourceStatus,'正在查询已授权源码…');sourceResults.replaceChildren();
+    event.preventDefault();if(!agentEnabled)return;search.disabled=true;status(sourceStatus,'正在查询已授权源码…');sourceResults.replaceChildren();
     try{
       const value=await apiRequest('source/search',{method:'POST',body:{query:sourceQuery.value.trim(),repository:sourceRepo.value}});
       const results=value.results||value.matches||[];
@@ -336,7 +339,7 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
     if(proposal)renderProposal(false);
   }
   modelForm.addEventListener('submit',async event=>{
-    event.preventDefault();saveModel.disabled=true;
+    event.preventDefault();if(!agentEnabled)return;saveModel.disabled=true;
     const body={baseUrl:baseUrl.value.trim(),model:modelName.value.trim(),clearKey:clearKey.checked};if(modelKey.value)body.key=modelKey.value;
     modelKey.value='';
     try{const value=await apiRequest('settings/model',{method:'PUT',body});showModel(value);questionConsent.checked=sourceConsent.checked=false;status(modelStatus,'模型设置已保存。下一次发送前请重新确认内容授权。');}
@@ -344,11 +347,13 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
   });
   let managementEpoch=0,modelLoadGeneration=0,sourceLoadPromise=null;
   async function loadModel() {
+    if(!agentEnabled)return;
     const epoch=managementEpoch,generation=++modelLoadGeneration;
     try{const value=await apiRequest('settings/model');if(!wasAuthenticated||epoch!==managementEpoch||generation!==modelLoadGeneration)return;showModel(value);}
     catch(error){if(!wasAuthenticated||epoch!==managementEpoch||generation!==modelLoadGeneration)return;configured=false;send.disabled=true;status(modelStatus,error.message,true);}
   }
   async function loadSources() {
+    if(!agentEnabled)return;
     if(sourceLoadPromise)return sourceLoadPromise;
     const epoch=managementEpoch;refreshSources.disabled=true;
     const task=(async()=>{
@@ -374,9 +379,9 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
   async function loadManagement({openSelected=true,waitForMetadata=false}={}) {
     renderChoices();questionChanged();
     // An unrelated source clone or supplier check must not delay the editor.
-    const metadata=[loadModel(),loadSources()];
+    const metadata=agentEnabled?[loadModel(),loadSources()]:[];
     const editor=openSelected&&!edit&&questionSelect.value?openQuestion():Promise.resolve();
-    if(!proposal){try{const stored=JSON.parse(localStorage.getItem(DRAFT_PREFIX+'agent-proposal'));if(stored?.version===1&&typeof stored.proposal?.draftId==='string'&&typeof stored.proposal?.diff==='string'){if(stored.proposal.subjectKey===subjectKey()&&typeof stored.proposal.providerConfigVersion==='string'&&(!providerConfigVersion||stored.proposal.providerConfigVersion===providerConfigVersion)){proposal=stored.proposal;proposalKey=stored.requestKey||token();renderProposal();status(chatStatus,'已恢复本机 AI 建议；提交时服务器仍会检查草稿有效期与版本。');}else{localStorage.removeItem(DRAFT_PREFIX+'agent-proposal');status(chatStatus,'已忽略不属于当前题目或旧版无上下文的建议，请重新生成。');}}}catch{}}
+    if(agentEnabled&&!proposal){try{const stored=JSON.parse(localStorage.getItem(DRAFT_PREFIX+'agent-proposal'));if(stored?.version===1&&typeof stored.proposal?.draftId==='string'&&typeof stored.proposal?.diff==='string'){if(stored.proposal.subjectKey===subjectKey()&&typeof stored.proposal.providerConfigVersion==='string'&&(!providerConfigVersion||stored.proposal.providerConfigVersion===providerConfigVersion)){proposal=stored.proposal;proposalKey=stored.requestKey||token();renderProposal();status(chatStatus,'已恢复本机 AI 建议；提交时服务器仍会检查草稿有效期与版本。');}else{localStorage.removeItem(DRAFT_PREFIX+'agent-proposal');status(chatStatus,'已忽略不属于当前题目或旧版无上下文的建议，请重新生成。');}}}catch{}}
     if(waitForMetadata)await Promise.allSettled([...metadata,editor]);else await editor;
   }
   let panelOpener=manage;
@@ -385,6 +390,7 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
   const isDrawerModal=()=>window.innerWidth<1100;
   function restoreBackground(){for(const [node,inert,aria]of backgroundState){node.inert=inert;inert?node.setAttribute('inert',''):node.removeAttribute('inert');aria===null?node.removeAttribute('aria-hidden'):node.setAttribute('aria-hidden',aria);}backgroundState=[];}
   function updateDrawerMode(){
+    if(!agentEnabled){drawer.hidden=drawerBackdrop.hidden=true;drawer.removeAttribute('aria-modal');agentLaunch.hidden=true;agentLaunch.setAttribute('aria-expanded','false');restoreBackground();document.body.classList.remove('agent-sidebar-open','agent-drawer-modal');for(const node of document.querySelectorAll('.app-shell,.skip-link,#toast,#login-screen')){node.inert=false;node.removeAttribute('inert');node.removeAttribute('aria-hidden');}if(history.state&&Object.hasOwn(history.state,historyMarker)){const state={...history.state};delete state[historyMarker];history.replaceState(state,'',location.href);}drawerHistoryKey=null;pendingHistoryReturn=false;return;}
     const open=!drawer.hidden,modal=open&&isDrawerModal();
     document.body.classList.toggle('agent-sidebar-open',open&&!modal);document.body.classList.toggle('agent-drawer-modal',modal);
     drawer.setAttribute('role',modal?'dialog':'complementary');
@@ -392,7 +398,7 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
     else{drawer.removeAttribute('aria-modal');restoreBackground();}
     drawerBackdrop.hidden=!modal;
   }
-  function ensureDrawerHistory(){if(!drawer.hidden&&isDrawerModal()&&!drawerHistoryKey&&!pendingHistoryReturn){drawerHistoryKey=token();history.pushState({...history.state,[historyMarker]:drawerHistoryKey},'',location.href);}}
+  function ensureDrawerHistory(){if(agentEnabled&&!drawer.hidden&&isDrawerModal()&&!drawerHistoryKey&&!pendingHistoryReturn){drawerHistoryKey=token();history.pushState({...history.state,[historyMarker]:drawerHistoryKey},'',location.href);}}
   function selectPane(id){
     if(id==='editor'){panes.editor.hidden=false;document.getElementById('admin-tab-editor').setAttribute('aria-selected','true');return;}
     for(const key of ['agent','source','model']){panes[key].hidden=key!==id;document.getElementById(`admin-tab-${key}`).setAttribute('aria-selected',String(key===id));}
@@ -401,10 +407,10 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
   function hideDrawer({fromHistory=false,returnFocus=true}={}){
     const key=drawerHistoryKey;drawerHistoryKey=null;drawer.hidden=true;agentLaunch.setAttribute('aria-expanded','false');updateDrawerMode();
     if(!fromHistory&&key&&history.state?.[historyMarker]===key){pendingHistoryReturn=true;history.back();}
-    if(returnFocus&&wasAuthenticated)agentLaunch.focus({preventScroll:true});
+    if(agentEnabled&&returnFocus&&wasAuthenticated)agentLaunch.focus({preventScroll:true});
   }
   function openDrawer(id='agent'){
-    if(!wasAuthenticated)return;drawer.hidden=false;selectPane(id);agentLaunch.setAttribute('aria-expanded','true');updateDrawerMode();ensureDrawerHistory();
+    if(!agentEnabled){updateDrawerMode();return;}if(!wasAuthenticated)return;drawer.hidden=false;selectPane(id);agentLaunch.setAttribute('aria-expanded','true');updateDrawerMode();ensureDrawerHistory();
     loadManagement({openSelected:false});
     const target=id==='agent'?chatInput:document.getElementById(`admin-tab-${id}`);target.focus({preventScroll:true});target.scrollIntoView({block:'nearest'});
   }
@@ -415,7 +421,7 @@ export function createAdmin({getCatalog,getCurrentQuestion,onSaved=()=>{},onAuth
   tabs.addEventListener('click',event=>{const id=event.target.closest('[data-admin-tab]')?.dataset.adminTab;if(id)selectPane(id);});
   drawerTabs.addEventListener('click',event=>{const id=event.target.closest('[data-admin-tab]')?.dataset.adminTab;if(id)selectPane(id);});
   window.addEventListener('resize',()=>{updateDrawerMode();ensureDrawerHistory();});
-  window.addEventListener('popstate',()=>{if(pendingHistoryReturn){pendingHistoryReturn=false;ensureDrawerHistory();return;}if(drawerHistoryKey&&history.state?.[historyMarker]!==drawerHistoryKey)hideDrawer({fromHistory:true});});
+  window.addEventListener('popstate',()=>{if(!agentEnabled){updateDrawerMode();return;}if(pendingHistoryReturn){pendingHistoryReturn=false;ensureDrawerHistory();return;}if(drawerHistoryKey&&history.state?.[historyMarker]!==drawerHistoryKey)hideDrawer({fromHistory:true});});
   function drawerFocusables(){return [...drawer.querySelectorAll('button,a[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')].filter(node=>!node.disabled&&!node.closest('[hidden]'));}
   document.addEventListener('keydown',event=>{
     if(drawer.hidden)return;

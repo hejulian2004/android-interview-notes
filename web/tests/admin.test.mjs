@@ -69,7 +69,7 @@ globalThis.fetch=async(url,options)=>{
 };
 let authenticatedCalls=0,savedCalls=0,loggedOutCalls=0;
 const progressRaw=JSON.stringify({version:1,items:{[id]:{favorite:true,mastery:'mastered'}}});localStorage.setItem('android-study.progress.v1',progressRaw);
-const administration=createAdmin({getCatalog:()=>catalog,getCurrentQuestion:()=>activeQuestion,onAuthenticated:()=>{authenticatedCalls++;},onSaved:()=>{savedCalls++;},onLoggedOut:()=>{loggedOutCalls++;}});
+const administration=createAdmin({agentEnabled:true,getCatalog:()=>catalog,getCurrentQuestion:()=>activeQuestion,onAuthenticated:()=>{authenticatedCalls++;},onSaved:()=>{savedCalls++;},onLoggedOut:()=>{loggedOutCalls++;}});
 const $=id=>document.getElementById(id);
 function input(id,value){$(id).value=value;$(id).dispatchEvent(new dom.window.Event('input',{bubbles:true}));}
 function submit(id){$(id).dispatchEvent(new dom.window.Event('submit',{bubbles:true,cancelable:true}));}
