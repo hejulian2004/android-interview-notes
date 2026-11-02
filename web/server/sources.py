@@ -356,6 +356,7 @@ class SourceRegistry:
             if old and old['revision'] == confirmed_revision:
                 return
             self._snapshot_epochs[repository] = self._snapshot_epochs.get(repository, 0) + 1
+            self._authorization_versions[repository] = self._authorization_versions.get(repository, 0) + 1
             self._snapshots.pop(repository, None)
             self._grants.pop(repository, None)
             self._failures.pop(repository, None)

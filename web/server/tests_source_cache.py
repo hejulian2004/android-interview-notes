@@ -231,6 +231,29 @@ class SourceCacheTests(unittest.TestCase):
         with self.assertRaises(RepoError):
             wrapper.editable('docs/sample.md#a01', fresh=True)
 
+    def test_late_grant_cannot_resurrect_after_confirmed_commit_invalidation(self):
+        old = self.warm()
+        entered, release = threading.Event(), threading.Event()
+        original = self.registry._validate_prefixes
+        def delayed(*args):
+            value = original(*args)
+            entered.set()
+            self.assertTrue(release.wait(3))
+            return value
+        self.registry._validate_prefixes = delayed
+        with ThreadPoolExecutor(max_workers=1) as pool:
+            pending = pool.submit(self.registry.authorize_source, PROJECT, True,
+                old['revision'], 'provider-1', ['lib/'])
+            self.assertTrue(entered.wait(1))
+            self.source._files['lib/main.dart'] = '// confirmed new source commit\n'
+            self.source._save()
+            self.registry.invalidate(PROJECT, self.source.head())
+            release.set()
+            with self.assertRaises(RepoError) as error:
+                pending.result(timeout=3)
+            self.assertEqual(error.exception.code, 'source_consent')
+        self.assertFalse(self.registry._grants)
+
     def test_blob_failure_has_bounded_retry_backoff_and_no_partial_cache(self):
         original = self.source.read
         attempts = []
