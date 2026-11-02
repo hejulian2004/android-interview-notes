@@ -19,7 +19,14 @@ for(const key of ['window','document','Node','HTMLElement','localStorage','locat
 const scrolled=[];
 dom.window.HTMLElement.prototype.scrollIntoView=function(){scrolled.push(this.dataset.markdownAnchor||this.id);};
 localStorage.setItem('android-study.progress.v1',JSON.stringify({version:1,items:{[id]:{favorite:true,mastery:'mastered'}}}));
-globalThis.fetch=async url=>({ok:true,status:200,json:async()=>String(url).endsWith('/snapshot.json')?snapshot:{sha:snapshot.revision}});
+globalThis.fetch=async (url,options)=>{
+  const path=new URL(url).pathname;
+  assert.equal(new URL(url).origin,'https://study.example');
+  assert.equal(options.credentials,'same-origin');
+  if(path.endsWith('/api/session'))return {ok:true,status:200,json:async()=>({authenticated:true,user:'admin',csrfToken:'test-csrf',expiresAt:Date.now()+900000})};
+  if(path.endsWith('/api/catalog'))return {ok:true,status:200,json:async()=>({...snapshot,origin:'server-cache',fetchedAt:'2026-11-01T00:00:00Z'})};
+  throw new Error('Unexpected business request '+path);
+};
 // Exercise the actual static assembly contract: src/* and engine/ share a root.
 const assembly=await mkdtemp(join(tmpdir(),'android-study-markdown-'));
 await cp(new URL('../src/',import.meta.url),assembly,{recursive:true});
@@ -61,4 +68,13 @@ test('a compatible relative Markdown link opens another reading document; source
   assert.match(document.querySelector('.document-view h1').textContent,/Rust SDK/);
   assert.equal(new URLSearchParams(location.hash.split('?')[1]).get('doc'),'docs/sdk-source-deep-dive.md');
   assert.equal(JSON.parse(localStorage.getItem('android-study.progress.v1')).items[id].favorite,true);
+});
+
+test('actual practice navigation clears question export consent when the selected ID changes',()=>{
+  document.querySelector('[data-mode="practice"]').click();
+  const consent=document.querySelector('#agent-question-consent');assert.equal(consent.disabled,false);
+  consent.checked=true;
+  const before=document.querySelector('#agent-question-scope').textContent;
+  document.querySelector('[data-action="next"]').click();
+  assert.equal(consent.checked,false);assert.notEqual(document.querySelector('#agent-question-scope').textContent,before);
 });

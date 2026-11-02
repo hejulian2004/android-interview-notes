@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-from build import read_data, collect_files
+from build import read_data, collect_files, question_path
 from validate import validate_data, check_links
 import publish
 
@@ -70,6 +70,19 @@ class RepositoryTests(unittest.TestCase):
 
     def test_deterministic_generation(self):
         self.assertEqual(collect_files(),collect_files())
+
+    def test_persisted_question_path_survives_title_edit(self):
+        q=copy.deepcopy(self.questions[0]); original=question_path(q)
+        q['source_path']=original;q['title']='编辑后的标题'
+        self.assertEqual(question_path(q),original)
+
+    def test_persisted_question_path_rejects_out_of_scope_files(self):
+        q=copy.deepcopy(self.questions[0])
+        for path in ('../README.md','questions/../README.md','web/src/app.mjs',
+                     'supplements/category/'+q['id']+'-title.md',
+                     'questions/category/Q999-title.md'):
+            q['source_path']=path
+            with self.assertRaises(ValueError): question_path(q)
     def test_dry_run_has_no_commands(self):
         with patch.object(publish,'run',side_effect=AssertionError('no process allowed')):
             self.assertEqual(publish.main(['--dry-run']),0)

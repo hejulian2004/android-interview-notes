@@ -22,6 +22,17 @@ def slug(value: str) -> str:
 
 def question_path(q: dict) -> str:
     directory = 'questions' if q['kind'] == 'observed' else 'supplements'
+    # An explicitly persisted source path keeps browser progress IDs stable when
+    # an editor changes a title. Never permit this metadata to escape the bank.
+    source_path = q.get('source_path')
+    if source_path is not None:
+        prefix = 'Q' if q['kind'] == 'observed' else 'E'
+        if (not isinstance(source_path, str) or '\\' in source_path
+                or '..' in source_path.split('/')
+                or not re.fullmatch(rf'{directory}/[^/]+/{re.escape(q["id"])}-[^/]+\.md', source_path)
+                or not re.fullmatch(rf'{prefix}\d+', q['id'])):
+            raise ValueError('Invalid stable source_path for question')
+        return source_path
     return f"{directory}/{q['category']}/{q['id']}-{slug(q['title'])}.md"
 
 def link(from_path: str, to_path: str, label: str) -> str:

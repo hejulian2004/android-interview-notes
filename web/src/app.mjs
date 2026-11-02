@@ -1,4 +1,6 @@
-import { loadCatalog, TOPICS } from './engine/index.mjs';
+import { loadCatalog } from './server-catalog.mjs';
+import { TOPICS } from './engine/parser.mjs';
+import { createAdmin } from './admin.mjs';
 import { renderMarkdown } from './markdown.mjs';
 import { normalizeProgress, restoreProgress, mergeProgress } from './progress.mjs';
 
@@ -15,6 +17,7 @@ let revealed = false;
 let page = 0;
 let toastTimer;
 let searchTimer;
+let administration = null;
 let recoveryRaw = null;
 let progress = readProgress();
 let ui = readRoute();
@@ -216,6 +219,7 @@ function render() {
   } else {
     renderPractice(pool);
   }
+  administration?.questionChanged();
   rememberRoute();
 }
 function emptyState() {
@@ -429,4 +433,21 @@ document.addEventListener('keydown',event=>{
   if(event.key==='/'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName)){event.preventDefault();$('search-input').focus();}
 });
 document.querySelector('.skip-link').addEventListener('click',event=>{event.preventDefault();$('workspace').focus();$('workspace').scrollIntoView({behavior:'smooth',block:'start'});});
-refreshCatalog();
+administration = createAdmin({
+  getCatalog:()=>catalog,
+  getCurrentQuestion:()=>catalog?.questions.find(question=>question.id===ui.id)||null,
+  onAuthenticated:()=>refreshCatalog(),
+  onLoggedOut:()=>{
+    catalog=null;revealed=false;
+    $('study-content').replaceChildren();
+    $('total-count').textContent='—';
+    $('revision-label').textContent='';
+  },
+  onSaved:async result=>{
+    await refreshCatalog(true);
+    if(result.questionId&&!result.deleted)navigate({mode:'practice',id:result.questionId,topic:'all',scope:'all',query:''});
+    administration.refreshChoices();
+  },
+  notify:toast
+});
+administration.start();

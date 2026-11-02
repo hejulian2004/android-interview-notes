@@ -9,11 +9,12 @@
   <link rel="icon" type="image/svg+xml" href="./icon.svg">
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./markdown.css">
+  <link rel="stylesheet" href="./admin.css">
   <script type="module" src="./app.mjs"></script>
 </head>
 <body>
 <a class="skip-link" href="#workspace">跳到学习内容</a>
-<div class="app-shell">
+<div class="app-shell" hidden>
   <aside class="sidebar" aria-label="学习导航">
     <a class="brand" href="#practice"><span class="brand-mark" aria-hidden="true">a<span>↗</span></span><span>安卓复习室<small>ANDROID STUDY</small></span></a>
     <div class="sidebar-caption">把每一次复习，都记下来。</div>
@@ -22,7 +23,7 @@
     <div class="sidebar-bottom">
       <div class="sidebar-progress"><div><span>你的学习进度</span><strong id="sidebar-percent">0%</strong></div><progress id="sidebar-progress" value="0" max="100">0%</progress><p id="sidebar-progress-note">从第一道题开始积累</p></div>
       <a class="repo-link" href="https://github.com/hejulian2004/android-interview-notes" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">↗</span> 查看 GitHub 题库</a>
-      <div class="local-note">进度仅保存在当前浏览器<br>无账号 · 不跨设备同步</div>
+      <div class="local-note">管理员会话 · 题库由服务器同步<br>学习进度仅在本机，不跨设备同步</div>
     </div>
   </aside>
   <main class="main-content">

@@ -1,16 +1,20 @@
 # Android 复习台
 
-手机优先的静态面试复习网站，唯一内容来源为公开仓库 [hejulian2004/android-interview-notes](https://github.com/hejulian2004/android-interview-notes)。源码应存放在 txy 登录用户的 `~/coding/android-study-site/`，与其他项目隔离。
+手机优先的中文安卓面试复习网站，正式题库内容来自 [hejulian2004/android-interview-notes](https://github.com/hejulian2004/android-interview-notes)。项目位置约定为 txy 登录用户的 `~/coding/android-study-site/`。
 
-## 使用与资料更新
+> 当前 checkout 是新增认证与服务端编辑的候选版本，尚未部署。线上旧版静态服务不受本轮本地修改影响。新版本必须与后端一起部署，不能单独上传 dist 后声称登录或编辑已经可用。
 
-- 按专题浏览、全文搜索、先答后看、上一题/下一题/随机、收藏与掌握程度、待复习列表。
-- 题库每次打开时按 30 分钟缓存期限检查 GitHub main；“刷新题库”立即检查。相同提交只检查一次版本，变更后只下载变更的兼容 Markdown。没有 token、服务器定时任务或私有仓库读取。
-- 支持 `docs/**/*.md` 中形如 `### N01 标题` 的编号题；`questions/**/Q001-标题.md` 和 `supplements/**/E001-标题.md` 为一题一文档。目录链接不计题。SDK、QUIC 源码导读及 AI 接管练习册以阅读资料呈现。新格式需同步调整解析器。
-- GitHub 不可用、限流或解析失败时保留上次成功题库；首次访问使用标明版本日期的打包快照。站点本身仍需要从服务器载入，不承诺完整离线应用。
-- 收藏、学习状态和最后位置保存在当前浏览器 localStorage，**不跨设备/浏览器同步**。可导出 JSON 备份并在另一设备导入；删除题目的进度保留为暂不可用记录，题目恢复后可继续使用。
-- Markdown 原始 HTML 不执行，内容通过 DOMPurify 清洗；外链只允许 HTTP(S)，新窗口带 `noopener noreferrer`；不加载资料中的远程图片。
-- 保留笔记事实边界、源码版本和“通用原理/实际实现/待确认”说明。网站并不证明项目已运行或完成真机、性能测试。
+## 使用与维护
+
+- 保留专题浏览、全文搜索、先答后看、上一题/下一题/随机、收藏、掌握程度和待复习。
+- 单管理员登录后，题库读取/刷新、手动编辑、源码查询和 AI 请求全部走同源受认证后端；浏览器不直接请求 GitHub 或模型供应商。
+- 手动增改删支持本机草稿、Markdown 编辑、diff 与删除确认；点击“保存到 GitHub”直接提交。Agent 只能提出修改，用户检查差异并确认后才提交。
+- GitHub 是正式内容唯一来源，服务器检查 main、按不可变版本读取并缓存完整题库；GitHub 失败保留成功缓存且明确显示警告，不能使用陈旧缓存写回。新公开 dist 不含旧题库快照。
+- 内容支持 `docs/**/*.md` 中 `### N01 标题` 形式的编号题，以及 `questions/**/Q001-标题.md`、`supplements/**/E001-标题.md`。目录链接和代码围栏内的标题不计题；源码导读保持阅读资料形式。编辑器分别处理手维护文档与规范数据生成文档，保留编号/路径及证据边界。
+- 收藏、掌握程度和最后位置仍在当前浏览器 localStorage，**不跨设备同步**。登录只控制后台访问，不自动上传学习进度。支持进度导入/导出，删除题目留下可恢复的孤立进度。
+- 模型未配置时 AI 禁用，手动编辑仍可使用。key 不返回页面或写入浏览器存储；模型设置仅进程内保存。源码默认只注册公开题库仓库，可按服务器明确授权注册三个项目；未配置不会读取私有项目。外发资料每次需要明确授权并绑定展示的供应商配置版本。
+
+认证、编辑冲突、生成数据一致性、Agent 安全边界和限制见 [后端说明](server/README.md)。生产账号、密钥、持久访问与服务变更需要单独批准，见 [新版部署准备](server/DEPLOYMENT.md)。
 
 ## Markdown 内容组件
 
@@ -26,18 +30,21 @@
 
 中文标点兼容：CommonMark 会把部分 `**面试回答：**正文` 当作普通文字。组件只在 Marked 行内词法阶段识别包含汉字、以标点结束、与后续文字紧邻的有界双星号内容，并生成标准 strong token；不对原文全局替换或删除星号。围栏代码、行内代码、转义星号、乘法和通配符保留。该兼容也适用于缓存与打包快照；编辑新文档时推荐规范写法 `**面试回答：** 正文`。参见 [CommonMark 强调边界](https://spec.commonmark.org/0.31.2/#emphasis-and-strong-emphasis)。
 
-## 源码与本地构建
+## 源码、本地检查与构建
 
-`src/` 是界面，`engine/` 是内容解析、GitHub 更新和快照，`scripts/` 是构建和静态服务工具。`src/vendor/` 已包含固定版本的 marked 和 DOMPurify，以及相应许可，服务器无需 npm 安装或 Node 运行时。
-
-维护界面后运行：
+`src/` 是界面，`engine/parser.mjs` 是纯内容解析器，`server/` 是 Python 3.10+ 标准库后端，`scripts/` 是构建工具。Markdown 依赖固定版本并随源码自托管。`engine/index.mjs` 和旧快照只保留用于迁移回归，不随新公开构建分发。
 
 ```bash
+python3 -m unittest discover -s web/server -t . -p 'tests_*.py'
+python3 -m unittest discover -s tests -p 'test_*.py'
+python3 scripts/build.py --check
+python3 scripts/validate.py
+cd web
 npm ci --ignore-scripts
-node scripts/build.mjs
-python3 scripts/serve.py --host 127.0.0.1 --port 8182
+npm test
+npm run build
 ```
 
-日常**只更新 GitHub 题库**无需重建网站。若需要更换打包回退快照，先将公开资料仓库克隆到 `content/`，再按 `engine/README.md` 操作。`dist/` 是唯一需要公开的静态目录，不能把项目根目录、原始 Git 目录或服务器其他文件作为 Web 根目录。
+前后端本地测试注入模拟 GitHub 和模型供应商，不使用生产凭据或真实写入。`dist/` 仅为公开静态资源，不能把服务器代码、Git checkout、配置、.env 或凭据目录作为 Web 根。新版本实际预览需显式配置的 loopback 后端，单独的静态开发服务器不能代替登录与 API。
 
-部署/回滚和验证记录见 `DEPLOYMENT.md`、`VALIDATION.md`。部署前必须遵守现有在线服务不变的约束；已有 Web 服务配置调整或新增公网端口须先获得用户确认。
+仅更新已发布 GitHub 题库仍无需重新部署 UI；修改生成器、认证或前端代码需要先验证并部署一致版本。[原部署记录](DEPLOYMENT.md) 与 [验证记录](VALIDATION.md) 保留历史上线和回滚依据，新认证版本须遵循新增后端部署准备，不自动改变线上服务。
